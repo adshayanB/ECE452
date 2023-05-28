@@ -16,10 +16,10 @@ Page 2
 Page 3-5
 | Task | Person
 |------|--------
-| What are the functional properties of your system. Numbered point form is fine (e.g., 1, 1.1, 1.2). | -
+| What are the functional properties of your system. Numbered point form is fine (e.g., 1, 1.1, 1.2). | Neel
 | Provide at least two user scenarios to describe how a user would interact with your system and what the benefit to them would be. These should each be 1-2 paragraphs and can refer back to your numbered functional requirements. | Rishan
 | Choose an appropriate architectural view like sequence diagrams to represent your scenarios. | Rishan
-| A description of the non-functional properties your system needs to support. There should be at least two of these. Justify why these properties are important for your system. | -
+| A description of the non-functional properties your system needs to support. There should be at least two of these. Justify why these properties are important for your system. | Neel
 | A description of the human values addressed in your system. There needs to be at least 1 of these. | -
 | Who are the stakeholders of the system? At least 2. | -
 | Which population of users will use this system? At least 1. | -
