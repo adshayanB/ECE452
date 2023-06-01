@@ -8,3 +8,4 @@ Time Log for ECE 452 Project
 | 05/25/2023 |2.5|0|0|0|0|0| Project Proposal Document Set up + Part 1 of Document
 | 05/26/2023 |1|1|1|1|1|1|1 Meeting to work on Presentation and flush out original idea
 | 05/30/2023 |1|1|1|1|1|1| Project Meeting to Pivot Idea to default project
+| 06/01/2023 |2.5|0|0|0|0|0| Redid Part 1 of Document to support new project idea (default project)
