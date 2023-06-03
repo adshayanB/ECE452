@@ -27,7 +27,7 @@ Page 3-5
 Page 6
 | Task | Person
 |------|--------
-| A set of low-fidelity mockups. Sometimes a set of simulated screenshots / hand drawings can make describing the system easier. You can forward reference these from the functional properties / user scenarios as required. | -
+| A set of low-fidelity mockups. Sometimes a set of simulated screenshots / hand drawings can make describing the system easier. You can forward reference these from the functional properties / user scenarios as required. | Preyansh
 
 Slide Deck
 | Task | Person
