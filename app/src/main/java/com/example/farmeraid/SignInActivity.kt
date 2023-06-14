@@ -7,6 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.farmeraid.databinding.SignInActivityBinding
 import com.google.firebase.auth.FirebaseAuth
 
+/*
+ References for firebase + login, signout, signup:
+ https://www.geeksforgeeks.org/login-and-registration-in-android-using-firebase-in-kotlin/
+ https://github.com/CodingSTUFF070/LoginSignUpKotlin
+ */
+
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: SignInActivityBinding

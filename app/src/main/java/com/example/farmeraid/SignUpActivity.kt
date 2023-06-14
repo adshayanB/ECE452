@@ -6,6 +6,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.farmeraid.databinding.SignUpActivityBinding
 import com.google.firebase.auth.FirebaseAuth
+/*
+ References for firebase + login, signout, signup:
+ https://www.geeksforgeeks.org/login-and-registration-in-android-using-firebase-in-kotlin/
+ https://github.com/CodingSTUFF070/LoginSignUpKotlin
+ */
 
 class SignUpActivity : AppCompatActivity() {
 

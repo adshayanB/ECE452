@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--    References for firebase + login, signout, signup:-->
+<!--    https://www.geeksforgeeks.org/login-and-registration-in-android-using-firebase-in-kotlin/-->
+<!--    https://github.com/CodingSTUFF070/LoginSignUpKotlin-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
