@@ -12,6 +12,8 @@ Time Log for ECE 452 Project
 | 06/01/2023 |1.5|4|4|4|4|4| Worked on completion of Proposal Document for new project (default project)
 | 06/02/2023 |2|2|2|2|2|2| Reviewed eachothers work on report, made edits and finalized submission
 | 06/12/2023 |1|1|1|1|1|1| Brainstorming design plan and architectural structures for project
+| 06/12/2023 |0|1|0|0|0|0| Update existing mock-ups and create more mock-ups for specific components and screens
+| 06/12/2023 |0|1.5|0|0|0|0| Create a base file strcture tree outline based on identified subsystems, components, and screens
 | 06/12/2023 |2|0|0|0|0|0| Set up Android project and Firebase for authentication
 | 06/12/2023 |2|0|0|0|0|0| Created signup, login, and logout functionality
 
