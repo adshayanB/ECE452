@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/speak_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginHorizontal="20dp"
+        android:text="Mic Output"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        tools:layout_editor_absoluteX="85dp"
+        tools:layout_editor_absoluteY="196dp" />
+
+    <ImageView
+        android:id="@+id/mic_in"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/img"
+       />
 
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="logoutUser"
         android:text="Log Out"
-        android:onClick="logoutUser" />
+        tools:layout_editor_absoluteX="131dp"
+        tools:layout_editor_absoluteY="330dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
