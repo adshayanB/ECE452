@@ -1,4 +1,4 @@
-package com.example.farmeraid.home.module
+package com.example.farmeraid.data.module
 
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.QuotasRepository
@@ -6,17 +6,21 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.internal.managers.ApplicationComponentManager
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityComponent::class)
-class RepositoryModule {
-    @Provides
+@InstallIn(SingletonComponent::class)
+object RepositoryModule {
     @Singleton
-    fun provideQuotasRepository() = QuotasRepository()
+    @Provides
+    fun provideQuotasRepository() : QuotasRepository {
+        return QuotasRepository()
+    }
 
-    @Provides
     @Singleton
-    fun provideInventoryRepository() = InventoryRepository()
+    @Provides
+    fun provideInventoryRepository() : InventoryRepository {
+        return InventoryRepository()
+    }
 }
