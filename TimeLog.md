@@ -17,7 +17,8 @@ Time Log for ECE 452 Project
 | 06/12/2023 |2|0|0|0|0|0| Set up Android project and Firebase for authentication
 | 06/12/2023 |2|0|0|0|0|0| Created signup, login, and logout functionality
 | 06/19/2023 |4.5|0|0|0|0|0| Integrated offline speech to text functionality
-
+| 06/19/2023 |0|5|0|0|0|0| Scaffold Home Mode MVVM architecture, add Dagger Hilt, and create Button UI components
+| 06/20/2023 |2|2|2|2|2|2| App Structure, MVVM Architecture, and Repository Structure Meeting
 
 
 
