@@ -16,6 +16,8 @@ Time Log for ECE 452 Project
 | 06/12/2023 |0|1.5|0|0|0|0| Create a base file strcture tree outline based on identified subsystems, components, and screens
 | 06/12/2023 |2|0|0|0|0|0| Set up Android project and Firebase for authentication
 | 06/12/2023 |2|0|0|0|0|0| Created signup, login, and logout functionality
+| 06/19/2023 |4.5|0|0|0|0|0| Integrated offline speech to test functionality
+
 
 
 
