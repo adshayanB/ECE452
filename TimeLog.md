@@ -19,6 +19,8 @@ Time Log for ECE 452 Project
 | 06/19/2023 |4.5|0|0|0|0|0| Integrated offline speech to text functionality
 | 06/19/2023 |0|5|0|0|0|0| Scaffold Home Mode MVVM architecture, add Dagger Hilt, and create Button UI components
 | 06/20/2023 |2|2|2|2|2|2| App Structure, MVVM Architecture, and Repository Structure Meeting
+| 06/20/2023 |3|0|0|0|0|0| Refactor SignIn Screen to support MVVM architecture using Jetpack Compose
+| 06/20/2023 |0|2|0|0|0|0| Add Navigation Host to handle all navigation
 
 
 

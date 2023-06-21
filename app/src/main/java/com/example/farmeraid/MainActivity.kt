@@ -1,11 +1,10 @@
 package com.example.farmeraid
 
-import HomeScreenView
+import com.example.farmeraid.navigation.NavigationHost
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,8 +28,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             FarmerAidTheme {
-//                HomeScreenView()
-                SignInScreenView()
+            NavigationHost()
             }
         }
 //        setContentView(R.layout.activity_main)
