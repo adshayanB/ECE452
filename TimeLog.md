@@ -21,7 +21,7 @@ Time Log for ECE 452 Project
 | 06/20/2023 |2|2|2|2|2|2| App Structure, MVVM Architecture, and Repository Structure Meeting
 | 06/20/2023 |3|0|0|0|0|0| Refactor SignIn Screen to support MVVM architecture using Jetpack Compose
 | 06/20/2023 |0|2|0|0|0|0| Add Navigation Host to handle all navigation
-| 06/20/2023 |1|0|0|0|0|0| Address comments to SignIn view CR
+| 06/20/2023 |1|0.5|0|0|0|0| Address comments to SignIn view CR
 
 
 
