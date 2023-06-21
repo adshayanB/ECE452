@@ -13,8 +13,13 @@ import com.example.farmeraid.sign_in.model.getSignInButton
 
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.MainActivity
+import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.module.RepositoryModule.provideUserRepository
+import com.example.farmeraid.home.model.HomeModel
+import com.google.android.gms.common.api.Response
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,7 +27,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor() : ViewModel() {
+class SignInViewModel @Inject constructor(
+    userRepository: UserRepository
+) : ViewModel() {
     private val _state = MutableStateFlow(SignInModel.SignInViewState(
         buttonUiState = getSignInButton()
     ))
@@ -33,6 +40,10 @@ class SignInViewModel @Inject constructor() : ViewModel() {
     private val username: MutableStateFlow<String> = MutableStateFlow(_state.value.userName)
     private val password: MutableStateFlow<String> = MutableStateFlow(_state.value.passWord)
     private val loggedIn: MutableStateFlow<String> = MutableStateFlow(_state.value.loggedIn)
+    private val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
+    private val userRepository: UserRepository = userRepository;
+
+
 
 
     init {
@@ -50,32 +61,16 @@ class SignInViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun login(userName: String, password: String) {
-        //Code to login
-        Log.v("MESSAGE", password)
-        Log.v("MESSAGE", userName)
-        lateinit var firebaseAuth: FirebaseAuth
-        firebaseAuth = FirebaseAuth.getInstance()
-        if (userName.isNotEmpty() && password.isNotEmpty()) {
-
-            firebaseAuth.signInWithEmailAndPassword(userName, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.v("RUNS", "LOGGEd IN")
-                        loggedIn.value = "True"
-
-//                    val intent = Intent(this, MainActivity::class.java)
-//                    startActivity(intent)
-                } else {
-                    loggedIn.value = "False"
-                        Log.v("GG", "Did not wor")
-
-                    }
-                }
-//        } else {
-//            Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
-//
-//        }
+    fun login(userName: String, password: String) = viewModelScope.launch {
+        isLoading.value = true
+        val result: SignInModel.AuthResponse = userRepository.login(userName, password)
+        isLoading.value = false
+        if (result is SignInModel.AuthResponse.Success) {
+            Log.d("MESSAGE", "LOGGED IN")
+        } else {
+            Log.d("MESSAGE", result.toString())
         }
-    }
+
+        }
+
 }
