@@ -48,11 +48,12 @@ class SignInViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            combine(username, password) {
-                    userName: String, password: String ->
+            combine(username, password, isLoading) {
+                    userName: String, password: String, isLoading:Boolean ->
                 SignInModel.SignInViewState(
                     userName = userName,
                     passWord = password,
+                    isLoading = isLoading,
                     buttonUiState = getSignInButton(),
                 )
             }.collect {
