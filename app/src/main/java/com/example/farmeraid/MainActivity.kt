@@ -8,6 +8,9 @@ import android.view.View
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import com.example.farmeraid.sign_in.views.SignInScreenView
 import com.example.farmeraid.ui.theme.FarmerAidTheme
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             FarmerAidTheme {
-                NavigationHost()
+            NavigationHost()
             }
         }
 //        setContentView(R.layout.activity_main)
