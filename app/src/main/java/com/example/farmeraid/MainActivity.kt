@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val navController : NavHostController = rememberNavController()
             appNavigator.setNavController(navController)
-            FarmerAidTheme {
+            FarmerAidTheme(darkTheme = false) {
                 RootNavigationHost(appNavigator)
             }
         }

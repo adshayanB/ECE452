@@ -55,7 +55,9 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
             navigateToRoute = NavRoute.Farm,
         ),
     )
-    val notShownScreens: List<String> = listOf()
+    val notShownScreens: List<String> = listOf(
+        NavRoute.SignIn.route,
+    )
 
     AnimatedVisibility(
         visible = backStackEntry.value?.destination?.route !in notShownScreens,
@@ -63,7 +65,7 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
         exit = slideOutVertically { height -> height } + fadeOut()
     ) {
         NavigationBar(
-            containerColor = SecondaryColour.copy(alpha = 0.5f),
+            containerColor = TertiaryColour,
             modifier = Modifier.clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp)),
         ) {
             bottomNavItems.forEach { item ->

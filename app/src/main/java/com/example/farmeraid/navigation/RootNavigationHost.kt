@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.farmeraid.sign_in.views.SignInScreenView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,9 +21,12 @@ fun RootNavigationHost(appNavigator: AppNavigator) {
         ) { padding ->
             NavHost(
                 navController = appNavigator.navController!!,
-                startDestination = NavRoute.Farm.route,
+                startDestination = NavRoute.SignIn.route,
                 modifier = Modifier.padding(padding)
             ) {
+                composable(NavRoute.SignIn.route) {
+                    SignInScreenView()
+                }
                 composable(NavRoute.Farm.route) {
                     FarmScreenView()
                 }

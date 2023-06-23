@@ -16,6 +16,9 @@ import com.example.farmeraid.MainActivity
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.module.RepositoryModule.provideUserRepository
 import com.example.farmeraid.home.model.HomeModel
+import com.example.farmeraid.navigation.AppNavigator
+import com.example.farmeraid.navigation.NavRoute
+import com.example.farmeraid.uicomponents.models.UiComponentModel
 import com.google.android.gms.common.api.Response
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +31,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val appNavigator: AppNavigator
 ) : ViewModel() {
     private val _state = MutableStateFlow(SignInModel.SignInViewState(
         buttonUiState = getSignInButton()
@@ -39,21 +43,18 @@ class SignInViewModel @Inject constructor(
 
     private val username: MutableStateFlow<String> = MutableStateFlow(_state.value.userName)
     private val password: MutableStateFlow<String> = MutableStateFlow(_state.value.passWord)
-    private val loggedIn: MutableStateFlow<String> = MutableStateFlow(_state.value.loggedIn)
-    private val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
-
+    private val buttonUiState: MutableStateFlow<UiComponentModel.ButtonUiState> = MutableStateFlow(_state.value.buttonUiState)
 
 
 
     init {
         viewModelScope.launch {
-            combine(username, password, isLoading) {
-                    userName: String, password: String, isLoading:Boolean ->
+            combine(username, password, buttonUiState) {
+                    userName: String, password: String, buttonUiState: UiComponentModel.ButtonUiState ->
                 SignInModel.SignInViewState(
                     userName = userName,
                     passWord = password,
-                    isLoading = isLoading,
-                    buttonUiState = getSignInButton(),
+                    buttonUiState = buttonUiState,
                 )
             }.collect {
                 _state.value = it
@@ -62,11 +63,12 @@ class SignInViewModel @Inject constructor(
     }
 
     fun login(userName: String, password: String) = viewModelScope.launch {
-        isLoading.value = true
+        buttonUiState.value = buttonUiState.value.copy(isLoading = true)
         val result: SignInModel.AuthResponse = userRepository.login(userName, password)
-        isLoading.value = false
+        buttonUiState.value = buttonUiState.value.copy(isLoading = false)
         if (result is SignInModel.AuthResponse.Success) {
             Log.d("MESSAGE", "LOGGED IN")
+            appNavigator.navigateToMode(NavRoute.Home)
         } else {
             Log.d("MESSAGE", result.toString())
         }

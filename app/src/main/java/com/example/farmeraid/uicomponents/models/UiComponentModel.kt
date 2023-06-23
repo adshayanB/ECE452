@@ -7,6 +7,7 @@ class UiComponentModel {
     // Button Models
     data class ButtonUiState(
         val text: String,
+        val isLoading: Boolean = false,
         val enabled: Boolean = true,
     )
     data class ButtonUiEvent(

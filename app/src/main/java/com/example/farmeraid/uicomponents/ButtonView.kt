@@ -2,9 +2,11 @@ package com.example.farmeraid.uicomponents
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.farmeraid.ui.theme.DisabledPrimaryColour
 import com.example.farmeraid.ui.theme.DisabledWhiteContentColour
@@ -27,9 +29,15 @@ fun ButtonView(
             disabledContainerColor = DisabledPrimaryColour,
             disabledContentColor = DisabledWhiteContentColour,
         ),
-        enabled = buttonUiState.enabled,
+        enabled = !buttonUiState.isLoading || buttonUiState.enabled,
     ) {
-        Text(buttonUiState.text)
+        if (buttonUiState.isLoading) {
+            CircularProgressIndicator(
+                color = Color.White,
+            )
+        } else {
+            Text(buttonUiState.text)
+        }
     }
 }
 
