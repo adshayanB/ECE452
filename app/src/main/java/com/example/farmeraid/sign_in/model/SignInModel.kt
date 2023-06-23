@@ -19,5 +19,5 @@ class SignInModel {
 }
 
 fun getSignInButton() : UiComponentModel.ButtonUiState {
-    return UiComponentModel.ButtonUiState(text = "Test")
+    return UiComponentModel.ButtonUiState(text = "Log In")
 }

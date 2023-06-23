@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    userRepository: UserRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(SignInModel.SignInViewState(
         buttonUiState = getSignInButton()
@@ -41,7 +41,6 @@ class SignInViewModel @Inject constructor(
     private val password: MutableStateFlow<String> = MutableStateFlow(_state.value.passWord)
     private val loggedIn: MutableStateFlow<String> = MutableStateFlow(_state.value.loggedIn)
     private val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
-    private val userRepository: UserRepository = userRepository;
 
 
 

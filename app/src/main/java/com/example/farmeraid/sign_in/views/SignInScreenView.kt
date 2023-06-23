@@ -34,6 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.farmeraid.sign_in.SignInViewModel
+import com.example.farmeraid.uicomponents.ButtonView
+import com.example.farmeraid.uicomponents.models.UiComponentModel
+
 //REsource used for design : https://medium.com/@manojbhadane/android-login-screen-using-jetpack-compose-part-2-a262ad87c6d
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,6 +65,7 @@ fun SignInScreenView() {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(20.dp),
+            //Todo: Set Onclick to navigate to SignIn Screen
             onClick = { },
             style = TextStyle(
                 fontSize = 14.sp,
@@ -97,17 +101,16 @@ fun SignInScreenView() {
 
         Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-            Button(
-              onClick = {viewModel.login(username.value.toString(), password.value.toString()) },
-//                onClick  = {},
-                shape = RoundedCornerShape(50.dp),
+            ButtonView(
+                buttonUiState = state.buttonUiState,
+                buttonUiEvent = UiComponentModel.ButtonUiEvent(
+              onClick = {viewModel.login(username.value.toString(), password.value.toString()) }),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-            ) {
-                Text(text = "Login")
+            )
             }
-        }
+
     }
 
 }
