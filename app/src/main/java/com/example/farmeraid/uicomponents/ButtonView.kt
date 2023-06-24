@@ -1,6 +1,6 @@
 package com.example.farmeraid.uicomponents
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,7 +36,8 @@ fun ButtonView(
         if (buttonUiState.isLoading) {
             CircularProgressIndicator(
                 color = Color.White,
-                modifier = Modifier.padding(2.0.dp)
+                modifier = Modifier.size(25.0.dp),
+                strokeWidth = 3.0.dp,
             )
         } else {
             Text(buttonUiState.text)
