@@ -1,5 +1,6 @@
 package com.example.farmeraid.home.model
 
+import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 class HomeModel {
