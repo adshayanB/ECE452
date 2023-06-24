@@ -21,6 +21,7 @@ Time Log for ECE 452 Project
 | 06/20/2023 |2|2|2|2|2|2| App Structure, MVVM Architecture, and Repository Structure Meeting
 | 06/20/2023 |3|0|0|0|0|0| Refactor SignIn Screen to support MVVM architecture using Jetpack Compose
 | 06/20/2023 |0|0|3|0|0|0| Designed high-fidelity mockups in Figma for the Auth Screens, Home Mode, and Farm Mode screens
+| 06/23/2023 |0|0|3|0|0|0| Finished high-fidelity mockups in Figma for the Market, and Charity Mode
 
 
 
