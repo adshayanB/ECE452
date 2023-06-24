@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.farmeraid.home.HomeViewModel
 import com.example.farmeraid.home.model.HomeModel.Tab
+import com.example.farmeraid.navigation.NavRoute
+import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.OutlinedButtonView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
@@ -20,10 +22,10 @@ fun HomeScreenView() {
 
     Scaffold(
        floatingActionButton = {
-           OutlinedButtonView(
+           ButtonView(
                buttonUiState = state.buttonUiState,
                buttonUiEvent = UiComponentModel.ButtonUiEvent(
-                   onClick = { viewModel.changeSelectedTab(if (state.selectedTab == Tab.Inventory) Tab.Quotas else Tab.Inventory) }
+                   onClick = { viewModel.changeSelectedTabAndNavigate(if (state.selectedTab == Tab.Quotas) Tab.Inventory else Tab.Quotas) }
                )
            )
        },

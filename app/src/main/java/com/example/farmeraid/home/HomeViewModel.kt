@@ -9,7 +9,8 @@ import com.example.farmeraid.home.model.HomeModel.Produce
 import com.example.farmeraid.home.model.HomeModel.CategorizedQuotas
 import com.example.farmeraid.home.model.HomeModel.HomeViewState
 import com.example.farmeraid.home.model.getHomeButton
-import com.example.farmeraid.uicomponents.models.UiComponentModel
+import com.example.farmeraid.navigation.AppNavigator
+import com.example.farmeraid.navigation.NavRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     quotasRepository: QuotasRepository,
     inventoryRepository: InventoryRepository,
+    private val appNavigator: AppNavigator,
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeViewState(
         buttonUiState = getHomeButton()
@@ -45,11 +47,13 @@ class HomeViewModel @Inject constructor(
                 )
             }.collect {
                 _state.value = it
+
             }
         }
     }
 
-    fun changeSelectedTab(tab: Tab) {
+    fun changeSelectedTabAndNavigate(tab: Tab) {
         selectedTab.value = tab;
+        appNavigator.navigateToMode(NavRoute.Farm)
     }
 }

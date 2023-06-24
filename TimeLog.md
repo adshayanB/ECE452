@@ -24,6 +24,8 @@ Time Log for ECE 452 Project
 | 06/20/2023 |1|0.5|0|0|0|0| Address comments to SignIn view CR
 | 06/20/2023 |0|0|3|0|0|0| Designed high-fidelity mockups in Figma for the Auth Screens, Home Mode, and Farm Mode screens
 | 06/23/2023 |0|0|3|0|0|0| Finished high-fidelity mockups in Figma for the Market, and Charity Mode
+| 06/23/2023 |0|4|0|0|0|0| Add navigation bar, app navigator, connect signin to the home page on login, and add a snackbar for messages
+
 
 
 
