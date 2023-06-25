@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.NavRoute
-import com.example.farmeraid.sign_in.model.SignInModel
 import com.example.farmeraid.sign_up.model.SignUpModel
 import com.example.farmeraid.sign_up.model.getSignUpButton
 import com.example.farmeraid.snackbar.SnackbarDelegate
@@ -56,15 +55,18 @@ class SignUpViewModel @Inject constructor(
 
     fun signup(userName: String, password: String) = viewModelScope.launch {
         buttonUiState.value = buttonUiState.value.copy(isLoading = true)
-        val result: SignInModel.AuthResponse = userRepository.signup(userName, password)
+        val result: SignUpModel.AuthResponse = userRepository.signup(userName, password)
         buttonUiState.value = buttonUiState.value.copy(isLoading = false)
 
         when(result) {
-            is SignInModel.AuthResponse.Success -> {
-                Log.d("MESSAGE", "LOGGED IN")
+            is SignUpModel.AuthResponse.Success -> {
+                Log.d("MESSAGE", "SIGNED UP")
+                snackbarDelegate.showSnackbar(
+                    message = "Account created successfully!"
+                )
                 appNavigator.navigateToMode(NavRoute.SignIn)
             }
-            is SignInModel.AuthResponse.Error -> {
+            is SignUpModel.AuthResponse.Error -> {
                 Log.d("MESSAGE", result.error)
                 snackbarDelegate.showSnackbar(
                     message = result.error
