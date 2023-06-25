@@ -1,6 +1,5 @@
 package com.example.farmeraid.sign_in.model
 
-import com.example.farmeraid.home.model.HomeModel
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 class SignInModel {

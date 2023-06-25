@@ -7,7 +7,6 @@ import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.sign_in.model.SignInModel
-import com.example.farmeraid.sign_in.model.getSignInButton
 import com.example.farmeraid.sign_up.model.SignUpModel
 import com.example.farmeraid.sign_up.model.getSignUpButton
 import com.example.farmeraid.snackbar.SnackbarDelegate

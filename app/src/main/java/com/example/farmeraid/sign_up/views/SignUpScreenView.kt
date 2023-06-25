@@ -1,7 +1,5 @@
 package com.example.farmeraid.sign_up.views
 
-import com.example.farmeraid.sign_up.SignUpViewModel
-
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +31,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.farmeraid.sign_in.SignInViewModel
+import com.example.farmeraid.sign_up.SignUpViewModel
 import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
