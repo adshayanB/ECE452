@@ -19,5 +19,5 @@ class SignUpModel {
 }
 
 fun getSignUpButton() : UiComponentModel.ButtonUiState {
-    return UiComponentModel.ButtonUiState(text = "SignUp")
+    return UiComponentModel.ButtonUiState(text = "Sign Up")
 }
