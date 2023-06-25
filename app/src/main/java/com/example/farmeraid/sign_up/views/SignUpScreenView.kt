@@ -1,4 +1,4 @@
-package com.example.farmeraid.sign_in.views
+package com.example.farmeraid.sign_up.views
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.farmeraid.sign_in.SignInViewModel
+import com.example.farmeraid.sign_up.SignUpViewModel
 import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
@@ -39,17 +39,17 @@ import com.example.farmeraid.uicomponents.models.UiComponentModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreenView() {
-    val viewModel = hiltViewModel<SignInViewModel>()
+fun SignUpScreenView() {
+    val viewModel = hiltViewModel<SignUpViewModel>()
     val state by viewModel.state.collectAsState()
     Scaffold {
         Box(modifier = Modifier.fillMaxSize()) {
             ClickableText(
-                text = AnnotatedString("Sign up here"),
+                text = AnnotatedString("Sign in here"),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(20.dp),
-                onClick = {viewModel.moveToSignUp()},
+                onClick = {viewModel.moveToSignIn()},
                 style = TextStyle(
                     fontSize = 14.sp,
                     textDecoration = TextDecoration.Underline,
@@ -62,15 +62,20 @@ fun SignInScreenView() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            val name = remember { mutableStateOf(String()) }
             val username = remember { mutableStateOf(String()) }
             val password = remember { mutableStateOf(String()) }
 
-            Text(text = "Login", style = TextStyle(fontSize = 40.sp))
+            Text(text = "Sign Up!", style = TextStyle(fontSize = 40.sp))
+            Spacer(modifier = Modifier.height(20.dp))
+            TextField(
+                label = { Text(text = "Name") },
+                value = name.value,
+                onValueChange = { name.value = it })
 
             Spacer(modifier = Modifier.height(20.dp))
             TextField(
-                label = { Text(text = "Username") },
+                label = { Text(text = "Email") },
                 value = username.value,
                 onValueChange = { username.value = it })
 
@@ -87,13 +92,13 @@ fun SignInScreenView() {
                 ButtonView(
                     buttonUiState = state.buttonUiState,
                     buttonUiEvent = UiComponentModel.ButtonUiEvent(
-                        onClick = {viewModel.login(username.value.toString(), password.value.toString()) }),
+                        onClick = {viewModel.signup(username.value.toString(), password.value.toString()) }),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
                 )
             }
-    }
+        }
 
     }
 

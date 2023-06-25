@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.farmeraid.sign_in.views.SignInScreenView
+import com.example.farmeraid.sign_up.views.SignUpScreenView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,6 +31,9 @@ fun RootNavigationHost(
                 startDestination = NavRoute.SignIn.route,
                 modifier = Modifier.padding(padding)
             ) {
+                composable(NavRoute.SignUp.route){
+                    SignUpScreenView()
+                }
                 composable(NavRoute.SignIn.route) {
                     SignInScreenView()
                 }
