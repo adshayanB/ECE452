@@ -49,7 +49,6 @@ fun SignInScreenView() {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(20.dp),
-                //Todo: Set Onclick to navigate to SignUp Screen
                 onClick = {viewModel.moveToSignUp()},
                 style = TextStyle(
                     fontSize = 14.sp,
