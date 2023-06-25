@@ -21,4 +21,17 @@ class UiComponentModel {
         val selectedIcon: ImageVector,
         val navigateToRoute: NavRoute,
     )
+
+    // Card List Models
+    data class CardUiState(
+        val text : String = ""
+    )
+
+    // Floating Action Button Models
+    data class FabUiState(
+        val icon: String,
+    )
+    data class FabUiEvent(
+        val onClick: () -> Unit = {},
+    )
 }
