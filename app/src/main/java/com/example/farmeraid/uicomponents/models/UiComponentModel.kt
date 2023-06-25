@@ -1,5 +1,7 @@
 package com.example.farmeraid.uicomponents.models
 
+import android.graphics.drawable.Icon
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.farmeraid.navigation.NavRoute
 
@@ -29,8 +31,10 @@ class UiComponentModel {
 
     // Floating Action Button Models
     data class FabUiState(
-        val icon: String,
+        val icon: ImageVector,
+        val contentDescription: String = "",
     )
+
     data class FabUiEvent(
         val onClick: () -> Unit = {},
     )
