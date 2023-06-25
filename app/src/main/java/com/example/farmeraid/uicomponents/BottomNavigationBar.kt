@@ -46,6 +46,7 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
     )
     val notShownScreens: List<String> = listOf(
         NavRoute.SignIn.route,
+        NavRoute.SignUp.route
     )
 
     AnimatedVisibility(
