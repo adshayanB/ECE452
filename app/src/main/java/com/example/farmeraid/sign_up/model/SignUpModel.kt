@@ -1,22 +1,23 @@
-package com.example.farmeraid.sign_in.model
+package com.example.farmeraid.sign_up.model
 
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
-class SignInModel {
+class SignUpModel {
     sealed class AuthResponse {
         object Success : AuthResponse()
         data class Error(val error: String) : AuthResponse()
     }
-    data class SignInViewState(
+    data class SignUpViewState(
         val buttonUiState: UiComponentModel.ButtonUiState,
+        val name: String = "",
         val userName: String = "",
         val passWord: String = "",
         val loggedIn: String = "",
         val isLoading: Boolean = false,
 
-    )
+        )
 }
 
-fun getSignInButton() : UiComponentModel.ButtonUiState {
-    return UiComponentModel.ButtonUiState(text = "Log In")
+fun getSignUpButton() : UiComponentModel.ButtonUiState {
+    return UiComponentModel.ButtonUiState(text = "Sign Up")
 }
