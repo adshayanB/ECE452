@@ -26,6 +26,8 @@
 | 06/24/2023 | 4        | 0      |0|0|0|0| Created SignUp view,viewmodel and model with FireBase integration, linked signin and sign up pages 
 | 06/24/2023 |0|0|2|0|0|0| Create Floating Action Button UI component
 | 06/24/2023 |0|0|0|0|0|5| Worked on speech navigation utilty and refactoring to MVVM architecture style
+| 06/26/2023 |1|1|1|1|1|1| Meeting for demo presentation, synced up to determine next steps  
+
 
 
 
