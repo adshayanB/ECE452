@@ -24,15 +24,10 @@ class UiComponentModel {
         val navigateToRoute: NavRoute,
     )
 
-    // Card List Models
-    data class CardUiState(
-        val text : String = ""
-    )
-
     // Floating Action Button Models
     data class FabUiState(
         val icon: ImageVector,
-        val contentDescription: String = "",
+        val contentDescription: String? = null,
     )
 
     data class FabUiEvent(
