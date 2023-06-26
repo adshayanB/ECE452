@@ -1,5 +1,3 @@
-Time Log for ECE 452 Project
-
 | Date       | Adshayan | Rishan | Preyansh | Neel | Soumil | Sathursan | Task
 |------------|----------|--------|-------|------|--------| -----------| ------
 | 05/20/2023 | 1        | 0      |0|1|1|1| Brain Storm Meeting
@@ -26,7 +24,7 @@ Time Log for ECE 452 Project
 | 06/23/2023 | 0        | 0      |3|0|0|0| Finished high-fidelity mockups in Figma for the Market, and Charity Mode
 | 06/23/2023 | 0        | 4      |0|0|0|0| Add navigation bar, app navigator, connect signin to the home page on login, and add a snackbar for messages
 | 06/24/2023 | 4        | 0      |0|0|0|0| Created SignUp view,viewmodel and model with FireBase integration, linked signin and sign up pages 
-
+| 06/24/2023 |0|0|2|0|0|0| Create Floating Action Button UI component
 
 
 
