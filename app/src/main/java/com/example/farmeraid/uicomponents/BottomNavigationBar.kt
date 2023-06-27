@@ -44,7 +44,8 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
             navigateToRoute = NavRoute.Farm,
         ),
     )
-    val notShownScreens: List<String> = listOf(
+    val notShownScreens: List<String?> = listOf(
+        null,
         NavRoute.SignIn.route,
         NavRoute.SignUp.route
     )
