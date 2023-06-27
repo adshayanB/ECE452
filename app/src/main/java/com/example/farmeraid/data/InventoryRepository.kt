@@ -1,5 +1,6 @@
 package com.example.farmeraid.data
 
+import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.home.model.HomeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
