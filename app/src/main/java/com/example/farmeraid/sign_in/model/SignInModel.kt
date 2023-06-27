@@ -11,12 +11,11 @@ class SignInModel {
         val buttonUiState: UiComponentModel.ButtonUiState,
         val userName: String = "",
         val passWord: String = "",
-        val loggedIn: String = "",
         val isLoading: Boolean = false,
 
     )
 }
 
 fun getSignInButton() : UiComponentModel.ButtonUiState {
-    return UiComponentModel.ButtonUiState(text = "Log In")
+    return UiComponentModel.ButtonUiState(text = "Sign In")
 }
