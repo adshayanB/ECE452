@@ -111,7 +111,7 @@ fun HomeScreenView() {
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                items(state.inventory.toList()) { (produceName, produceAmount) ->
+                items(state.inventoryList.toList()) { (produceName, produceAmount) ->
                     ProduceItem(modifier = Modifier.fillMaxHeight(), produceName = produceName, produceAmount = produceAmount)
                 }
             }
