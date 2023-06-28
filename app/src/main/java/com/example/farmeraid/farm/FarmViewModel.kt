@@ -187,4 +187,8 @@ class FarmViewModel @Inject constructor(
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
         }
     }
+
+    fun navigateToTransactions() {
+        appNavigator.navigateToTransactions()
+    }
 }

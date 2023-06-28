@@ -4,6 +4,7 @@ package com.example.farmeraid.snackbar
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -15,16 +16,21 @@ class SnackbarDelegate(
     fun showSnackbar(
         message: String,
         actionLabel: String? = null,
+        onAction : () -> Unit = {},
         duration: SnackbarDuration = SnackbarDuration.Short,
         withDismissAction: Boolean = true,
     ) {
         coroutineScope?.launch {
-            snackbarHostState?.showSnackbar(
+            val result = snackbarHostState?.showSnackbar(
                 message = message,
                 actionLabel = actionLabel,
                 withDismissAction = withDismissAction,
                 duration = duration,
             )
+            when(result) {
+                SnackbarResult.ActionPerformed -> onAction()
+                else -> {}
+            }
         }
     }
 }

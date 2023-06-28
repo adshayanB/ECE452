@@ -3,6 +3,7 @@ package com.example.farmeraid.navigation
 import BottomNavigationBar
 import FarmScreenView
 import HomeScreenView
+import TransactionsView
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -42,6 +43,9 @@ fun RootNavigationHost(
                 }
                 composable(NavRoute.Home.route) {
                     HomeScreenView()
+                }
+                composable(NavRoute.Transactions.route) {
+                    TransactionsView()
                 }
             }
         }
