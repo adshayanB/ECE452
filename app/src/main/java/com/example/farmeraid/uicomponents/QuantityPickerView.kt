@@ -55,7 +55,8 @@ fun QuantityPickerView(
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = SecondaryColour,
                     contentColor = WhiteContentColour,
-                )
+                ),
+                enabled = quantityPickerUiState.count > 0
             ) {
                 Icon(
                     imageVector = Icons.Filled.Remove,
@@ -77,7 +78,8 @@ fun QuantityPickerView(
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
-                )
+                ),
+                enabled = false,
             )
             FilledIconButton(modifier = Modifier
                 .align(Alignment.CenterVertically)

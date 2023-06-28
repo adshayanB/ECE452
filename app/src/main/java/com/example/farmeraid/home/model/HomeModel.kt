@@ -1,6 +1,6 @@
 package com.example.farmeraid.home.model
-
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
@@ -11,7 +11,7 @@ class HomeModel {
     }
 
     data class HomeViewState(
-        val inventory: MutableMap<String, Int> = HashMap<String, Int>(),
+        val inventoryList: MutableMap<String, Int> = mutableMapOf<String, Int>(),
         val quotasList: List<QuotasRepository.Quota> = emptyList(),
         val selectedTab: Tab = Tab.Quotas,
     )

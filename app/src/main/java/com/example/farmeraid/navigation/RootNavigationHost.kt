@@ -28,7 +28,7 @@ fun RootNavigationHost(
         ) { padding ->
             NavHost(
                 navController = appNavigator.navController!!,
-                startDestination = NavRoute.SignIn.route,
+                startDestination = NavRoute.Farm.route,
                 modifier = Modifier.padding(padding)
             ) {
                 composable(NavRoute.SignUp.route){

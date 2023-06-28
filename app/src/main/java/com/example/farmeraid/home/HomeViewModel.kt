@@ -1,11 +1,9 @@
 package com.example.farmeraid.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.QuotasRepository
-import com.example.farmeraid.home.model.HomeModel
 import com.example.farmeraid.home.model.HomeModel.Tab
 import com.example.farmeraid.home.model.HomeModel.HomeViewState
 import com.example.farmeraid.navigation.AppNavigator
@@ -30,16 +28,16 @@ class HomeViewModel @Inject constructor(
         get() = _state
 
     private val quotasList: Flow<List<QuotasRepository.Quota>> = quotasRepository.getCategorizedQuotas()
-    private val inventory: Flow<MutableMap<String, Int>> = inventoryRepository.getInventory()
+    private val inventoryList: Flow<MutableMap<String, Int>> = inventoryRepository.getInventory()
     private val selectedTab: MutableStateFlow<Tab> = MutableStateFlow(_state.value.selectedTab)
 
     init {
         viewModelScope.launch {
-            combine(quotasList, inventory, selectedTab) {
-                    quotasList: List<QuotasRepository.Quota>, inventory: MutableMap<String, Int>, selectedTab: Tab ->
+            combine(quotasList, inventoryList, selectedTab) {
+                quotasList: List<QuotasRepository.Quota>, inventoryList: MutableMap<String, Int>, selectedTab: Tab ->
                 HomeViewState(
                     quotasList = quotasList,
-                    inventory = inventory,
+                    inventoryList = inventoryList,
                     selectedTab = selectedTab,
                 )
             }.collect {
