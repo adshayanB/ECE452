@@ -8,4 +8,6 @@ sealed class NavRoute(val route: String) {
     object Farm : NavRoute("farm_route")
     object Market : NavRoute("market_route")
     object Charity : NavRoute("charity_route")
+
+    object Transactions : NavRoute("transactions_route")
 }

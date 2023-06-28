@@ -14,4 +14,12 @@ class AppNavigator {
     fun navigateToMode(navRoute: NavRoute) {
         _navController?.navigate(navRoute.route)
     }
+
+    fun navigateBack() {
+        _navController?.popBackStack()
+    }
+
+    fun navigateToTransactions() {
+        _navController?.navigate(NavRoute.Transactions.route)
+    }
 }
