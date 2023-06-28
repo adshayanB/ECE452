@@ -1,16 +1,16 @@
 package com.example.farmeraid.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.home.model.HomeModel
 import com.example.farmeraid.home.model.HomeModel.Tab
 import com.example.farmeraid.home.model.HomeModel.Produce
-import com.example.farmeraid.home.model.HomeModel.CategorizedQuotas
 import com.example.farmeraid.home.model.HomeModel.HomeViewState
-import com.example.farmeraid.home.model.getHomeButton
 import com.example.farmeraid.navigation.AppNavigator
-import com.example.farmeraid.navigation.NavRoute
+import com.example.farmeraid.snackbar.SnackbarDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,26 +24,24 @@ class HomeViewModel @Inject constructor(
     quotasRepository: QuotasRepository,
     inventoryRepository: InventoryRepository,
     private val appNavigator: AppNavigator,
+    private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(HomeViewState(
-        buttonUiState = getHomeButton()
-    ))
+    private val _state = MutableStateFlow(HomeViewState())
     val state: StateFlow<HomeViewState>
         get() = _state
 
-    private val quotasList: Flow<List<CategorizedQuotas>> = quotasRepository.getCategorizedQuotas()
+    private val quotasList: Flow<List<HomeModel.Quota>> = quotasRepository.getCategorizedQuotas()
     private val inventoryList: Flow<List<Produce>> = inventoryRepository.getInventory()
     private val selectedTab: MutableStateFlow<Tab> = MutableStateFlow(_state.value.selectedTab)
 
     init {
         viewModelScope.launch {
             combine(quotasList, inventoryList, selectedTab) {
-                quotasList: List<CategorizedQuotas>, inventoryList: List<Produce>, selectedTab: Tab ->
+                    quotasList: List<HomeModel.Quota>, inventoryList: List<Produce>, selectedTab: Tab ->
                 HomeViewState(
                     quotasList = quotasList,
                     inventoryList = inventoryList,
                     selectedTab = selectedTab,
-                    buttonUiState = getHomeButton(),
                 )
             }.collect {
                 _state.value = it
@@ -52,8 +50,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun changeSelectedTabAndNavigate(tab: Tab) {
+    fun changeSelectedTab(tab: Tab) {
         selectedTab.value = tab;
-        appNavigator.navigateToMode(NavRoute.Farm)
+    }
+
+    fun navigateToAddQuota() {
+        snackbarDelegate.showSnackbar(
+            message = "Navigates to Add Quota"
+        )
     }
 }

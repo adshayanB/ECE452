@@ -9,30 +9,25 @@ class HomeModel {
         val produceAmount: Int,
     )
 
+    data class ProduceQuota(
+        val produceName : String,
+        val produceSoldAmount : Int,
+        val produceGoalAmount : Int,
+    )
+
     data class Quota(
-        val produceName: String,
-        val produceSoldAmount: Int,
-        val produceGoalAmount: Int,
+        val marketName : String,
+        val produceQuotaList : List<ProduceQuota>,
     )
 
-    data class CategorizedQuotas(
-        val marketName: String,
-        val quotas: List<Quota>,
-    )
-
-    sealed class Tab {
-        object Quotas : Tab()
-        object Inventory : Tab()
+    sealed class Tab(val index : Int, val name : String) {
+        object Quotas : Tab(0, "Quotas")
+        object Inventory : Tab(1, "Inventory")
     }
 
     data class HomeViewState(
-        val buttonUiState: UiComponentModel.ButtonUiState,
         val inventoryList: List<Produce> = emptyList(),
-        val quotasList: List<CategorizedQuotas> = emptyList(),
+        val quotasList: List<Quota> = emptyList(),
         val selectedTab: Tab = Tab.Quotas,
     )
-}
-
-fun getHomeButton() : UiComponentModel.ButtonUiState {
-    return UiComponentModel.ButtonUiState(text = "Test")
 }
