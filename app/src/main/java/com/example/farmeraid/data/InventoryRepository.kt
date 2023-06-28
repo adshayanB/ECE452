@@ -8,7 +8,13 @@ import kotlinx.coroutines.flow.flowOn
 
 class InventoryRepository {
 
-    private val inventory: MutableMap<String, Int> = HashMap<String, Int>()
+    private val inventory: MutableMap<String, Int> = mutableMapOf<String, Int>().apply {
+        put("Apples", 15)
+        put("Bananas", 20)
+        put("Oranges", 50)
+        put("Strawberries", 30)
+        put("Mangoes", 10)
+    }
 
     fun getInventory(): Flow<MutableMap<String, Int>> {
         return flow {

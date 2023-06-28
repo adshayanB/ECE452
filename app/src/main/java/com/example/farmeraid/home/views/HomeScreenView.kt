@@ -96,8 +96,11 @@ fun HomeScreenView() {
                     QuotaItem(quota = quota)
                 }
             } else {
-                items(state.inventoryList) {
-
+                items(state.inventory.toList()) { (produceName, produceAmount) ->
+                    Column {
+                        Text(text = "Produce Name: $produceName")
+                        Text(text = "Produce Amount: $produceAmount")
+                    }
                 }
             }
         }
