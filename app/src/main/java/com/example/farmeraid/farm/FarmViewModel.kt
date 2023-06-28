@@ -2,6 +2,7 @@ package com.example.farmeraid.farm
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
@@ -82,9 +83,9 @@ class FarmViewModel @Inject constructor(
     init{
         viewModelScope.launch {
             inventoryRepository.getInventory().collect{ produce ->
-                harvestList.value = produce.map {
+                harvestList.value = produce.map {(produceName, _) ->
                     FarmModel.ProduceHarvest(
-                        produceName = it.produceName,
+                        produceName = produceName,
                         produceCount = 0,
                     )
                 }
@@ -116,8 +117,8 @@ class FarmViewModel @Inject constructor(
 
         speechRes.value = speechResult
         return harvestList.value.map { produce ->
-            var re = Regex("(add)( )*([0-9]+)( )*${produce.produceName}[s]?")
-            var matches = re.findAll(speechResult)
+            var re = Regex("(add)( )*([0-9]+)( )*${produce.produceName.lowercase()}[s]?")
+            var matches = re.findAll(speechResult.lowercase())
             var count = 0
             matches.forEach { m ->
                 val action = m.groupValues[1]
