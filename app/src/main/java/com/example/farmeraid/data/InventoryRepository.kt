@@ -6,6 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
+// TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
+// TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
+
 class InventoryRepository {
 
     private val inventory: MutableMap<String, Int> = mutableMapOf<String, Int>().apply {

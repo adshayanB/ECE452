@@ -3,6 +3,9 @@ package com.example.farmeraid.data
 import com.example.farmeraid.home.model.HomeModel
 import java.util.concurrent.atomic.AtomicInteger
 
+// TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
+// TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
+
 class TransactionRepository {
     enum class TransactionType(val stringValue: String) {
         HARVEST("Harvest"),
