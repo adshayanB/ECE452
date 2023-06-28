@@ -33,4 +33,28 @@ class UiComponentModel {
     data class FabUiEvent(
         val onClick: () -> Unit = {},
     )
+
+    // Increment List Item Models
+    data class IncrementListItemUiState(
+        val id: Int,
+        val title: String,
+        val price: Double,
+        val quantity : Int,
+        val showPrice: Boolean = false,
+        val quantityPickerState : QuantityPickerUiState,
+        val onIncrement: () -> Unit,
+        val onDecrement: () -> Unit,
+        val setQuantity: () -> Unit,
+    )
+
+    // Quantity Picker Models
+    data class QuantityPickerUiState(
+        var count: Int = 0,
+    )
+
+    data class QuantityPickerUiEvent(
+        val setQuantity: (Int) -> Unit = {},
+        val onIncrement: () -> Unit = {},
+        val onDecrement: () -> Unit = {},
+    )
 }
