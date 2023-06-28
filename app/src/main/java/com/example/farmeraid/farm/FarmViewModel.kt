@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FarmViewModel @Inject constructor(
-    inventoryRepository: InventoryRepository,
+    private val inventoryRepository: InventoryRepository,
     private val speechRecognizerUtility: SpeechRecognizerUtility,
     private val kontinuousSpeechRecognizer: KontinuousSpeechRecognizer,
     private val appNavigator: AppNavigator,
@@ -117,7 +117,7 @@ class FarmViewModel @Inject constructor(
 
         speechRes.value = speechResult
         return harvestList.value.map { produce ->
-            var re = Regex("(add)( )*([0-9]+)( )*${produce.produceName.lowercase()}[s]?")
+            var re = Regex("(add)( )*([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
             var matches = re.findAll(speechResult.lowercase())
             var count = 0
             matches.forEach { m ->
@@ -139,5 +139,52 @@ class FarmViewModel @Inject constructor(
 
     private fun getStopButtonEvent(): UiComponentModel.FabUiEvent {
         return UiComponentModel.FabUiEvent(onClick = {stopListening()})
+    }
+
+    fun incrementProduceCount(produceName : String) {
+        harvestList.value = harvestList.value.map { produceHarvest ->
+            FarmModel.ProduceHarvest(
+                produceName = produceHarvest.produceName,
+                produceCount = produceHarvest.produceCount + if (produceName == produceHarvest.produceName) 1 else 0
+            )
+        }
+    }
+
+    fun decrementProduceCount(produceName : String) {
+        harvestList.value = harvestList.value.map { produceHarvest ->
+            FarmModel.ProduceHarvest(
+                produceName = produceHarvest.produceName,
+                produceCount = produceHarvest.produceCount - if (produceName == produceHarvest.produceName) 1 else 0
+            )
+        }
+    }
+
+    fun setProduceCount(produceName : String, count : Int) {
+        harvestList.value = harvestList.value.map { produceHarvest ->
+            FarmModel.ProduceHarvest(
+                produceName = produceHarvest.produceName,
+                produceCount = if (produceName == produceHarvest.produceName) count else produceHarvest.produceCount
+            )
+        }
+    }
+
+    fun submitHarvest() {
+        viewModelScope.launch {
+            submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
+            val harvestMap: MutableMap<String, Int> = harvestList.value.associate {
+                Pair(it.produceName, it.produceCount)
+            }.toMutableMap()
+
+            inventoryRepository.harvest(harvestMap)
+
+            harvestList.value = harvestList.value.map {(produceName, _) ->
+                FarmModel.ProduceHarvest(
+                    produceName = produceName,
+                    produceCount = 0,
+                )
+            }
+
+            submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
+        }
     }
 }

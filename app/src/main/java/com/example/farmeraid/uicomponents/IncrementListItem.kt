@@ -46,12 +46,11 @@ fun IncrementListItemView(
     produceItem : UiComponentModel.IncrementListItemUiState,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = Modifier
-        .fillMaxWidth(),
+    Column(modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp, 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -81,9 +80,9 @@ fun IncrementListItemView(
             QuantityPickerView(
                 quantityPickerUiState = produceItem.quantityPickerState,
                 quantityPickerUiEvent = UiComponentModel.QuantityPickerUiEvent(
-                    setQuantity = { produceItem.setQuantity },
-                    onIncrement = { produceItem.onIncrement },
-                    onDecrement = { produceItem.onDecrement }
+                    setQuantity = { count -> produceItem.setQuantity(count) },
+                    onIncrement = { produceItem.onIncrement() },
+                    onDecrement = { produceItem.onDecrement() }
                 ),
             )
         }
@@ -97,11 +96,9 @@ fun IncrementListItemView(
 fun IncrementListItemPreview() {
     IncrementListItemView(
         produceItem = UiComponentModel.IncrementListItemUiState(
-            id = 1,
             title = "Apples",
             price = 4.99,
             showPrice = false,
-            quantity = 0,
             quantityPickerState = UiComponentModel.QuantityPickerUiState(
                 count = 100
             ),
