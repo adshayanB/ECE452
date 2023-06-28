@@ -110,8 +110,6 @@ fun TransactionsView() {
             }
         }
     }
-
-
 }
 
 @Preview
