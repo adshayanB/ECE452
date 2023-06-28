@@ -32,16 +32,16 @@ class HomeViewModel @Inject constructor(
         get() = _state
 
     private val quotasList: Flow<List<CategorizedQuotas>> = quotasRepository.getCategorizedQuotas()
-    private val inventoryList: Flow<List<Produce>> = inventoryRepository.getInventory()
+    private val inventory: Flow<MutableMap<String, Int>> = inventoryRepository.getInventory()
     private val selectedTab: MutableStateFlow<Tab> = MutableStateFlow(_state.value.selectedTab)
 
     init {
         viewModelScope.launch {
-            combine(quotasList, inventoryList, selectedTab) {
-                quotasList: List<CategorizedQuotas>, inventoryList: List<Produce>, selectedTab: Tab ->
+            combine(quotasList, inventory, selectedTab) {
+                quotasList: List<CategorizedQuotas>, inventory: MutableMap<String, Int>, selectedTab: Tab ->
                 HomeViewState(
                     quotasList = quotasList,
-                    inventoryList = inventoryList,
+                    inventory = inventory,
                     selectedTab = selectedTab,
                     buttonUiState = getHomeButton(),
                 )

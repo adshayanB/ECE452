@@ -20,6 +20,20 @@ class HomeModel {
         val quotas: List<Quota>,
     )
 
+    enum class TransactionType {
+        HARVEST,
+        SELL,
+        DONATE,
+        ALL
+    }
+    data class Transaction(
+        val transactionId: Int,
+        val transactionType: TransactionType,
+        val produceChanges: MutableMap<String, Int>,
+        val locationName: String, // either market name for "SELL" or community fridge name for "DONATE"
+        val transactionMessage: String
+    )
+
     sealed class Tab {
         object Quotas : Tab()
         object Inventory : Tab()
@@ -27,7 +41,7 @@ class HomeModel {
 
     data class HomeViewState(
         val buttonUiState: UiComponentModel.ButtonUiState,
-        val inventoryList: List<Produce> = emptyList(),
+        val inventory: MutableMap<String, Int> = HashMap<String, Int>(),
         val quotasList: List<CategorizedQuotas> = emptyList(),
         val selectedTab: Tab = Tab.Quotas,
     )
