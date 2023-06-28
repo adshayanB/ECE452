@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +28,7 @@ import com.example.farmeraid.home.HomeViewModel
 import com.example.farmeraid.home.model.HomeModel.Tab
 import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.ui.theme.PrimaryColour
+import com.example.farmeraid.ui.theme.TertiaryColour
 import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.FloatingActionButtonView
 import com.example.farmeraid.uicomponents.OutlinedButtonView
@@ -60,10 +62,12 @@ fun HomeScreenView() {
         topBar = {
             TabRow(
                 selectedTabIndex = state.selectedTab.index,
-                contentColor = PrimaryColour,
+                containerColor = PrimaryColour,
+                contentColor = Color.White,
                 indicator = { tabPositions -> TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[state.selectedTab.index]),
-                    color = PrimaryColour,
+                    height = 5.dp,
+                    color = TertiaryColour,
                 ) },
             ) {
                 Tab(
