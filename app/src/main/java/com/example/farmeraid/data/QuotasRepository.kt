@@ -30,7 +30,7 @@ class QuotasRepository {
                 produceSoldAmount = 10,
             ),
             ProduceQuota(
-                produceName = "Bananas",
+                produceName = "Banana",
                 produceGoalAmount = 10,
                 produceSoldAmount = 9,
             ),
@@ -39,55 +39,51 @@ class QuotasRepository {
         marketName = "St. Lawrence",
         produceQuotaList = listOf(
             ProduceQuota(
-                produceName = "Carrots",
+                produceName = "Strawberry",
                 produceGoalAmount = 15,
                 produceSoldAmount = 10,
             ),
             ProduceQuota(
-                produceName = "Oranges",
+                produceName = "Apple",
                 produceGoalAmount = 24,
                 produceSoldAmount = 7,
             ),
         )
     ), Quota(
-        marketName = "Another one",
+        marketName = "Kenzington Market",
         produceQuotaList = listOf(
             ProduceQuota(
-                produceName = "Apples",
+                produceName = "Apple",
                 produceGoalAmount = 4,
                 produceSoldAmount = 3,
             ),
             ProduceQuota(
-                produceName = "Bananas",
+                produceName = "Banana",
                 produceGoalAmount = 10,
                 produceSoldAmount = 1,
             ),
             ProduceQuota(
-                produceName = "Pears",
+                produceName = "Mango",
                 produceGoalAmount = 5,
                 produceSoldAmount = 0,
             ),
         )
     ), Quota(
-        marketName = "Another one",
+        marketName = "St. Catherines Market",
         produceQuotaList = listOf(
             ProduceQuota(
-                produceName = "Apples",
-                produceGoalAmount = 4,
+                produceName = "Banana",
+                produceGoalAmount = 5,
+                produceSoldAmount = 2,
+            ),
+            ProduceQuota(
+                produceName = "Mango",
+                produceGoalAmount = 12,
                 produceSoldAmount = 3,
             ),
-            ProduceQuota(
-                produceName = "Bananas",
-                produceGoalAmount = 10,
-                produceSoldAmount = 1,
-            ),
-            ProduceQuota(
-                produceName = "Pears",
-                produceGoalAmount = 5,
-                produceSoldAmount = 0,
-            ),
         )
-    ))
+    ),
+    )
 
     fun getCategorizedQuotas(): Flow<MutableList<Quota>> {
         return flow {
