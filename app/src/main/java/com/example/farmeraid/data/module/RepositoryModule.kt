@@ -2,6 +2,7 @@ package com.example.farmeraid.data.module
 
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.TransactionRepository
 import com.example.farmeraid.data.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -29,5 +30,11 @@ object RepositoryModule {
     @Provides
     fun provideUserRepository(): UserRepository {
         return UserRepository()
+    }
+
+    @Singleton
+    @Provides
+    fun provideTransactionRepository(): TransactionRepository {
+        return TransactionRepository()
     }
 }

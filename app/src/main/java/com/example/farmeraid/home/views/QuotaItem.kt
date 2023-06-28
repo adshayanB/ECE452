@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.home.model.HomeModel
 import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
@@ -38,7 +39,7 @@ import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 @Composable
 fun QuotaItem(
-    quota : HomeModel.Quota,
+    quota : QuotasRepository.Quota,
     modifier : Modifier = Modifier,
 ) {
     Column (
@@ -106,15 +107,15 @@ fun QuotaItem(
 @Composable
 fun QuotaItemPreview() {
     QuotaItem(
-        quota = HomeModel.Quota(
+        quota = QuotasRepository.Quota(
             marketName = "Test",
             produceQuotaList = listOf(
-                HomeModel.ProduceQuota(
+                QuotasRepository.ProduceQuota(
                     produceName = "Apples",
                     produceSoldAmount = 10,
                     produceGoalAmount = 20,
                 ),
-                HomeModel.ProduceQuota(
+                QuotasRepository.ProduceQuota(
                     produceName = "Bananas",
                     produceSoldAmount = 10,
                     produceGoalAmount = 40,
