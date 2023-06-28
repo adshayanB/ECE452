@@ -51,9 +51,17 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun login(userName: String, password: String) = viewModelScope.launch {
+    fun setUsername(newVal: String) {
+        username.value = newVal
+    }
+
+    fun setPassword(newVal: String) {
+        password.value = newVal
+    }
+
+    fun login() = viewModelScope.launch {
         buttonUiState.value = buttonUiState.value.copy(isLoading = true)
-        val result: SignInModel.AuthResponse = userRepository.login(userName, password)
+        val result: SignInModel.AuthResponse = userRepository.login(username.value, password.value)
         buttonUiState.value = buttonUiState.value.copy(isLoading = false)
 
         when (result) {

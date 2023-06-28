@@ -53,9 +53,9 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun signup(userName: String, password: String) = viewModelScope.launch {
+    fun signup() = viewModelScope.launch {
         buttonUiState.value = buttonUiState.value.copy(isLoading = true)
-        val result: SignUpModel.AuthResponse = userRepository.signup(userName, password)
+        val result: SignUpModel.AuthResponse = userRepository.signup(username.value, password.value)
         buttonUiState.value = buttonUiState.value.copy(isLoading = false)
 
         when(result) {
@@ -78,6 +78,18 @@ class SignUpViewModel @Inject constructor(
 
     fun moveToSignIn(){
         appNavigator.navigateToMode(NavRoute.SignIn)
+    }
+
+    fun setName(newVal : String) {
+        name.value = newVal
+    }
+
+    fun setUsername(newVal : String) {
+        username.value = newVal
+    }
+
+    fun setPassword(newVal : String) {
+        password.value = newVal
     }
 
 }
