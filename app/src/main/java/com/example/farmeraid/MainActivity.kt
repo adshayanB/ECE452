@@ -13,6 +13,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.RootNavigationHost
+import com.example.farmeraid.speech_recognition.KontinuousSpeechRecognizer
+import com.example.farmeraid.speech_recognition.SpeechRecognizerUtility
 import com.example.farmeraid.ui.theme.FarmerAidTheme
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,9 +31,20 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var snackbarDelegate: SnackbarDelegate
 
+    @Inject
+    lateinit var speechRecognizer: SpeechRecognizerUtility
+
+
+    @Inject
+    lateinit var kontinuousSpeechRecognizer: KontinuousSpeechRecognizer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         firebaseAuth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
+        kontinuousSpeechRecognizer.setActivtyContext(this)
+        kontinuousSpeechRecognizer.initializeRecognizer()
+
+        //speechRecognizer.setActivtyContext(this)
         setContent {
             val navController : NavHostController = rememberNavController()
             appNavigator.setNavController(navController)
@@ -55,5 +68,10 @@ class MainActivity : AppCompatActivity() {
 
 
         // Additional cleanup or navigation code after logging out
+    }
+
+    override fun onDestroy(){
+        kontinuousSpeechRecognizer.onDestroy()
+        super.onDestroy()
     }
 }
