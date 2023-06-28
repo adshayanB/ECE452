@@ -28,7 +28,9 @@
 | 06/24/2023 |0| 0      |0|0|0| 5         | Worked on speech navigation utilty and refactoring to MVVM architecture style
 | 06/24/2023 |0| 0.5    |0|0|0| 0         | Fixed a navigation bar bug that caused unexpected initial behaviour
 | 06/26/2023 |1| 1      |1|1|1|1| Meeting for demo presentation, synced up to determine next steps  
+| 06/26/2023 |0| 0      |0|2.5|0|0| Research regarding synchronization of local and remote database changes (using Firestore) for offline vs online, looking into data correctness concerns  
 | 06/27/2023 |0| 1.5    |0|0|0| 0         | Polish up authentication UI and ensure that text fields are controlled solely by the viewmodel
+| 06/27/2023 |0| 0    |0|3|0| 0         | Add repository logic for inventory and transactions to mock demo the UI
 
 
 
