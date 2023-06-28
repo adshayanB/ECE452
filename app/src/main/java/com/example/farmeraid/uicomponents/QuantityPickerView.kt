@@ -3,7 +3,9 @@ package com.example.farmeraid.uicomponents
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
@@ -47,7 +49,8 @@ fun QuantityPickerView(
         Row(modifier = Modifier) {
             FilledIconButton( modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(end = 5.dp),
+                .padding(end = 5.dp)
+                .size(size = 40.dp),
                 onClick = quantityPickerUiEvent.onDecrement,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = SecondaryColour,
@@ -62,7 +65,9 @@ fun QuantityPickerView(
             TextField(
                 value = "${quantityPickerUiState.count}",
                 onValueChange = { quantityPickerUiEvent.setQuantity(it.toInt()) },
-                modifier = Modifier.width(55.dp),
+                modifier = Modifier
+                    .width(55.dp)
+                    .height(48.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = PrimaryColour,
                     focusedIndicatorColor = PrimaryColour,
@@ -71,12 +76,13 @@ fun QuantityPickerView(
                 ),
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 14.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             )
             FilledIconButton(modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .padding(start = 5.dp),
+                .padding(start = 5.dp)
+                .size(size = 40.dp),
                 onClick = quantityPickerUiEvent.onIncrement,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = SecondaryColour,

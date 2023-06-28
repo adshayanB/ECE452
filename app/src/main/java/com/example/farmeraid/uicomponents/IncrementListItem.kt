@@ -79,7 +79,7 @@ fun IncrementListItemView(
             }
 
             QuantityPickerView(
-                quantityPickerUiState = UiComponentModel.QuantityPickerUiState(),
+                quantityPickerUiState = produceItem.quantityPickerState,
                 quantityPickerUiEvent = UiComponentModel.QuantityPickerUiEvent(
                     setQuantity = { produceItem.setQuantity },
                     onIncrement = { produceItem.onIncrement },
@@ -95,13 +95,19 @@ fun IncrementListItemView(
 @Preview(showBackground = true)
 @Composable
 fun IncrementListItemPreview() {
-//    IncrementListItemView(
-//        produceItem = UiComponentModel.IncrementListItemUiState(
-//            id = 1,
-//            title = "Apples",
-//            price = 4.99,
-//            showPrice = true,
-//            quantity = 0,
-//        )
-//    )
+    IncrementListItemView(
+        produceItem = UiComponentModel.IncrementListItemUiState(
+            id = 1,
+            title = "Apples",
+            price = 4.99,
+            showPrice = false,
+            quantity = 0,
+            quantityPickerState = UiComponentModel.QuantityPickerUiState(
+                count = 100
+            ),
+            setQuantity = {},
+            onIncrement = {},
+            onDecrement = {},
+        )
+    )
 }
