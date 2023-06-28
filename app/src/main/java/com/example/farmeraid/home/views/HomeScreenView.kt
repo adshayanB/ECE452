@@ -1,11 +1,11 @@
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +28,7 @@ import com.example.farmeraid.home.HomeViewModel
 import com.example.farmeraid.home.model.HomeModel.Tab
 import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.ui.theme.PrimaryColour
+import com.example.farmeraid.ui.theme.TertiaryColour
 import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.FloatingActionButtonView
 import com.example.farmeraid.uicomponents.OutlinedButtonView
@@ -44,20 +46,28 @@ fun HomeScreenView() {
             FloatingActionButtonView(
                 fabUiState = UiComponentModel.FabUiState(
                     icon = Icons.Filled.Add,
-                    contentDescription = "Add Quota",
+                    contentDescription = if (state.selectedTab == Tab.Quotas)  "Add Quota" else "Add Produce",
                 ),
                 fabUiEvent = UiComponentModel.FabUiEvent(
-                    onClick = { viewModel.navigateToAddQuota() }
+                    onClick = {
+                        if (state.selectedTab == Tab.Quotas) {
+                            viewModel.navigateToAddQuota()
+                        } else {
+                            viewModel.navigateToAddProduce()
+                        }
+                    }
                 )
             )
         },
         topBar = {
             TabRow(
                 selectedTabIndex = state.selectedTab.index,
-                contentColor = PrimaryColour,
+                containerColor = PrimaryColour,
+                contentColor = Color.White,
                 indicator = { tabPositions -> TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[state.selectedTab.index]),
-                    color = PrimaryColour,
+                    height = 5.dp,
+                    color = TertiaryColour,
                 ) },
             ) {
                 Tab(
@@ -85,22 +95,28 @@ fun HomeScreenView() {
             }
         }
     ) { paddingValues ->
-        LazyColumn (
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(30.dp),
-        ) {
-            if (state.selectedTab == Tab.Quotas) {
+        if (state.selectedTab == Tab.Quotas) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(30.dp),
+            ) {
                 items(state.quotasList) { quota ->
                     QuotaItem(quota = quota)
                 }
-            } else {
+            }
+        } else {
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(20.dp),
+                columns = GridCells.Adaptive(150.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
                 items(state.inventoryList.toList()) { (produceName, produceAmount) ->
-                    Column {
-                        Text(text = "Produce Name: $produceName")
-                        Text(text = "Produce Amount: $produceAmount")
-                    }
+                    ProduceItem(modifier = Modifier.fillMaxHeight(), produceName = produceName, produceAmount = produceAmount)
                 }
             }
         }

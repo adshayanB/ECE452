@@ -52,9 +52,9 @@ fun QuotaItem(
         Spacer(modifier = Modifier.height(10.dp))
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(5.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .border(
-                    border = BorderStroke(1.5.dp, LightGrayColour),
+                    border = BorderStroke(1.dp, LightGrayColour),
                     shape = RoundedCornerShape(16.dp),
                 )
                 .padding(20.dp)
