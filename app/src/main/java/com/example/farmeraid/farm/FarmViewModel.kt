@@ -1,6 +1,7 @@
 package com.example.farmeraid.farm
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
@@ -51,6 +52,7 @@ class FarmViewModel @Inject constructor(
                     micFabUiState: UiComponentModel.FabUiState,
                     micFabUiEvent: UiComponentModel.FabUiEvent,
                     speechRes: String->
+                Log.d("Result", "triggered")
                 FarmViewState(
                     micFabUiState = micFabUiState,
                     micFabUiEvent = micFabUiEvent,
@@ -68,12 +70,12 @@ class FarmViewModel @Inject constructor(
 
     init{
         viewModelScope.launch {
-//            speechRecognizerUtility.speechRecognizerResult.collect {speechText ->
-//                harvestList.value = parseSpeech(speechText)
-//            }
-            kontinuousSpeechRecognizer.speechRecognizerResult.collect {speechText ->
+            speechRecognizerUtility.speechRecognizerResult.collect {speechText ->
                 harvestList.value = parseSpeech(speechText)
             }
+//            kontinuousSpeechRecognizer.speechRecognizerResult.collect {speechText ->
+//                harvestList.value = parseSpeech(speechText)
+//            }
         }
     }
 
@@ -91,42 +93,43 @@ class FarmViewModel @Inject constructor(
     }
 
     fun startListening(){
-//        if(speechRecognizerUtility.isPermissionGranted()){
-//            micFabUiState.value = getStopButton()
-//            micFabUiEvent.value = getStopButtonEvent()
-//        }
-//        speechRecognizerUtility.startSpeechRecognition()
-        if(kontinuousSpeechRecognizer.isPermissionGranted()){
+        if(speechRecognizerUtility.isPermissionGranted()){
             micFabUiState.value = getStopButton()
             micFabUiEvent.value = getStopButtonEvent()
         }
-        kontinuousSpeechRecognizer.startRecognition()
+        speechRecognizerUtility.startSpeechRecognition()
+//        if(kontinuousSpeechRecognizer.isPermissionGranted()){
+//            micFabUiState.value = getStopButton()
+//            micFabUiEvent.value = getStopButtonEvent()
+//        }
+//        kontinuousSpeechRecognizer.startRecognition()
     }
 
     fun stopListening(){
         micFabUiState.value = getMicButton()
         micFabUiEvent.value = getMicButtonEvent()
-        //speechRecognizerUtility.stopSpeechRecognition()
-        kontinuousSpeechRecognizer.stopRecognition()
+        speechRecognizerUtility.stopSpeechRecognition()
+        //kontinuousSpeechRecognizer.stopRecognition()
     }
 
     private fun parseSpeech(speechResult: String): List<FarmModel.ProduceHarvest>{
 
         speechRes.value = speechResult
-        harvestList.value.map { produce ->
+        return harvestList.value.map { produce ->
             var re = Regex("(add)( )*([0-9]+)( )*${produce.produceName}[s]?")
             var matches = re.findAll(speechResult)
             var count = 0
             matches.forEach { m ->
                 val action = m.groupValues[1]
                 val quantity = m.groupValues[3].toIntOrNull()
+                //need to handle case when digits are less than 9
+                Log.d("Recognize","${action} ${quantity} ${produce.produceName}")
                 if(quantity != null && action != "" && action == "add"){
-                    count += quantity ?: 0
+                    count += quantity
                 }
             }
             FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + count )
         }
-        return listOf();
     }
 
     private fun getMicButtonEvent(): UiComponentModel.FabUiEvent {

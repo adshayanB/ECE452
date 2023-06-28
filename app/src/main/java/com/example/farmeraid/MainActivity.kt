@@ -41,10 +41,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         firebaseAuth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
-        kontinuousSpeechRecognizer.setActivtyContext(this)
-        kontinuousSpeechRecognizer.initializeRecognizer()
+        //kontinuousSpeechRecognizer.setActivtyContext(this)
+        //kontinuousSpeechRecognizer.initializeRecognizer()
 
-        //speechRecognizer.setActivtyContext(this)
+        speechRecognizer.setActivtyContext(this)
         setContent {
             val navController : NavHostController = rememberNavController()
             appNavigator.setNavController(navController)
