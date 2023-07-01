@@ -3,6 +3,7 @@ import android.support.customtabs.ICustomTabsCallback
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -78,9 +79,9 @@ fun TransactionsView() {
     ) {paddingValues ->
         LazyColumn(
             modifier = Modifier
-                .padding(paddingValues)
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            contentPadding = PaddingValues(20.dp),
         ){
             items(state.transactionList) { trans ->
                 Card(
