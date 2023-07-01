@@ -48,7 +48,6 @@ import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.FloatingActionButtonView
 import com.example.farmeraid.uicomponents.QuantityPickerView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
-import com.kanyidev.searchable_dropdown.SearchableExpandedDropDownMenu
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
