@@ -6,11 +6,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 // TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
 // TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
 
-class InventoryRepository {
+class InventoryRepository(
+    private val userRepository: UserRepository
+) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val inventory: MutableMap<String, Int> = mutableMapOf<String, Int>().apply {
         put("Apple", 15)
@@ -19,15 +22,15 @@ class InventoryRepository {
         put("Strawberry", 30)
         put("Mango", 10)
     }
-    suspend fun getInventory(userId: String): Flow<MutableMap<String, Int>> {
+    suspend fun getInventory(): Flow<MutableMap<String, Int>> {
         return flow {
-            emit(readInventoryData(userId))
+            emit(readInventoryData())
         }.flowOn(Dispatchers.IO)
     }
-    private suspend fun readInventoryData(userId: String): MutableMap<String, Int> {
-        val docRef = db.collection("inventory").document(userId)
+    private suspend fun readInventoryData(): MutableMap<String, Int> {
+        val docRef = userRepository.getUserId()?.let { db.collection("inventory").document(it) }
 
-        val map  = docRef.get().await().data?.get("produce")
+        val map  = docRef?.get()?.await()?.data?.get("produce")
         if (map != null) {
             return map as MutableMap<String, Int>
             }

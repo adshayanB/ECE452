@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
     init{
         viewModelScope.launch {
             userRepository.getUserId()?.let {
-                inventoryRepository.getInventory(it).collect{ produce ->
+                inventoryRepository.getInventory().collect{ produce ->
                     inventoryList.value = produce
                 }
             }

@@ -85,7 +85,7 @@ class FarmViewModel @Inject constructor(
     init{
         viewModelScope.launch {
             userRepository.getUserId()?.let {
-                inventoryRepository.getInventory(it).collect{ produce ->
+                inventoryRepository.getInventory().collect{ produce ->
                     if (produce != null) {
                         harvestList.value = produce.map {(produceName, _) ->
                             FarmModel.ProduceHarvest(
