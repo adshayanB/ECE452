@@ -1,13 +1,13 @@
 package com.example.farmeraid.data.module
 
 import com.example.farmeraid.data.InventoryRepository
+import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.TransactionRepository
 import com.example.farmeraid.data.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -38,5 +38,11 @@ object RepositoryModule {
     @Provides
     fun provideTransactionRepository(): TransactionRepository {
         return TransactionRepository()
+    }
+
+    @Singleton
+    @Provides
+    fun provideMarketRepository(): MarketRepository {
+        return MarketRepository()
     }
 }

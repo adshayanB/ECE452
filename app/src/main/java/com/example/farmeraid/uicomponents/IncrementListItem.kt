@@ -51,8 +51,7 @@ fun IncrementListItemView(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 20.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -86,8 +85,6 @@ fun IncrementListItemView(
                 ),
             )
         }
-
-        Divider(modifier = Modifier.height(1.dp), color = Color.LightGray)
     }
 }
 

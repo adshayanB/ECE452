@@ -81,7 +81,8 @@ fun QuotaItem(
                             .fillMaxHeight(),
                         horizontalAlignment = Alignment.End,
                     ) {
-                        val progressFraction : Float = produceQuota.produceSoldAmount.toFloat() / produceQuota.produceGoalAmount
+                        // TODO: need to get produce sold amount from market and replace the 1
+                        val progressFraction : Float = 1.toFloat() / produceQuota.produceGoalAmount
                         Text(
                             text ="${(progressFraction * 100).toInt()}%",
                             fontSize = 10.sp,
@@ -112,12 +113,10 @@ fun QuotaItemPreview() {
             produceQuotaList = listOf(
                 QuotasRepository.ProduceQuota(
                     produceName = "Apples",
-                    produceSoldAmount = 10,
                     produceGoalAmount = 20,
                 ),
                 QuotasRepository.ProduceQuota(
                     produceName = "Bananas",
-                    produceSoldAmount = 10,
                     produceGoalAmount = 40,
                 ),
             )

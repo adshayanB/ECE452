@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,11 +27,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.farmeraid.farm.FarmViewModel
+import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
 import com.example.farmeraid.uicomponents.ButtonView
@@ -78,9 +81,15 @@ fun FarmScreenView() {
         },
     ) { innerPadding ->
         Column (
-            modifier = Modifier.padding(innerPadding).padding(20.dp),
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(20.dp, 0.dp, 20.dp, 20.dp),
         ) {
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(0.dp, 20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
                 items(state.produceHarvestList) { produce ->
                     IncrementListItemView(
                         produceItem = UiComponentModel.IncrementListItemUiState(
@@ -92,11 +101,10 @@ fun FarmScreenView() {
                         ),
                         modifier = Modifier.fillMaxWidth(),
                     )
-
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Divider(modifier = Modifier.height(1.dp), color = LightGrayColour)
                 }
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
 
             ButtonView(
                 buttonUiState = state.submitButtonUiState,

@@ -1,5 +1,6 @@
 package com.example.farmeraid.data
 
+import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.home.model.HomeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.flowOn
 class QuotasRepository {
     data class ProduceQuota(
         val produceName : String,
-        val produceSoldAmount : Int,
         val produceGoalAmount : Int,
     )
 
@@ -20,19 +20,17 @@ class QuotasRepository {
         val marketName : String,
         val produceQuotaList : List<ProduceQuota>,
     )
-    
+
     private val quotasList: MutableList<Quota> = mutableListOf(Quota(
         marketName = "St. Jacob's",
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Apple",
                 produceGoalAmount = 25,
-                produceSoldAmount = 10,
             ),
             ProduceQuota(
                 produceName = "Banana",
                 produceGoalAmount = 10,
-                produceSoldAmount = 9,
             ),
         )
     ), Quota(
@@ -41,31 +39,26 @@ class QuotasRepository {
             ProduceQuota(
                 produceName = "Strawberry",
                 produceGoalAmount = 15,
-                produceSoldAmount = 10,
             ),
             ProduceQuota(
                 produceName = "Apple",
                 produceGoalAmount = 24,
-                produceSoldAmount = 7,
             ),
         )
     ), Quota(
-        marketName = "Kenzington Market",
+        marketName = "Kensington Market",
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Apple",
                 produceGoalAmount = 4,
-                produceSoldAmount = 3,
             ),
             ProduceQuota(
                 produceName = "Banana",
                 produceGoalAmount = 10,
-                produceSoldAmount = 1,
             ),
             ProduceQuota(
                 produceName = "Mango",
                 produceGoalAmount = 5,
-                produceSoldAmount = 0,
             ),
         )
     ), Quota(
@@ -74,12 +67,10 @@ class QuotasRepository {
             ProduceQuota(
                 produceName = "Banana",
                 produceGoalAmount = 5,
-                produceSoldAmount = 2,
             ),
             ProduceQuota(
                 produceName = "Mango",
                 produceGoalAmount = 12,
-                produceSoldAmount = 3,
             ),
         )
     ),
@@ -89,5 +80,25 @@ class QuotasRepository {
         return flow {
             emit(quotasList)
         }.flowOn(Dispatchers.IO)
+    }
+
+    fun getQuota(market : MarketModel.Market): Quota? {
+        return quotasList.firstOrNull { quota -> quota.marketName == market.name }
+    }
+
+    fun addQuota(market : MarketModel.Market, produce : List<ProduceQuota>) {
+        val quotaIndex : Int = quotasList.indexOfFirst { quota -> quota.marketName == market.name }
+
+        if (quotaIndex >= 0) {
+            quotasList[quotaIndex] = Quota(
+                marketName = market.name,
+                produceQuotaList = produce,
+            )
+        } else {
+            quotasList.add(Quota(
+                marketName = market.name,
+                produceQuotaList = produce,
+            ))
+        }
     }
 }
