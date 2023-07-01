@@ -34,6 +34,7 @@
 | 06/27/2023 |0| 3    |0|0|0| 0         | Create Inventory page
 | 06/27/2023 |0| 0    |0|3|0| 0         | Add repository logic for inventory and transactions to mock demo the UI
 | 06/30/2023 |0| 4    |0|0|0| 0         | Create Add/Edit quotas page
+| 06/30/2023 |0| 1    |0|0|0| 0         | Polish up lazy columns, paddings, and colours in UI
 
 
 
