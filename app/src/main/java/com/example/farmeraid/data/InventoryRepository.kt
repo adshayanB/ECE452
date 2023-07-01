@@ -50,9 +50,13 @@ class InventoryRepository(
         else inventory[produceName] = produceAmount
     }
 
-    fun harvest(harvestChanges: MutableMap<String, Int> ) {
+    suspend fun harvest(harvestChanges: MutableMap<String, Int> ) {
+        val inv = readInventoryData();
         for ((produceName, produceAmount) in harvestChanges.entries) {
-            inventory[produceName] = inventory[produceName]!! + produceAmount
+            inv[produceName] = inv[produceName] !! + produceAmount
+          //  inventory[produceName] = inventory[produceName]!! + produceAmount
         }
+        userRepository.getUserId()
+            ?.let { db.collection("inventory").document(it).update("produce", inv) }
     }
 }
