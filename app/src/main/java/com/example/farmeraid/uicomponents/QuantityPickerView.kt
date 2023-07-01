@@ -43,59 +43,58 @@ fun QuantityPickerView(
     quantityPickerUiEvent: UiComponentModel.QuantityPickerUiEvent,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = Modifier
-    ) {
-        Row(modifier = Modifier) {
-            FilledIconButton( modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(end = 5.dp)
-                .size(size = 40.dp),
-                onClick = quantityPickerUiEvent.onDecrement,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = SecondaryColour,
-                    contentColor = WhiteContentColour,
-                ),
-                enabled = quantityPickerUiState.count > 0
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Remove,
-                    contentDescription = "Decrement",
-                )
-            }
-            TextField(
-                value = "${quantityPickerUiState.count}",
-                onValueChange = { quantityPickerUiEvent.setQuantity(it.toInt()) },
-                modifier = Modifier
-                    .width(55.dp)
-                    .height(48.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    cursorColor = PrimaryColour,
-                    focusedIndicatorColor = PrimaryColour,
-                    focusedLabelColor = PrimaryColour,
-                    focusedSupportingTextColor = PrimaryColour,
-                ),
-                textStyle = LocalTextStyle.current.copy(
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                ),
-                enabled = false,
+    Row(modifier = modifier) {
+        FilledIconButton( modifier = Modifier
+            .align(Alignment.CenterVertically)
+            .padding(end = 5.dp)
+            .size(size = 40.dp),
+            onClick = quantityPickerUiEvent.onDecrement,
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = SecondaryColour,
+                contentColor = WhiteContentColour,
+            ),
+            enabled = quantityPickerUiState.count > 0 && quantityPickerUiState.enabled
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Remove,
+                contentDescription = "Decrement",
             )
-            FilledIconButton(modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(start = 5.dp)
-                .size(size = 40.dp),
-                onClick = quantityPickerUiEvent.onIncrement,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = SecondaryColour,
-                    contentColor = WhiteContentColour,
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Increment",
-                )
-            }
+        }
+        TextField(
+            value = "${quantityPickerUiState.count}",
+            onValueChange = { quantityPickerUiEvent.setQuantity(it.toInt()) },
+            modifier = Modifier
+                .width(55.dp)
+                .height(48.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                cursorColor = PrimaryColour,
+                focusedIndicatorColor = PrimaryColour,
+                focusedLabelColor = PrimaryColour,
+                focusedSupportingTextColor = PrimaryColour,
+            ),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+            ),
+            enabled = quantityPickerUiState.enabled,
+            // TODO: Fix textfield so that we can write in it
+            readOnly = true,
+        )
+        FilledIconButton(modifier = Modifier
+            .align(Alignment.CenterVertically)
+            .padding(start = 5.dp)
+            .size(size = 40.dp),
+            onClick = quantityPickerUiEvent.onIncrement,
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = SecondaryColour,
+                contentColor = WhiteContentColour,
+            ),
+            enabled = quantityPickerUiState.enabled,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Increment",
+            )
         }
     }
 }
