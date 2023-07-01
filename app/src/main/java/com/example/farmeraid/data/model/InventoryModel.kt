@@ -5,4 +5,5 @@ class InventoryModel {
         val produceName: String,
         val produceAmount: Int,
     )
+
 }

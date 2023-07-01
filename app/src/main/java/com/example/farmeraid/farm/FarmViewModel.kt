@@ -6,6 +6,7 @@ import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.farm.model.FarmModel
 import com.example.farmeraid.farm.model.FarmModel.FarmViewState
 import com.example.farmeraid.farm.model.getMicButton
@@ -29,7 +30,8 @@ class FarmViewModel @Inject constructor(
     private val speechRecognizerUtility: SpeechRecognizerUtility,
     private val kontinuousSpeechRecognizer: KontinuousSpeechRecognizer,
     private val appNavigator: AppNavigator,
-): ViewModel() {
+    private val userRepository: UserRepository,
+    ): ViewModel() {
     private val _state = MutableStateFlow(FarmViewState(
         micFabUiState = getMicButton(),
         micFabUiEvent = getMicButtonEvent(),
@@ -82,12 +84,16 @@ class FarmViewModel @Inject constructor(
 
     init{
         viewModelScope.launch {
-            inventoryRepository.getInventory().collect{ produce ->
-                harvestList.value = produce.map {(produceName, _) ->
-                    FarmModel.ProduceHarvest(
-                        produceName = produceName,
-                        produceCount = 0,
-                    )
+            userRepository.getUserId()?.let {
+                inventoryRepository.getInventory(it).collect{ produce ->
+                    if (produce != null) {
+                        harvestList.value = produce.map {(produceName, _) ->
+                            FarmModel.ProduceHarvest(
+                                produceName = produceName,
+                                produceCount = 0,
+                            )
+                        }
+                    }
                 }
             }
         }
