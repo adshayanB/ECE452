@@ -1,5 +1,6 @@
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -98,9 +99,9 @@ fun HomeScreenView() {
         if (state.selectedTab == Tab.Quotas) {
             LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(20.dp),
+                    .padding(paddingValues),
                 verticalArrangement = Arrangement.spacedBy(30.dp),
+                contentPadding = PaddingValues(20.dp),
             ) {
                 items(state.quotasList) { quota ->
                     QuotaItem(quota = quota)
@@ -109,11 +110,11 @@ fun HomeScreenView() {
         } else {
             LazyVerticalGrid(
                 modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(20.dp),
+                    .padding(paddingValues),
                 columns = GridCells.Adaptive(150.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
+                contentPadding = PaddingValues(20.dp),
             ) {
                 items(state.inventoryList.toList()) { (produceName, produceAmount) ->
                     ProduceItem(modifier = Modifier.fillMaxHeight(), produceName = produceName, produceAmount = produceAmount)

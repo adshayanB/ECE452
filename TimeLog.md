@@ -37,6 +37,8 @@
 | 06/30/2023 | 0.5      | 0    | 0        | 0    | 0      | 0         | Bug Fixing UI for sign in and signup 
 | 06/30/2023 | 2        | 0 | 0        | 0    | 0      | 0         | Setting up CDK for firestore
 | 06/30/2023 | 4        | 0 | 0        | 0    | 0      | 0         | Functionality for Reading inventory data from firebase for a particular user
+| 06/30/2023 |0| 1    |0|0|0| 0         | Polish up lazy columns, paddings, and colours in UI
+
 
 
 
