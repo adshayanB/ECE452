@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.home.add_edit_quota.model.getSubmitButton
 import com.example.farmeraid.home.add_edit_quota.model.AddEditQuotaModel
@@ -29,14 +30,14 @@ class AddEditQuotaViewModel @Inject constructor(
     marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
     private val appNavigator: AppNavigator,
-    private val snackbarDelegate: SnackbarDelegate,
+    private val snackbarDelegate: SnackbarDelegate
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddEditQuotaModel.AddEditQuotaViewState(submitButtonUiState =  getSubmitButton()))
     val state: StateFlow<AddEditQuotaModel.AddEditQuotaViewState>
         get() = _state
 
     private val marketsList : Flow<List<MarketModel.Market>> = marketRepository.getMarkets()
-    private val produceList : Flow<Map<String, Int>> = inventoryRepository.getInventory()
+    private val produceList : MutableStateFlow<MutableMap<String, Int>> = MutableStateFlow(mutableMapOf())
     private val produceRows : MutableStateFlow<List<AddEditQuotaModel.ProduceRow>> = MutableStateFlow(_state.value.produceRows)
     private val selectedMarket : MutableStateFlow<MarketModel.Market?> = MutableStateFlow(null)
     private val submitButtonUiState : MutableStateFlow<UiComponentModel.ButtonUiState> = MutableStateFlow(_state.value.submitButtonUiState)
@@ -59,6 +60,13 @@ class AddEditQuotaViewModel @Inject constructor(
             }.collect {
                 _state.value = it
             }
+        }
+    }
+    init{
+        viewModelScope.launch {
+                inventoryRepository.getInventory().collect{ produce ->
+                    produceList.value = produce
+                }
         }
     }
 

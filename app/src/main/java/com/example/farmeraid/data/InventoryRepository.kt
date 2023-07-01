@@ -1,17 +1,20 @@
 package com.example.farmeraid.data
 
-import com.example.farmeraid.data.model.InventoryModel
-import com.example.farmeraid.home.model.HomeModel
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 // TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
 // TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
 
-class InventoryRepository {
-
+class InventoryRepository(
+    private val userRepository: UserRepository
+) {
+    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val inventory: MutableMap<String, Int> = mutableMapOf<String, Int>().apply {
         put("Apple", 15)
         put("Banana", 20)
@@ -19,11 +22,20 @@ class InventoryRepository {
         put("Strawberry", 30)
         put("Mango", 10)
     }
-
-    fun getInventory(): Flow<MutableMap<String, Int>> {
+    suspend fun getInventory(): Flow<MutableMap<String, Int>> {
         return flow {
-            emit(inventory)
+            emit(readInventoryData())
         }.flowOn(Dispatchers.IO)
+    }
+    private suspend fun readInventoryData(): MutableMap<String, Int> {
+        val docRef = userRepository.getUserId()?.let { db.collection("inventory").document(it) }
+
+        val map  = docRef?.get()?.await()?.data?.get("produce")
+        return if (map != null) {
+            map as MutableMap<String, Int>
+        } else{
+            mutableMapOf()
+        }
     }
 
     fun addNewProduce(produceName: String, produceAmount: Int) {
@@ -38,9 +50,13 @@ class InventoryRepository {
         else inventory[produceName] = produceAmount
     }
 
-    fun harvest(harvestChanges: MutableMap<String, Int> ) {
+    suspend fun harvest(harvestChanges: MutableMap<String, Int> ) {
+        val inv = readInventoryData();
         for ((produceName, produceAmount) in harvestChanges.entries) {
-            inventory[produceName] = inventory[produceName]!! + produceAmount
+            inv[produceName] = inv[produceName] !! + produceAmount
+          //  inventory[produceName] = inventory[produceName]!! + produceAmount
         }
+        userRepository.getUserId()
+            ?.let { db.collection("inventory").document(it).update("produce", inv) }
     }
 }

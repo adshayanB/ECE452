@@ -67,6 +67,7 @@ class SignInViewModel @Inject constructor(
         when (result) {
             is SignInModel.AuthResponse.Success -> {
                 Log.d("MESSAGE", "LOGGED IN")
+                userRepository.getUserId()?.let { Log.d("UserID", it) }
                 appNavigator.navigateToMode(NavRoute.Home)
             }
 
