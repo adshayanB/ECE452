@@ -18,13 +18,6 @@ class InventoryRepository {
         put("Orange", 50)
         put("Strawberry", 30)
         put("Mango", 10)
-        put("Grape", 15)
-        put("Grapefruit", 20)
-        put("Lychee", 50)
-        put("Carrot", 30)
-        put("Tomato", 10)
-        put("Cauliflower", 30)
-        put("Broccoli", 10)
     }
 
     fun getInventory(): Flow<MutableMap<String, Int>> {
