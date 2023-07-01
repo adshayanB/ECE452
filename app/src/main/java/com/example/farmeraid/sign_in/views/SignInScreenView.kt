@@ -55,7 +55,7 @@ fun SignInScreenView() {
 
                  Spacer(modifier = Modifier.height(20.dp))
                  TextField(
-                     label = { Text(text = "Username") },
+                     label = { Text(text = "Email") },
                      value = state.userName,
                      onValueChange = { viewModel.setUsername(it) },
                      colors = TextFieldDefaults.textFieldColors(
