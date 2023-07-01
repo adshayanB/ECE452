@@ -23,7 +23,6 @@ class HomeViewModel @Inject constructor(
     inventoryRepository: InventoryRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
-    private val userRepository: UserRepository,
     ) : ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state: StateFlow<HomeViewState>
@@ -51,11 +50,9 @@ class HomeViewModel @Inject constructor(
 
     init{
         viewModelScope.launch {
-            userRepository.getUserId()?.let {
                 inventoryRepository.getInventory().collect{ produce ->
                     inventoryList.value = produce
                 }
-            }
         }
     }
 

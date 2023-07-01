@@ -30,8 +30,7 @@ class AddEditQuotaViewModel @Inject constructor(
     marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
     private val appNavigator: AppNavigator,
-    private val snackbarDelegate: SnackbarDelegate,
-    private val userRepository: UserRepository,
+    private val snackbarDelegate: SnackbarDelegate
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddEditQuotaModel.AddEditQuotaViewState(submitButtonUiState =  getSubmitButton()))
     val state: StateFlow<AddEditQuotaModel.AddEditQuotaViewState>
@@ -65,11 +64,9 @@ class AddEditQuotaViewModel @Inject constructor(
     }
     init{
         viewModelScope.launch {
-            userRepository.getUserId()?.let {
                 inventoryRepository.getInventory().collect{ produce ->
                     produceList.value = produce
                 }
-            }
         }
     }
 

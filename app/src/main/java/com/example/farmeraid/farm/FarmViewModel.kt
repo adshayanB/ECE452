@@ -30,7 +30,6 @@ class FarmViewModel @Inject constructor(
     private val speechRecognizerUtility: SpeechRecognizerUtility,
     private val kontinuousSpeechRecognizer: KontinuousSpeechRecognizer,
     private val appNavigator: AppNavigator,
-    private val userRepository: UserRepository,
     ): ViewModel() {
     private val _state = MutableStateFlow(FarmViewState(
         micFabUiState = getMicButton(),
@@ -84,7 +83,6 @@ class FarmViewModel @Inject constructor(
 
     init{
         viewModelScope.launch {
-            userRepository.getUserId()?.let {
                 inventoryRepository.getInventory().collect{ produce ->
                     if (produce != null) {
                         harvestList.value = produce.map {(produceName, _) ->
@@ -95,7 +93,6 @@ class FarmViewModel @Inject constructor(
                         }
                     }
                 }
-            }
         }
     }
 
