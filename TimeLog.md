@@ -1,3 +1,4 @@
+| Date       | Adshayan | Rishan | Preyansh | Neel | Soumil | Sathursan | Task
 |------------|----------|------|-------|------|--------|-----------| ------
 | 05/20/2023 | 1        | 0    |0|1|1| 1         | Brain Storm Meeting
 | 05/21/2023 | 0        | 1    |1|0|0| 0         | Brain Storm Meeting 2
@@ -22,7 +23,7 @@
 | 06/20/2023 | 0        | 0    |3|0|0| 0         | Designed high-fidelity mockups in Figma for the Auth Screens, Home Mode, and Farm Mode screens
 | 06/23/2023 | 0        | 0    |3|0|0| 0         | Finished high-fidelity mockups in Figma for the Market, and Charity Mode
 | 06/23/2023 | 0        | 4    |0|0|0| 0         | Add navigation bar, app navigator, connect signin to the home page on login, and add a snackbar for messages
-| 06/24/2023 | 4        | 0    |0|0|0| 0         | Created SignUp view,viewmodel and model with FireBase integration, linked signin and sign up pages
+| 06/24/2023 | 4        | 0    |0|0|0| 0         | Created SignUp view,viewmodel and model with FireBase integration, linked signin and sign up pages 
 | 06/24/2023 |0| 0    |2|0|0| 0         | Create Floating Action Button UI component
 | 06/24/2023 |0| 0    |0|0|0| 5         | Worked on speech navigation utilty and refactoring to MVVM architecture style
 | 06/24/2023 |0| 0.5  |0|0|0| 0         | Fixed a navigation bar bug that caused unexpected initial behaviour
@@ -36,8 +37,6 @@
 | 06/30/2023 | 0.5      | 0    | 0        | 0    | 0      | 0         | Bug Fixing UI for sign in and signup 
 | 06/30/2023 | 2        | 0 | 0        | 0    | 0      | 0         | Setting up CDK for firestore
 | 06/30/2023 | 4        | 0 | 0        | 0    | 0      | 0         | Functionality for Reading inventory data from firebase for a particular user
-
-
 
 
 
