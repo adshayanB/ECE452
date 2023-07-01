@@ -38,7 +38,8 @@
 | 06/30/2023 | 2        | 0      | 0        | 0    | 0      | 0         | Setting up CDK for firestore
 | 06/30/2023 | 4        | 0      | 0        | 0    | 0      | 0         | Functionality for Reading inventory data from firebase for a particular user
 | 06/30/2023 | 0        | 1      |0|0|0| 0         | Polish up lazy columns, paddings, and colours in UI
-| 07/01/2023 | 1        | 0      |0|0|0| 0         | Addressed comments
+| 07/01/2023 | 1        | 0      |0|0|0| 0         | Addressed comments for functionality for reading/updating inventory data from firebase cr
+| 07/01/2023 | 2 |0|0|0|0|0| Functionality for updating inventory using firebase
 
 
 
