@@ -31,11 +31,10 @@ class InventoryRepository(
         val docRef = userRepository.getUserId()?.let { db.collection("inventory").document(it) }
 
         val map  = docRef?.get()?.await()?.data?.get("produce")
-        if (map != null) {
-            return map as MutableMap<String, Int>
-            }
-        else{
-            return mutableMapOf()
+        return if (map != null) {
+            map as MutableMap<String, Int>
+        } else{
+            mutableMapOf()
         }
     }
 
