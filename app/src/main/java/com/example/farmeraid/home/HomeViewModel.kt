@@ -52,9 +52,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToAddQuota() {
-        snackbarDelegate.showSnackbar(
-            message = "Navigates to Add Quota"
-        )
+        appNavigator.navigateToAddQuota()
     }
     fun navigateToAddProduce() {
         snackbarDelegate.showSnackbar(

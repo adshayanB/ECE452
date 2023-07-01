@@ -1,5 +1,6 @@
 package com.example.farmeraid.navigation
 
+import AddEditQuotaScreenView
 import BottomNavigationBar
 import FarmScreenView
 import HomeScreenView
@@ -43,6 +44,9 @@ fun RootNavigationHost(
                 }
                 composable(NavRoute.Home.route) {
                     HomeScreenView()
+                }
+                composable(NavRoute.AddEditQuota.route) {
+                    AddEditQuotaScreenView()
                 }
                 composable(NavRoute.Transactions.route) {
                     TransactionsView()

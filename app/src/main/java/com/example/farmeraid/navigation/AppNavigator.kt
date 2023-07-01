@@ -22,4 +22,8 @@ class AppNavigator {
     fun navigateToTransactions() {
         _navController?.navigate(NavRoute.Transactions.route)
     }
+
+    fun navigateToAddQuota() {
+        _navController?.navigate(NavRoute.AddEditQuota.route)
+    }
 }
