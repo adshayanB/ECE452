@@ -10,7 +10,7 @@ class MarketRepository {
     private val markets: MutableList<MarketModel.Market> = mutableListOf(
         MarketModel.Market("St. Jacob's"),
         MarketModel.Market("St. Lawrence"),
-        MarketModel.Market("Kenzington Market"),
+        MarketModel.Market("Kensington Market"),
         MarketModel.Market("St. Catherines Market"),
         MarketModel.Market("Test Market"),
     )

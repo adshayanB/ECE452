@@ -46,7 +46,7 @@ class QuotasRepository {
             ),
         )
     ), Quota(
-        marketName = "Kenzington Market",
+        marketName = "Kensington Market",
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Apple",

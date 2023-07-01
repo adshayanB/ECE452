@@ -24,6 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditQuotaViewModel @Inject constructor(
+    // TODO: Link firebase with these repositories
     inventoryRepository: InventoryRepository,
     marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
