@@ -45,17 +45,6 @@ class UiComponentModel {
         val showPrice: Boolean = false,
     )
 
-    // Increment List Dropdown Item Models
-    data class IncrementListDropdownItemUiState(
-        val title: String,
-        val onIncrement: () -> Unit,
-        val onDecrement: () -> Unit,
-        val setQuantity: (count : Int) -> Unit,
-        val quantityPickerState : QuantityPickerUiState,
-        val price: Double? = null,
-        val showPrice: Boolean = false,
-    )
-
     // Quantity Picker Models
     data class QuantityPickerUiState(
         val count : Int = 0,
