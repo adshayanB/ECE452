@@ -10,4 +10,5 @@ sealed class NavRoute(val route: String) {
     object Charity : NavRoute("charity_route")
 
     object Transactions : NavRoute("transactions_route")
+    object AddEditQuota : NavRoute("add_edit_quota_route")
 }

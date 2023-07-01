@@ -47,7 +47,8 @@ class UiComponentModel {
 
     // Quantity Picker Models
     data class QuantityPickerUiState(
-        var count: Int = 0,
+        val count : Int = 0,
+        val enabled : Boolean = true,
     )
 
     data class QuantityPickerUiEvent(
