@@ -121,10 +121,10 @@ class AddEditQuotaViewModel @Inject constructor(
         viewModelScope.launch {
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
             val market : MarketModel.Market? = selectedMarket.value
-            val produceList : List<AddEditQuotaModel.ProduceRow> = produceRows.value
+            val produceList : List<AddEditQuotaModel.ProduceRow> = produceRows.value.filter { it.produce != null }
             if (market == null) {
                 snackbarDelegate.showSnackbar("Select a market")
-            } else if (produceList.all { it.produce == null }) {
+            } else if (produceList.isEmpty()) {
                 snackbarDelegate.showSnackbar("Select at least 1 produce")
             } else if (produceList.distinctBy { it.produce }.size != produceList.size) {
                 snackbarDelegate.showSnackbar("Cannot have duplicate produce")

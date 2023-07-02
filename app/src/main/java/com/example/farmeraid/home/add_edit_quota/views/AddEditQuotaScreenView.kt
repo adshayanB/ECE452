@@ -3,6 +3,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -105,7 +106,6 @@ fun AddEditQuotaScreenView() {
             )
             Spacer(modifier = Modifier.height(20.dp))
             Divider(modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(20.dp))
 
             LazyColumn(
                 modifier = Modifier
@@ -113,6 +113,7 @@ fun AddEditQuotaScreenView() {
                     .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(0.dp, 20.dp),
             ) {
                 items(state.produceRows, key = { it.id }) { row ->
                     Row(
@@ -187,7 +188,6 @@ fun AddEditQuotaScreenView() {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
             ButtonView(
                 modifier = Modifier
                     .fillMaxWidth()
