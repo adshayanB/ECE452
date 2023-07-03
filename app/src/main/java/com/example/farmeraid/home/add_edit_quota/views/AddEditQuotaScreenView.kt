@@ -63,7 +63,7 @@ fun AddEditQuotaScreenView() {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Add Quota",
+                        "Add Weekly Quota",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

@@ -39,8 +39,9 @@
 | 06/30/2023 | 4        | 0      | 0        | 0    | 0      | 0         | Functionality for Reading inventory data from firebase for a particular user
 | 06/30/2023 | 0        | 1      |0|0|0| 0         | Polish up lazy columns, paddings, and colours in UI
 | 07/01/2023 | 1        | 0      |0|0|0| 0         | Addressed comments for functionality for reading/updating inventory data from firebase cr
-| 07/01/2023 | 2 |0|0|0|0|0| Functionality for updating inventory using firebase
-| 07/01/2023 | 2 |0|0|0|0|0| Database Design using Firebase to support App functionality
+| 07/01/2023 | 2 | 0      |0|0|0|0| Functionality for updating inventory using firebase
+| 07/01/2023 | 2 | 0      |0|0|0|0| Database Design using Firebase to support App functionality
+| 07/03/2023 | 0        | 3      |0|0|0| 0         | Improved progress bar and made it more modular
 
 
 

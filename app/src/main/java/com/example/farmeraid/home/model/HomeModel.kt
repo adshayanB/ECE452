@@ -6,7 +6,7 @@ import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 class HomeModel {
     sealed class Tab(val index : Int, val name : String) {
-        object Quotas : Tab(0, "Quotas")
+        object Quotas : Tab(0, "Weekly Quotas")
         object Inventory : Tab(1, "Inventory")
     }
 
