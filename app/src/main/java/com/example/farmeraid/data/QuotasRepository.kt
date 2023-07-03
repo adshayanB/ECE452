@@ -32,6 +32,14 @@ class QuotasRepository {
                 produceName = "Banana",
                 produceGoalAmount = 10,
             ),
+            ProduceQuota(
+                produceName = "Mango",
+                produceGoalAmount = 1,
+            ),
+            ProduceQuota(
+                produceName = "Strawberry",
+                produceGoalAmount = 2,
+            ),
         )
     ), Quota(
         marketName = "St. Lawrence",

@@ -2,7 +2,11 @@ package com.example.farmeraid.uicomponents.models
 
 import android.graphics.drawable.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import com.example.farmeraid.navigation.NavRoute
 
 class UiComponentModel {
@@ -55,5 +59,15 @@ class UiComponentModel {
         val setQuantity: (Int) -> Unit = {},
         val onIncrement: () -> Unit = {},
         val onDecrement: () -> Unit = {},
+    )
+
+    // Progress Bar Models
+    data class ProgressBarUiState(
+        val text : String,
+        val containerColor : Color = Color.White,
+        val progressColor : Color = Color.Black,
+        val progress : Float = 0f,
+        val fontSize : TextUnit = 14.sp,
+        val fontWeight : FontWeight = FontWeight.Normal,
     )
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -35,6 +36,7 @@ import com.example.farmeraid.home.model.HomeModel
 import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.uicomponents.OutlinedButtonView
+import com.example.farmeraid.uicomponents.ProgressBarView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 @Composable
@@ -44,11 +46,8 @@ fun QuotaItem(
 ) {
     Column (
         modifier = modifier
-            .background(
-                Color.White,
-            )
     ) {
-        Text(text = quota.marketName, style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Medium))
+        Text(text = quota.marketName, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Medium))
         Spacer(modifier = Modifier.height(10.dp))
         Column(
             modifier = Modifier
@@ -57,46 +56,39 @@ fun QuotaItem(
                     border = BorderStroke(1.dp, LightGrayColour),
                     shape = RoundedCornerShape(16.dp),
                 )
+                .background(
+                    Color.White,
+                )
                 .padding(20.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             quota.produceQuotaList.forEach { produceQuota ->
                 Row(
-                    modifier = Modifier.fillMaxWidth()
-                        .height(22.dp),
-                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = produceQuota.produceName,
-                        modifier = Modifier.width(125.dp).offset(0.dp, 4.dp),
+                        modifier = Modifier
+                            .width(125.dp),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        fontSize = 16.sp
+                        fontSize = 14.sp
                     )
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.End,
-                    ) {
-                        // TODO: need to get produce sold amount from market and replace the 1
-                        val progressFraction : Float = 1.toFloat() / produceQuota.produceGoalAmount
-                        Text(
-                            text ="${(progressFraction * 100).toInt()}%",
-                            fontSize = 10.sp,
-                        )
-                        LinearProgressIndicator(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(16.dp))
-                                .fillMaxWidth()
-                                .weight(1f),
+                    // TODO: need to get produce sold amount from market and replace the 1
+                    val progressFraction : Float = 1.toFloat() / produceQuota.produceGoalAmount
+                    ProgressBarView(
+                        progressBarUiState = UiComponentModel.ProgressBarUiState(
+                            text = "${(progressFraction * 100).toInt()}%",
+                            fontSize = 12.sp,
                             progress = progressFraction,
-                            color = PrimaryColour,
-                            trackColor = PrimaryColour.copy(alpha = 0.2f)
-                        )
-                    }
+                            containerColor = PrimaryColour.copy(alpha = 0.2f),
+                            progressColor = PrimaryColour,
+                        ),
+                        modifier = Modifier.weight(1f).fillMaxSize(),
+                    )
 
                 }
             }

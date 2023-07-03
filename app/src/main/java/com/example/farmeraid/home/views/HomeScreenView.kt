@@ -117,7 +117,7 @@ fun HomeScreenView() {
                 contentPadding = PaddingValues(20.dp),
             ) {
                 items(state.inventoryList.toList()) { (produceName, produceAmount) ->
-                    ProduceItem(modifier = Modifier.fillMaxHeight(), produceName = produceName, produceAmount = produceAmount)
+                    ProduceItem(produceName = produceName, produceAmount = produceAmount)
                 }
             }
         }
