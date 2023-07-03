@@ -41,7 +41,7 @@
 | 07/01/2023 | 1        | 0      |0|0|0| 0         | Addressed comments for functionality for reading/updating inventory data from firebase cr
 | 07/01/2023 | 2 | 0      |0|0|0|0| Functionality for updating inventory using firebase
 | 07/01/2023 | 2 | 0      |0|0|0|0| Database Design using Firebase to support App functionality
-| 07/03/2023 | 3        | 3      |3|3|3| 3         | Improved progress bar and made it more modular
+| 07/03/2023 |  0       | 3      |0|0|0| 0         | Improved progress bar and made it more modular
 | 07/03/2023 | 3        | 3      |3|3|3| 3         | Database design review + sync for next steps 
 
 
