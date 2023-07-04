@@ -68,7 +68,7 @@ fun ProgressBarView(
                 }
             }
             .background(progressBarUiState.containerColor)
-            .padding(5.dp),
+            .padding(2.5.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

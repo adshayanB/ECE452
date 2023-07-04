@@ -2,9 +2,12 @@ package com.example.farmeraid.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.farmeraid.data.InventoryRepository
+import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.UserRepository
+import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.home.model.HomeModel.Tab
 import com.example.farmeraid.home.model.HomeModel.HomeViewState
 import com.example.farmeraid.navigation.AppNavigator
@@ -13,14 +16,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    quotasRepository: QuotasRepository,
-    inventoryRepository: InventoryRepository,
+    private val marketRepository: MarketRepository,
+    private val inventoryRepository: InventoryRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
     ) : ViewModel() {
@@ -28,30 +32,36 @@ class HomeViewModel @Inject constructor(
     val state: StateFlow<HomeViewState>
         get() = _state
 
-    private val quotasList: Flow<List<QuotasRepository.Quota>> = quotasRepository.getCategorizedQuotas()
+    private val quotasList: MutableStateFlow<List<MarketModel.MarketWithQuota>> = MutableStateFlow(emptyList())
     private val inventoryList : MutableStateFlow<MutableMap<String, Int>> = MutableStateFlow(mutableMapOf())
     private val selectedTab: MutableStateFlow<Tab> = MutableStateFlow(_state.value.selectedTab)
+    private val isLoading : MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
 
     init {
         viewModelScope.launch {
-            combine(quotasList, inventoryList, selectedTab) {
-                quotasList: List<QuotasRepository.Quota>, inventoryList: MutableMap<String, Int>, selectedTab: Tab ->
+            combine(quotasList, inventoryList, selectedTab, isLoading) {
+                quotasList: List<MarketModel.MarketWithQuota>, inventoryList: MutableMap<String, Int>, selectedTab: Tab, isLoading : Boolean ->
                 HomeViewState(
                     quotasList = quotasList,
                     inventoryList = inventoryList,
                     selectedTab = selectedTab,
+                    isLoading = isLoading,
                 )
             }.collect {
                 _state.value = it
-
             }
         }
     }
+    init { fetchData() }
 
-    init{
+    fun fetchData() {
         viewModelScope.launch {
-                inventoryRepository.getInventory().collect{ produce ->
-                    inventoryList.value = produce
+            isLoading.value = true
+            combine(marketRepository.getMarketsWithQuota(), inventoryRepository.getInventory()) {quotas, inventory -> Pair(quotas, inventory)}
+                .collect { (quotas, inventory) ->
+                    quotasList.value = quotas
+                    inventoryList.value = inventory
+                    isLoading.value = false
                 }
         }
     }
@@ -67,5 +77,9 @@ class HomeViewModel @Inject constructor(
         snackbarDelegate.showSnackbar(
             message = "Navigates to Add Produce"
         )
+    }
+
+    fun navigateToViewQuota(id : String) {
+        appNavigator.navigateToViewQuota(id)
     }
 }

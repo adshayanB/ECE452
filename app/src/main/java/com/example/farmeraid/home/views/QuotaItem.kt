@@ -1,6 +1,7 @@
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.home.model.HomeModel
 import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
@@ -41,13 +43,16 @@ import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 @Composable
 fun QuotaItem(
-    quota : QuotasRepository.Quota,
+    marketWithQuota: MarketModel.MarketWithQuota,
     modifier : Modifier = Modifier,
+    onClick : () -> Unit = {},
 ) {
+    val maxNumOfQuotasShown : Int = 4
+
     Column (
         modifier = modifier
     ) {
-        Text(text = quota.marketName, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Medium))
+        Text(text = marketWithQuota.name, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Medium))
         Spacer(modifier = Modifier.height(10.dp))
         Column(
             modifier = Modifier
@@ -59,11 +64,12 @@ fun QuotaItem(
                 .background(
                     Color.White,
                 )
+                .clickable { onClick() }
                 .padding(20.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            quota.produceQuotaList.forEach { produceQuota ->
+            marketWithQuota.quota.produceQuotaList.take(maxNumOfQuotasShown).forEach { produceQuota ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -92,6 +98,13 @@ fun QuotaItem(
 
                 }
             }
+            if (marketWithQuota.quota.produceQuotaList.size > maxNumOfQuotasShown) {
+                Text(
+                    text = "+${marketWithQuota.quota.produceQuotaList.size - maxNumOfQuotasShown} more",
+                    fontSize = 12.sp,
+                    color = Color.Gray,
+                )
+            }
         }
     }
 }
@@ -100,17 +113,21 @@ fun QuotaItem(
 @Composable
 fun QuotaItemPreview() {
     QuotaItem(
-        quota = QuotasRepository.Quota(
-            marketName = "Test",
-            produceQuotaList = listOf(
-                QuotasRepository.ProduceQuota(
-                    produceName = "Apples",
-                    produceGoalAmount = 20,
-                ),
-                QuotasRepository.ProduceQuota(
-                    produceName = "Bananas",
-                    produceGoalAmount = 40,
-                ),
+        marketWithQuota = MarketModel.MarketWithQuota(
+            id = "0",
+            name = "Test",
+            quota = QuotasRepository.Quota(
+                id = "0",
+                produceQuotaList = listOf(
+                    QuotasRepository.ProduceQuota(
+                        produceName = "Apples",
+                        produceGoalAmount = 20,
+                    ),
+                    QuotasRepository.ProduceQuota(
+                        produceName = "Bananas",
+                        produceGoalAmount = 40,
+                    ),
+                )
             )
         )
     )

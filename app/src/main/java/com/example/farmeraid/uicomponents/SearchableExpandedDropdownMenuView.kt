@@ -139,7 +139,8 @@ fun <T> SearchableExpandedDropDownMenuView(
                 ) {
                     if (expanded) Icon(
                         imageVector = openedIcon,
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = PrimaryColour,
                     ) else Icon(
                         imageVector = closedIcon,
                         contentDescription = null

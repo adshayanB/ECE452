@@ -1,6 +1,7 @@
 package com.example.farmeraid.home.add_edit_quota
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -26,20 +28,23 @@ import javax.inject.Inject
 @HiltViewModel
 class AddEditQuotaViewModel @Inject constructor(
     // TODO: Link firebase with these repositories
-    inventoryRepository: InventoryRepository,
-    marketRepository: MarketRepository,
+    savedStateHandle: SavedStateHandle,
+    private val inventoryRepository: InventoryRepository,
+    private val marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate
 ) : ViewModel() {
-    private val _state = MutableStateFlow(AddEditQuotaModel.AddEditQuotaViewState(submitButtonUiState =  getSubmitButton()))
+    private val marketId : String? = savedStateHandle["marketId"]
+
+    private val _state = MutableStateFlow(AddEditQuotaModel.AddEditQuotaViewState(submitButtonUiState = getSubmitButton()))
     val state: StateFlow<AddEditQuotaModel.AddEditQuotaViewState>
         get() = _state
 
-    private val marketsList : Flow<List<MarketModel.Market>> = marketRepository.getMarkets()
+    private val marketsList : MutableStateFlow<List<MarketModel.Market>> = MutableStateFlow(emptyList())
     private val produceList : MutableStateFlow<MutableMap<String, Int>> = MutableStateFlow(mutableMapOf())
     private val produceRows : MutableStateFlow<List<AddEditQuotaModel.ProduceRow>> = MutableStateFlow(_state.value.produceRows)
-    private val selectedMarket : MutableStateFlow<MarketModel.Market?> = MutableStateFlow(null)
+    private val selectedMarket : MutableStateFlow<MarketModel.Market?> = MutableStateFlow(_state.value.selectedMarket)
     private val submitButtonUiState : MutableStateFlow<UiComponentModel.ButtonUiState> = MutableStateFlow(_state.value.submitButtonUiState)
 
     init {
@@ -62,29 +67,40 @@ class AddEditQuotaViewModel @Inject constructor(
             }
         }
     }
-    init{
+
+    init { fetchData() }
+
+    fun fetchData() {
         viewModelScope.launch {
-                inventoryRepository.getInventory().collect{ produce ->
-                    produceList.value = produce
-                }
+            combine(marketRepository.getMarkets(), inventoryRepository.getInventory()) {
+                markets, inventory -> Pair(markets, inventory)
+            }.collect { (markets, inventory) ->
+                marketsList.value = markets
+                produceList.value = inventory
+                marketId
+                    ?.let { markets.firstOrNull { it.id == marketId }}
+                    ?.let { internalSelectMarket(it) }
+            }
         }
+    }
+
+    private fun internalSelectMarket(market: MarketModel.Market) {
+        selectedMarket.value = market
+        produceRows.value =
+            (quotasRepository.getQuota(market.quotaId)?.produceQuotaList?.map { produceQuota ->
+                AddEditQuotaModel.ProduceRow(
+                    produce = produceQuota.produceName,
+                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)
+                )
+            } ?: emptyList()) + initializeProduceRow()
+    }
+
+    fun selectMarket(market: MarketModel.Market) {
+        viewModelScope.launch { internalSelectMarket(market) }
     }
 
     fun addProduceRow() {
         produceRows.value = produceRows.value + initializeProduceRow()
-    }
-
-    fun selectMarket(market: MarketModel.Market) {
-        viewModelScope.launch {
-            selectedMarket.value = market
-            produceRows.value =
-                (quotasRepository.getQuota(market)?.produceQuotaList?.map { produceQuota ->
-                    AddEditQuotaModel.ProduceRow(
-                        produce = produceQuota.produceName,
-                        quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)
-                    )
-                } ?: emptyList()) + initializeProduceRow()
-        }
     }
 
     fun selectProduce(id : UUID, newProduce : String) {
@@ -137,6 +153,9 @@ class AddEditQuotaViewModel @Inject constructor(
                         )
                     }
                 })
+                    ?.let {
+                        marketRepository.updateMarketQuota(market.id, it)
+                    }
             }
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
