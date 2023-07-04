@@ -16,7 +16,7 @@ class AppNavigator {
     }
 
     fun navigateBack() {
-        _navController?.popBackStack()
+        _navController?.navigateUp()
     }
 
     fun navigateToTransactions() {
@@ -25,5 +25,13 @@ class AppNavigator {
 
     fun navigateToAddQuota() {
         _navController?.navigate(NavRoute.AddEditQuota.route)
+    }
+
+    fun navigateToEditQuota(marketId : String) {
+        _navController?.navigate(NavRoute.AddEditQuota.route + "?marketId=${marketId}")
+    }
+
+    fun navigateToViewQuota(marketId : String) {
+        _navController?.navigate(NavRoute.ViewQuota.route + "/${marketId}")
     }
 }

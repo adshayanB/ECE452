@@ -17,12 +17,14 @@ class QuotasRepository {
     )
 
     data class Quota(
-        val marketName : String,
+        val id: String,
         val produceQuotaList : List<ProduceQuota>,
     )
 
+    private var currentId : String = "5"
+
     private val quotasList: MutableList<Quota> = mutableListOf(Quota(
-        marketName = "St. Jacob's",
+        id = "1",
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Apple",
@@ -42,7 +44,7 @@ class QuotasRepository {
             ),
         )
     ), Quota(
-        marketName = "St. Lawrence",
+        id = "2",
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Strawberry",
@@ -54,7 +56,7 @@ class QuotasRepository {
             ),
         )
     ), Quota(
-        marketName = "Kensington Market",
+        id = "3",
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Apple",
@@ -70,7 +72,7 @@ class QuotasRepository {
             ),
         )
     ), Quota(
-        marketName = "St. Catherines Market",
+        id = "4",
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Banana",
@@ -90,23 +92,24 @@ class QuotasRepository {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getQuota(market : MarketModel.Market): Quota? {
-        return quotasList.firstOrNull { quota -> quota.marketName == market.name }
+    fun getQuota(id : String): Quota? {
+        return quotasList.firstOrNull { quota -> quota.id == id }
     }
 
-    fun addQuota(market : MarketModel.Market, produce : List<ProduceQuota>) {
-        val quotaIndex : Int = quotasList.indexOfFirst { quota -> quota.marketName == market.name }
+    fun addQuota(market : MarketModel.Market, produce : List<ProduceQuota>) : String? {
+        val quotaIndex : Int = quotasList.indexOfFirst { quota -> quota.id == market.quotaId }
 
-        if (quotaIndex >= 0) {
-            quotasList[quotaIndex] = Quota(
-                marketName = market.name,
-                produceQuotaList = produce,
-            )
+        return if (quotaIndex >= 0) {
+            quotasList[quotaIndex] = quotasList[quotaIndex].copy(produceQuotaList = produce)
+            null
         } else {
             quotasList.add(Quota(
-                marketName = market.name,
+                id = currentId,
                 produceQuotaList = produce,
             ))
+            val tempId = currentId
+            currentId = (currentId.toInt() + 1).toString()
+            tempId
         }
     }
 }

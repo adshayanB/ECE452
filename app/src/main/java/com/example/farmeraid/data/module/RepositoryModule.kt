@@ -24,7 +24,7 @@ object RepositoryModule {
     @Provides
     fun provideInventoryRepository(userRepository: UserRepository) : InventoryRepository {
         return InventoryRepository(
-            userRepository=userRepository
+            userRepository = userRepository
         )
     }
 
@@ -42,7 +42,9 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideMarketRepository(): MarketRepository {
-        return MarketRepository()
+    fun provideMarketRepository(quotasRepository: QuotasRepository): MarketRepository {
+        return MarketRepository(
+            quotasRepository = quotasRepository
+        )
     }
 }
