@@ -1,5 +1,7 @@
 package com.example.farmeraid.data
 
+import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -46,17 +48,23 @@ class InventoryRepository(
     }
 
     fun editProduce(produceName: String, produceAmount: Int) {
-        if (!inventory.containsKey(produceName)) { }
-        else inventory[produceName] = produceAmount
+        try {
+            userRepository.getFarmId()
+                ?.let { db.collection("inventory").document(it).update("produce.${produceName}", produceAmount) }
+        } catch (e : Exception) {
+            Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+        }
     }
 
-    suspend fun harvest(harvestChanges: MutableMap<String, Int> ) {
-        val inv = readInventoryData();
-        for ((produceName, produceAmount) in harvestChanges.entries) {
-            inv[produceName] = inv[produceName] !! + produceAmount
-          //  inventory[produceName] = inventory[produceName]!! + produceAmount
+    fun harvest(harvestChanges: Map<String, Int> ) {
+        try {
+            userRepository.getFarmId()
+                ?.let { db.collection("inventory").document(it).update(harvestChanges.entries.associate{
+                        (produceName, produceAmount) ->
+                    "produce.${produceName}" to FieldValue.increment(produceAmount.toLong())
+                }) }
+        } catch (e : Exception) {
+            Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
         }
-        userRepository.getFarmId()
-            ?.let { db.collection("inventory").document(it).update("produce", inv) }
     }
 }

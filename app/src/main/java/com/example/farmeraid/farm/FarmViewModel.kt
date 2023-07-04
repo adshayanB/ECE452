@@ -174,9 +174,9 @@ class FarmViewModel @Inject constructor(
     fun submitHarvest() {
         viewModelScope.launch {
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
-            val harvestMap: MutableMap<String, Int> = harvestList.value.associate {
-                Pair(it.produceName, it.produceCount)
-            }.toMutableMap()
+            val harvestMap: Map<String, Int> = harvestList.value.associate {
+                it.produceName to it.produceCount
+            }
 
             inventoryRepository.harvest(harvestMap)
 
