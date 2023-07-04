@@ -45,4 +45,5 @@
 | 07/01/2023 | 2        | 0      | 0        | 0    | 0      | 0         | Functionality for updating inventory using firebase                                                                                                     |
 | 07/01/2023 | 2        | 0      | 0        | 0    | 0      | 0         | Database Design using Firebase to support App functionality                                                                                             |
 | 07/03/2023 | 0        | 3      | 0        | 0    | 0      | 0         | Improved progress bar and made it more modular                                                                                                          |
-| 07/03/2023 | 3        | 3      | 3        | 3    | 3      | 3         | Database design review + sync for next steps                                                                                                            |
+| 07/03/2023 | 3        | 3      | 3        | 3    | 3      | 3         | Database design review + sync for next steps  
+| 07/04/2023 | 3        | 0      | 0        | 0   | 0      | 0          | Script to seed and design firebase database using proposed schema design
