@@ -4,17 +4,22 @@ import com.example.farmeraid.data.model.UserModel
 import com.example.farmeraid.sign_in.model.SignInModel
 import com.example.farmeraid.sign_up.model.SignUpModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
 
 class UserRepository {
     val user: MutableStateFlow<UserModel.User?> = MutableStateFlow(null)
+    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     suspend fun login(userName: String, password: String) : SignInModel.AuthResponse {
         val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
         if (userName.isNotEmpty() && password.isNotEmpty()) {
             return try {
                 val res = firebaseAuth.signInWithEmailAndPassword(userName, password).await()
-                 user.value = UserModel.User(email = userName, id = firebaseAuth.currentUser?.uid.toString())
+                //Get user from user object
+                val docRef = db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
+                val farmID = docRef.get().await().data?.get("farmID").toString()
+                user.value = UserModel.User(email = userName, id = firebaseAuth.currentUser?.uid.toString(), farm_id = farmID)
                 SignInModel.AuthResponse.Success
             }
             catch (e:Exception){
@@ -50,5 +55,9 @@ class UserRepository {
 
     fun getUserEmail():String?{
         return user.value?.email
+    }
+
+    fun getFarmId(): String? {
+        return user.value?.farm_id
     }
 }
