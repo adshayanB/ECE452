@@ -28,7 +28,7 @@ class InventoryRepository(
         }.flowOn(Dispatchers.IO)
     }
     private suspend fun readInventoryData(): MutableMap<String, Int> {
-        val docRef = userRepository.getUserId()?.let { db.collection("inventory").document(it) }
+        val docRef = userRepository.getFarmId()?.let { db.collection("inventory").document(it) }
 
         val map  = docRef?.get()?.await()?.data?.get("produce")
         return if (map != null) {
@@ -56,7 +56,7 @@ class InventoryRepository(
             inv[produceName] = inv[produceName] !! + produceAmount
           //  inventory[produceName] = inventory[produceName]!! + produceAmount
         }
-        userRepository.getUserId()
+        userRepository.getFarmId()
             ?.let { db.collection("inventory").document(it).update("produce", inv) }
     }
 }
