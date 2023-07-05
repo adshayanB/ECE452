@@ -62,14 +62,6 @@ class MainActivity : AppCompatActivity() {
 //        val logoutButton = findViewById<Button>(R.id.logoutButton)
 //        logoutButton.setOnClickListener { logoutUser(it) }
     }
-    fun logoutUser(view: View) {
-        firebaseAuth.signOut()
-        val intent = Intent(this, SignInActivity::class.java)
-        startActivity(intent)
-
-
-        // Additional cleanup or navigation code after logging out
-    }
 
     override fun onDestroy(){
         kontinuousSpeechRecognizer.onDestroy()
