@@ -1,11 +1,13 @@
 package com.example.farmeraid.data
 
+import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
-import com.example.farmeraid.home.model.HomeModel
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 
 // TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
 // TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
@@ -22,6 +24,7 @@ class QuotasRepository {
     )
 
     private var currentId : String = "5"
+    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private val quotasList: MutableList<Quota> = mutableListOf(Quota(
         id = "1",
@@ -92,24 +95,45 @@ class QuotasRepository {
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getQuota(id : String): Quota? {
-        return quotasList.firstOrNull { quota -> quota.id == id }
+    suspend fun getQuota(id : String): Quota? {
+        val docRef = db.collection("quotas").document(id)
+
+        val quotas = docRef?.get()?.await()?.data?.get("produce")
+        val produceList: MutableList<ProduceQuota> = mutableListOf()
+
+        if (quotas != null) {
+            val quotasMap = quotas as MutableMap<String, Int>
+            for ((key, value) in quotasMap) {
+                var produceQuota = ProduceQuota(
+                    produceName = key,
+                    produceGoalAmount = value
+                )
+
+                produceList.add(produceQuota)
+            }
+            return Quota(
+                id = id,
+                produceQuotaList = produceList
+            )
+        } else{
+           return null
+        }
+//        return quotasList.firstOrNull { quota -> quota.id == id }
     }
 
-    fun addQuota(market : MarketModel.Market, produce : List<ProduceQuota>) : String? {
-        val quotaIndex : Int = quotasList.indexOfFirst { quota -> quota.id == market.quotaId }
+    fun addQuota(market : MarketModel.Market, produce : List<ProduceQuota>){
+            val produceQuota = mutableMapOf<String, Int>()
 
-        return if (quotaIndex >= 0) {
-            quotasList[quotaIndex] = quotasList[quotaIndex].copy(produceQuotaList = produce)
-            null
-        } else {
-            quotasList.add(Quota(
-                id = currentId,
-                produceQuotaList = produce,
-            ))
-            val tempId = currentId
-            currentId = (currentId.toInt() + 1).toString()
-            tempId
-        }
+            for (prod in produce){
+                produceQuota[prod.produceName] = prod.produceGoalAmount
+            }
+
+            val data = hashMapOf(
+                "produce" to produceQuota
+            )
+        db.collection("quotas").document(market.id)
+            .set(data)
+            .addOnSuccessListener { Log.d("Success", "DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> Log.w("Error", "Error writing document", e) }
     }
 }

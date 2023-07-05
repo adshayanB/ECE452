@@ -84,10 +84,10 @@ class AddEditQuotaViewModel @Inject constructor(
         }
     }
 
-    private fun internalSelectMarket(market: MarketModel.Market) {
+    private suspend fun internalSelectMarket(market: MarketModel.Market) {
         selectedMarket.value = market
         produceRows.value =
-            (quotasRepository.getQuota(market.quotaId)?.produceQuotaList?.map { produceQuota ->
+            (quotasRepository.getQuota(market.id)?.produceQuotaList?.map { produceQuota ->
                 AddEditQuotaModel.ProduceRow(
                     produce = produceQuota.produceName,
                     quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)
@@ -154,7 +154,7 @@ class AddEditQuotaViewModel @Inject constructor(
                     }
                 })
                     ?.let {
-                        marketRepository.updateMarketQuota(market.id, it)
+                        marketRepository.updateMarketQuota(market.id)
                     }
             }
 
