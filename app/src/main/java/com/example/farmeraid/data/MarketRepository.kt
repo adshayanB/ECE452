@@ -59,12 +59,12 @@ class MarketRepository(
             }
     }
 
-    fun updateMarketQuota(marketId : String) {
-        val marketIndex : Int = markets.indexOfFirst { it.id == marketId }
-        if (marketIndex >= 0) {
-            markets[marketIndex] = markets[marketIndex].copy(id = marketId)
-        } else {
-            Log.e("MarketRepository", "Market with id $marketId does not exist")
-        }
-    }
+//    fun updateMarketQuota(marketId : String) {
+//        val marketIndex : Int = markets.indexOfFirst { it.id == marketId }
+//        if (marketIndex >= 0) {
+//            markets[marketIndex] = markets[marketIndex].copy(id = marketId)
+//        } else {
+//            Log.e("MarketRepository", "Market with id $marketId does not exist")
+//        }
+//    }
 }

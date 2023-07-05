@@ -153,9 +153,6 @@ class AddEditQuotaViewModel @Inject constructor(
                         )
                     }
                 })
-                    ?.let {
-                        marketRepository.updateMarketQuota(market.id)
-                    }
             }
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
