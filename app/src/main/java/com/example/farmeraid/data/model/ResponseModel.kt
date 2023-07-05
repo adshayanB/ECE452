@@ -3,12 +3,15 @@ package com.example.farmeraid.data.model
 import com.example.farmeraid.sign_in.model.SignInModel
 
 class ResponseModel {
-    sealed class FAResponse {
+    sealed class FAResponse(val error : String? = null) {
         object Success : FAResponse()
-        data class Error(val error: String) : FAResponse()
+        class Error(error: String) : FAResponse(error = error)
     }
-    sealed class FAResponseWithData<T> {
-        class Success<T>(val data: T): FAResponseWithData<T>()
-        class Error<T>(val error: String): FAResponseWithData<T>()
+    sealed class FAResponseWithData<T>(
+        val data : T? = null,
+        val error : String? = null,
+    ) {
+        class Success<T>(data: T?): FAResponseWithData<T>(data = data)
+        class Error<T>(error: String): FAResponseWithData<T>(error = error)
     }
 }
