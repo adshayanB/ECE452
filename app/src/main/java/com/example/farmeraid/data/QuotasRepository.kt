@@ -20,14 +20,18 @@ class QuotasRepository {
 
     data class Quota(
         val id: String,
-        val produceQuotaList : List<ProduceQuota>,
+        val produceQuotaList: List<ProduceQuota>,
+        val saleAmount: MutableMap<String, Int>
     )
 
     private var currentId : String = "5"
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+    private var saleAmount = hashMapOf("mango" to 5, "apple" to 2, "strawberry" to 7, "banana" to 8)
+
     private val quotasList: MutableList<Quota> = mutableListOf(Quota(
         id = "1",
+        saleAmount = saleAmount ,
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Apple",
@@ -48,6 +52,7 @@ class QuotasRepository {
         )
     ), Quota(
         id = "2",
+        saleAmount = saleAmount,
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Strawberry",
@@ -60,6 +65,7 @@ class QuotasRepository {
         )
     ), Quota(
         id = "3",
+        saleAmount = saleAmount,
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Apple",
@@ -76,6 +82,7 @@ class QuotasRepository {
         )
     ), Quota(
         id = "4",
+        saleAmount = saleAmount,
         produceQuotaList = listOf(
             ProduceQuota(
                 produceName = "Banana",
@@ -89,20 +96,22 @@ class QuotasRepository {
     ),
     )
 
-    fun getCategorizedQuotas(): Flow<MutableList<Quota>> {
-        return flow {
-            emit(quotasList)
-        }.flowOn(Dispatchers.IO)
-    }
+//    fun getCategorizedQuotas(): Flow<MutableList<Quota>> {
+//        return flow {
+//            emit(quotasList)
+//        }.flowOn(Dispatchers.IO)
+//    }
 
     suspend fun getQuota(id : String): Quota? {
         val docRef = db.collection("quotas").document(id)
 
-        val quotas = docRef?.get()?.await()?.data?.get("produce")
+        val quotas = docRef.get().await()?.data?.get("produce")
+        val saleCount = docRef.get().await()?.data?.get("sale")
         val produceList: MutableList<ProduceQuota> = mutableListOf()
 
-        if (quotas != null) {
+        if (quotas != null && saleCount !=null) {
             val quotasMap = quotas as MutableMap<String, Int>
+            val sale = saleCount as MutableMap<String, Int>
             for ((key, value) in quotasMap) {
                 var produceQuota = ProduceQuota(
                     produceName = key,
@@ -113,12 +122,12 @@ class QuotasRepository {
             }
             return Quota(
                 id = id,
+                saleAmount = sale,
                 produceQuotaList = produceList
             )
         } else{
            return null
         }
-//        return quotasList.firstOrNull { quota -> quota.id == id }
     }
 
     fun addQuota(market : MarketModel.Market, produce : List<ProduceQuota>){
@@ -129,7 +138,8 @@ class QuotasRepository {
             }
 
             val data = hashMapOf(
-                "produce" to produceQuota
+                "produce" to produceQuota,
+                "sale" to saleAmount,
             )
         db.collection("quotas").document(market.id)
             .set(data)

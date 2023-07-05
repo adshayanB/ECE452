@@ -15,7 +15,7 @@ class MarketRepository(
         MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "St. Lawrence"),
         MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "Kensington Market"),
         MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "St. Catherines Market"),
-        MarketModel.Market(id = "5", name = "Test Market"),
+        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "Test Market"),
     )
 
     fun getMarkets(): Flow<List<MarketModel.Market>> {
