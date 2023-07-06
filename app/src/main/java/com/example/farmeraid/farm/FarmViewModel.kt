@@ -119,21 +119,31 @@ class FarmViewModel @Inject constructor(
     private fun parseSpeech(speechResult: String): List<FarmModel.ProduceHarvest>{
 
         speechRes.value = speechResult
+
+
+
         return harvestList.value.map { produce ->
-            var re = Regex("(add)( )*([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
-            var matches = re.findAll(speechResult.lowercase())
+            var reAdd = Regex("(add|at)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*")
+            var addMatches = reAdd.findAll(speechResult.lowercase())
             var count = 0
-            matches.forEach { m ->
-                val action = m.groupValues[1]
-                val quantity = m.groupValues[3].toIntOrNull()
-                //need to handle case when digits are less than 9
-                Log.d("Recognize","${action} ${quantity} ${produce.produceName}")
-                if(quantity != null && action != "" && action == "add"){
-                    count += quantity
+            //Get every add phrase in our speech Result
+            addMatches.forEach { addM ->
+                val addCommand:String = addM.value
+                var reAddAmount = Regex("([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
+                var amountMatches = reAddAmount.findAll(addCommand)
+                //Get every instance of the current produce being incremented in the add phrase
+                amountMatches.forEach { amountM ->
+                    val quantity = amountM.groupValues[1].toIntOrNull()
+                    if (quantity != null){
+                        count += quantity
+                    }
                 }
+
             }
-            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + count )
+
+            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + count)
         }
+
     }
 
     private fun getMicButtonEvent(): UiComponentModel.FabUiEvent {
