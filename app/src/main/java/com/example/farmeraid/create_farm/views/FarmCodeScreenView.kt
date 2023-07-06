@@ -10,31 +10,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.farmeraid.create_farm.CreateFarmViewModel
 import com.example.farmeraid.create_farm.FarmCodeViewModel
-import com.example.farmeraid.sign_in.SignInViewModel
 import com.example.farmeraid.ui.theme.BlackColour
 import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
@@ -62,6 +51,7 @@ fun FarmCodeScreenView() {
                  verticalArrangement = Arrangement.Center,
              ) {
 
+                 //TODO: Display Success Image
 //                 Image(
 //                     painter = painterResource(R.drawable.your_drawable),
 //                     contentDescription = "Content description for visually impaired"
@@ -75,6 +65,7 @@ fun FarmCodeScreenView() {
 
                  Spacer(modifier = Modifier.height(10.dp))
 
+                 // TODO: need to get the RNG Farm Code
                  Text(text = "Farm Code: 12345", style = TextStyle(fontSize = 18.sp))
 
                  Spacer(modifier = Modifier.height(20.dp))

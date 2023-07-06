@@ -7,13 +7,10 @@ import com.example.farmeraid.create_farm.model.FarmCodeModel
 import com.example.farmeraid.create_farm.model.getStartButton
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.NavRoute
-import com.example.farmeraid.snackbar.SnackbarDelegate
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FarmCodeViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
-    private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
     private val _state = MutableStateFlow(FarmCodeModel.FarmCodeViewState(
         buttonUiState = getStartButton()
@@ -51,4 +47,6 @@ class FarmCodeViewModel @Inject constructor(
     fun navigateToHome() {
         appNavigator.navigateToMode(NavRoute.Home)
     }
+
+    // TODO: create a function to get the RNG Farm Code from Firebase
 }
