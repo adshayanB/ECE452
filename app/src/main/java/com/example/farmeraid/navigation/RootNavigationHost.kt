@@ -24,6 +24,7 @@ import androidx.navigation.navArgument
 import com.example.farmeraid.join_farm.views.JoinFarmScreenView
 import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
+import com.example.farmeraid.farm_selection.views.FarmSelectionScreenView
 import com.example.farmeraid.sign_in.views.SignInScreenView
 import com.example.farmeraid.sign_up.views.SignUpScreenView
 import com.example.farmeraid.ui.theme.LightGrayColour
@@ -54,7 +55,7 @@ fun RootNavigationHost(
         ) { padding ->
             NavHost(
                 navController = appNavigator.navController!!,
-                startDestination = NavRoute.JoinFarm.route,
+                startDestination = NavRoute.SignIn.route,
                 modifier = Modifier.padding(padding)
             ) {
                 composable(NavRoute.SignUp.route){
@@ -92,6 +93,9 @@ fun RootNavigationHost(
                     arguments = listOf(navArgument("marketId") { type = NavType.StringType})
                 ) {
                     ViewQuotaScreenView()
+                }
+                composable(NavRoute.FarmSelection.route){
+                    FarmSelectionScreenView()
                 }
             }
         }
