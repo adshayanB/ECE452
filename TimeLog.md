@@ -1,5 +1,5 @@
 | Date       | Adshayan | Rishan | Preyansh | Neel | Soumil | Sathursan | Task                                                                                                                                                    |
-| ---------- | -------- | ------ |----------|------|--------| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|------------|----------|--------|----------|------|--------| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 05/20/2023 | 1        | 0      | 0        | 1    | 1      | 1         | Brain Storm Meeting                                                                                                                                     |
 | 05/21/2023 | 0        | 1      | 1        | 0    | 0      | 0         | Brain Storm Meeting 2                                                                                                                                   |
 | 05/22/2023 | 1        | 1      | 1        | 1    | 1      | 1         | Feasiblity Research                                                                                                                                     |
@@ -50,3 +50,6 @@
 | 07/03/2023 | 3        | 3      | 3        | 3    | 3      | 3         | Database design review + sync for next steps  
 | 07/04/2023 | 3        | 0      | 0        | 0    | 0      | 0         | Script to seed and design firebase database using proposed schema design
 | 07/04/2023 | 0        | 4      | 0        | 0    | 0      | 0         | Create view quota page and refactor quota/market classes
+| 07/05/2023 | 6        | 0      | 0        | 0    | 0      | 0         | Refactored QuotaRepo to support firebase schema and pull/update quotas via firebase
+
+

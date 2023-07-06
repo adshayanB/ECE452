@@ -47,6 +47,8 @@ class AddEditQuotaViewModel @Inject constructor(
     private val selectedMarket : MutableStateFlow<MarketModel.Market?> = MutableStateFlow(_state.value.selectedMarket)
     private val submitButtonUiState : MutableStateFlow<UiComponentModel.ButtonUiState> = MutableStateFlow(_state.value.submitButtonUiState)
 
+    //TODO: Sales logic
+    private val TO_BE_CHANGED = 10
     init {
         viewModelScope.launch {
             combine(marketsList, produceList, produceRows, selectedMarket, submitButtonUiState) {
@@ -84,10 +86,10 @@ class AddEditQuotaViewModel @Inject constructor(
         }
     }
 
-    private fun internalSelectMarket(market: MarketModel.Market) {
+    private suspend fun internalSelectMarket(market: MarketModel.Market) {
         selectedMarket.value = market
         produceRows.value =
-            (quotasRepository.getQuota(market.quotaId)?.produceQuotaList?.map { produceQuota ->
+            (quotasRepository.getQuota(market.id)?.produceQuotaList?.map { produceQuota ->
                 AddEditQuotaModel.ProduceRow(
                     produce = produceQuota.produceName,
                     quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)
@@ -150,12 +152,10 @@ class AddEditQuotaViewModel @Inject constructor(
                         QuotasRepository.ProduceQuota(
                             produceName = row.produce,
                             produceGoalAmount = row.quantityPickerUiState.count,
+                            saleAmount = TO_BE_CHANGED
                         )
                     }
                 })
-                    ?.let {
-                        marketRepository.updateMarketQuota(market.id, it)
-                    }
             }
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
