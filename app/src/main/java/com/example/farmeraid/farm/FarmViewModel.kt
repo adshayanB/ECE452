@@ -13,6 +13,7 @@ import com.example.farmeraid.farm.model.getMicButton
 import com.example.farmeraid.farm.model.getStopButton
 import com.example.farmeraid.farm.model.getSubmitButton
 import com.example.farmeraid.navigation.AppNavigator
+import com.example.farmeraid.snackbar.SnackbarDelegate
 import com.example.farmeraid.speech_recognition.KontinuousSpeechRecognizer
 import com.example.farmeraid.speech_recognition.SpeechRecognizerUtility
 import com.example.farmeraid.uicomponents.models.UiComponentModel
@@ -30,6 +31,7 @@ class FarmViewModel @Inject constructor(
     private val speechRecognizerUtility: SpeechRecognizerUtility,
     private val kontinuousSpeechRecognizer: KontinuousSpeechRecognizer,
     private val appNavigator: AppNavigator,
+    private val snackbarDelegate: SnackbarDelegate,
     ): ViewModel() {
     private val _state = MutableStateFlow(FarmViewState(
         micFabUiState = getMicButton(),
@@ -84,13 +86,15 @@ class FarmViewModel @Inject constructor(
     init{
         viewModelScope.launch {
                 inventoryRepository.getInventory().collect{ produce ->
-                    if (produce != null) {
-                        harvestList.value = produce.map {(produceName, _) ->
+                    produce.data?.let {
+                        harvestList.value = it.map {(produceName, _) ->
                             FarmModel.ProduceHarvest(
                                 produceName = produceName,
                                 produceCount = 0,
                             )
                         }
+                    } ?: run {
+                        snackbarDelegate.showSnackbar(produce.error ?: "Unknown error")
                     }
                 }
         }

@@ -76,7 +76,11 @@ class AddEditQuotaViewModel @Inject constructor(
                 markets, inventory -> Pair(markets, inventory)
             }.collect { (markets, inventory) ->
                 marketsList.value = markets
-                produceList.value = inventory
+                inventory.data?.let {
+                    produceList.value = it
+                } ?: run {
+                    snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
+                }
                 marketId
                     ?.let { markets.firstOrNull { it.id == marketId }}
                     ?.let { internalSelectMarket(it) }
