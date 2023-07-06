@@ -128,9 +128,13 @@ fun TransactionsView() {
                 .padding(20.dp, 20.dp, 20.dp, 0.dp),
         ){
             LazyRow {
+<<<<<<< HEAD
                 items(1) {
                     TransactionsFilterChip()
                 }
+=======
+                //filter pills
+>>>>>>> 8f519e7 (Added lazy row and reformatted column on transactions page)
             }
             Spacer(modifier = Modifier.height(20.dp))
             Divider()
@@ -153,7 +157,11 @@ fun TransactionsView() {
                         ){
                             Text(modifier = Modifier
                                 .padding(10.dp),
+<<<<<<< HEAD
                                 text = trans.transactionType,
+=======
+                                text = trans.transactionType.stringValue,
+>>>>>>> 8f519e7 (Added lazy row and reformatted column on transactions page)
                                 color = Color.Black,
                                 fontSize = 25.sp
                             )
@@ -166,13 +174,13 @@ fun TransactionsView() {
                         }
                         Row(
 
-                    ){
-                        Text(modifier = Modifier
-                            .padding(10.dp, 0.dp, 0.dp, 10.dp),
-                            text = trans.transactionMessage, color = Color.Black,
-                            fontSize = 18.sp
-                        )
-                    }
+                        ){
+                            Text(modifier = Modifier
+                                .padding(10.dp, 0.dp, 0.dp, 10.dp),
+                                text = trans.transactionMessage, color = Color.Black,
+                                fontSize = 18.sp
+                            )
+                        }
 
                     }
                 }
