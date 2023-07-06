@@ -76,22 +76,6 @@ fun CreateFarmScreenView() {
                  )
 
                  Spacer(modifier = Modifier.height(20.dp))
-                 TextField(
-                     label = { Text(text = "Password") },
-                     value = state.location,
-                     visualTransformation = PasswordVisualTransformation(),
-                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                     onValueChange = { viewModel.setLocation(it) },
-                     colors = TextFieldDefaults.textFieldColors(
-                         cursorColor = PrimaryColour,
-                         focusedIndicatorColor = PrimaryColour,
-                         focusedLabelColor = PrimaryColour,
-                         focusedSupportingTextColor = PrimaryColour,
-                     ),
-                     modifier = Modifier.fillMaxWidth(),
-                 )
-
-                 Spacer(modifier = Modifier.height(20.dp))
                  Row(
                      modifier = Modifier
                          .fillMaxWidth(),
@@ -114,7 +98,7 @@ fun CreateFarmScreenView() {
                      ButtonView(
                          buttonUiState = state.buttonUiState,
                          buttonUiEvent = UiComponentModel.ButtonUiEvent(
-                             onClick = { viewModel.navigateToFarmCode() }),
+                             onClick = { viewModel.submitFarm() }),
                          modifier = Modifier
                              .height(50.dp)
                              .width(120.dp)

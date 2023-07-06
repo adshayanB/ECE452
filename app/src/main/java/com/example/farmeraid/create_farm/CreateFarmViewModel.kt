@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.create_farm.model.CreateFarmModel
 import com.example.farmeraid.create_farm.model.getSubmitButton
+import com.example.farmeraid.data.FarmRepository
+import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.snackbar.SnackbarDelegate
@@ -20,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateFarmViewModel @Inject constructor(
+    private val farmRepository: FarmRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
@@ -31,16 +34,14 @@ class CreateFarmViewModel @Inject constructor(
         get() = _state
 
     private val farmName: MutableStateFlow<String> = MutableStateFlow(_state.value.farmName)
-    private val location: MutableStateFlow<String> = MutableStateFlow(_state.value.location)
     private val buttonUiState: MutableStateFlow<UiComponentModel.ButtonUiState> = MutableStateFlow(_state.value.buttonUiState)
 
     init {
         viewModelScope.launch {
-            combine(farmName, location, buttonUiState) {
-                    farmName: String, location: String, buttonUiState: UiComponentModel.ButtonUiState ->
+            combine(farmName, buttonUiState) {
+                    farmName: String, buttonUiState: UiComponentModel.ButtonUiState ->
                 CreateFarmModel.CreateFarmViewState(
                     farmName = farmName,
-                    location = location,
                     buttonUiState = buttonUiState,
                 )
             }.collect {
@@ -51,44 +52,29 @@ class CreateFarmViewModel @Inject constructor(
 
     fun submitFarm() = viewModelScope.launch {
         buttonUiState.value = buttonUiState.value.copy(isLoading = true)
-        //val result: SignInModel.AuthResponse = userRepository.login(username.value, password.value)
-        snackbarDelegate.showSnackbar(
-            message = "Navigate to Farm Code"
-        )
+        val result: ResponseModel.FAResponse = farmRepository.createFarm(farmName.value)
         buttonUiState.value = buttonUiState.value.copy(isLoading = false)
 
-//        when (result) {
-//            is SignInModel.AuthResponse.Success -> {
-//                Log.d("MESSAGE", "LOGGED IN")
-//                userRepository.getUserId()?.let { Log.d("UserID", it) }
-//                appNavigator.navigateToMode(NavRoute.Home)
-//            }
-//
-//            is SignInModel.AuthResponse.Error -> {
-//                Log.d("MESSAGE", result.error)
-//                snackbarDelegate.showSnackbar(
-//                    message = result.error
-//                )
-//            }
-//        }
+        when (result) {
+            is ResponseModel.FAResponse.Success -> {
+                Log.d("MESSAGE - createFarm()", "SUCCESSFULLY CREATED A FARM")
+                appNavigator.navigateToFarmCode()
+            }
+
+            is ResponseModel.FAResponse.Error -> {
+                Log.e("ERROR - createFarm()", result.error?:"Unknown error")
+                snackbarDelegate.showSnackbar(
+                    message = result.error?:"Unknown error"
+                )
+            }
+        }
     }
 
     fun setFarmName(newVal: String) {
         farmName.value = newVal
     }
 
-    fun setLocation(newVal: String) {
-        location.value = newVal
-    }
-
-    fun navigateToFarmCode() {
-        appNavigator.navigateToFarmCode()
-    }
-
     fun navigateBack() {
-        //appNavigator.navigateBack()
-        snackbarDelegate.showSnackbar(
-            message = "Navigate to Farm Selection"
-        )
+        appNavigator.navigateBack()
     }
 }

@@ -68,7 +68,7 @@ class SignInViewModel @Inject constructor(
             is SignInModel.AuthResponse.Success -> {
                 Log.d("MESSAGE", "LOGGED IN")
                 userRepository.getUserId()?.let { Log.d("UserID", it) }
-                appNavigator.navigateToMode(NavRoute.Home)
+                appNavigator.navigateToMode(NavRoute.CreateFarm)
             }
 
             is SignInModel.AuthResponse.Error -> {
