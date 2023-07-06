@@ -39,25 +39,20 @@ class QuotasRepository {
         val quotas = docRead.data?.get("produce")
         val saleCount = docRead.data?.get("sale")
 
-        val produceList: MutableList<ProduceQuota> = mutableListOf()
-
         if (quotas != null && saleCount != null) {
             val quotasMap = quotas as MutableMap<String, Int>
             val sale = saleCount as MutableMap<String, Int>
-            for ((key, value) in quotasMap) {
-                val produceQuota = ProduceQuota(
-                    produceName = key,
-                    produceGoalAmount = value,
-                    saleAmount = sale.getOrDefault(key, 0)
-                )
-                produceList.add(produceQuota)
-            }
             return Quota(
                 id = id,
-                produceQuotaList = produceList
-            )
-
-        } else {
+                produceQuotaList = quotasMap.map{ (produceName, goal) ->
+                    ProduceQuota(
+                        produceName = produceName,
+                        produceGoalAmount = goal,
+                        saleAmount = sale.getOrDefault(produceName, 0),
+                    )
+                })
+        }
+        else {
             return null
         }
     }
