@@ -34,9 +34,11 @@ class QuotasRepository {
 
     suspend fun getQuota(id: String): Quota? {
         val docRef = db.collection("quotas").document(id)
+        val docRead = docRef.get().await()
 
-        val quotas = docRef.get().await()?.data?.get("produce")
-        val saleCount = docRef.get().await()?.data?.get("sale")
+        val quotas = docRead.data?.get("produce")
+        val saleCount = docRead.data?.get("sale")
+
         val produceList: MutableList<ProduceQuota> = mutableListOf()
 
         if (quotas != null && saleCount != null) {
