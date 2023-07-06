@@ -75,16 +75,21 @@ class AddEditQuotaViewModel @Inject constructor(
     fun fetchData() {
         viewModelScope.launch {
             combine(marketRepository.getMarkets(), inventoryRepository.getInventory()) {
-                markets, inventory -> Pair(markets, inventory)
+                    markets, inventory -> Pair(markets, inventory)
             }.collect { (markets, inventory) ->
-                marketsList.value = markets
+//                marketsList.value = markets
+                markets.data?.let{
+                    marketsList.value = it
+                }?: run{
+                    snackbarDelegate.showSnackbar(markets.error ?: "Unknown Error")
+                }
                 inventory.data?.let {
                     produceList.value = it
                 } ?: run {
                     snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
                 }
                 marketId
-                    ?.let { markets.firstOrNull { it.id == marketId }}
+                    ?.let { markets.data?.firstOrNull { it.id == marketId } }
                     ?.let { internalSelectMarket(it) }
             }
         }
@@ -93,7 +98,7 @@ class AddEditQuotaViewModel @Inject constructor(
     private suspend fun internalSelectMarket(market: MarketModel.Market) {
         selectedMarket.value = market
         produceRows.value =
-            (quotasRepository.getQuota(market.id)?.produceQuotaList?.map { produceQuota ->
+            (quotasRepository.getQuota(market.quotaID)?.produceQuotaList?.map { produceQuota ->
                 AddEditQuotaModel.ProduceRow(
                     produce = produceQuota.produceName,
                     quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)

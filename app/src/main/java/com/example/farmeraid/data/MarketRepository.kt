@@ -2,69 +2,79 @@ package com.example.farmeraid.data
 
 import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.ResponseModel
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 
 class MarketRepository(
-    private val quotasRepository: QuotasRepository
+    private val quotasRepository: QuotasRepository,
+    private val farmRepository: FarmRepository
 ) {
-    private val markets: MutableList<MarketModel.Market> = mutableListOf(
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "St. Jacob's"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "St. Lawrence"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "Kensington Market"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "St. Catherines Market"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "Test Market"),
-    )
+    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private suspend fun readMarketData(): ResponseModel.FAResponseWithData<List<MarketModel.Market>> {
+        val marketIds = farmRepository.getMarketIds()
+        val marketModel = marketIds.data?.map { element ->
+            db.collection("market").document(element).get().await()
+        }?.toList()
 
-    fun getMarkets(): Flow<List<MarketModel.Market>> {
+        val marketModelList = mutableListOf<MarketModel.Market>()
+
+        if (marketModel != null) {
+            for (market in marketModel) {
+                Log.e("ID", market.id)
+                marketModelList.add(MarketModel.Market(
+                    id = market.id,
+                    name = market.get("name") as String,
+                    quotaID = market.get("quota_id") as String
+                ))
+            }
+        }
+
+        return ResponseModel.FAResponseWithData.Success(marketModelList as List<MarketModel.Market>)
+    }
+    private suspend fun readMarketDataWithQuotas(): ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>> {
+        val marketIds = farmRepository.getMarketIds()
+        val marketModel = marketIds.data?.map { element ->
+            db.collection("market").document(element).get().await()
+        }?.toList()
+
+        val marketModelList = mutableListOf<MarketModel.MarketWithQuota>()
+
+        if (marketModel != null) {
+            for (market in marketModel) {
+                quotasRepository.getQuota(market.get("quota_id") as String)?.let {
+                    MarketModel.MarketWithQuota(
+                        id = market.id,
+                        name = market.get("name") as String,
+                        quota = it
+                    )
+                }?.let { marketModelList.add(it) }
+            }
+        }
+
+        return ResponseModel.FAResponseWithData.Success(marketModelList as List<MarketModel.MarketWithQuota>)
+    }
+
+    suspend fun getMarkets(): Flow<ResponseModel.FAResponseWithData<List<MarketModel.Market>>> {
         return flow {
-            emit(markets)
+            emit(readMarketData())
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getMarketsWithQuota() : Flow<List<MarketModel.MarketWithQuota>> {
+    suspend fun getMarketsWithQuota() : Flow<ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>>> {
+        Log.e("test", readMarketData().data.toString())
         return flow {
             emit(
-                markets.mapNotNull { market ->
-                    quotasRepository.getQuota(market.id)
-                        ?.let { quota ->
-                            MarketModel.MarketWithQuota(
-                                id = market.id,
-                                name = market.name,
-                                quota = quota,
-                            )
-                        }
-                }
+                readMarketDataWithQuotas()
             )
         }
     }
 
-    fun getMarket(id: String) : MarketModel.Market? {
-        return markets.firstOrNull { it.id == id }
-    }
-
     suspend fun getMarketWithQuota(id : String) : MarketModel.MarketWithQuota? {
-        return markets.firstOrNull { it.id == id }
-            ?.let { market ->
-                quotasRepository.getQuota(market.id)
-                    ?.let { quota ->
-                        MarketModel.MarketWithQuota(
-                            id = market.id,
-                            name = market.name,
-                            quota = quota,
-                        )
-                    }
-            }
+        return readMarketDataWithQuotas().data?.firstOrNull { it.id == id }
     }
-
-//    fun updateMarketQuota(marketId : String) {
-//        val marketIndex : Int = markets.indexOfFirst { it.id == marketId }
-//        if (marketIndex >= 0) {
-//            markets[marketIndex] = markets[marketIndex].copy(id = marketId)
-//        } else {
-//            Log.e("MarketRepository", "Market with id $marketId does not exist")
-//        }
-//    }
 }

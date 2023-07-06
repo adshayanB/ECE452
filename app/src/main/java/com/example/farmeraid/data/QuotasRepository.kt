@@ -1,10 +1,8 @@
 package com.example.farmeraid.data
 
-import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import org.checkerframework.checker.units.qual.s
 
 // TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
 // TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
@@ -57,7 +55,7 @@ class QuotasRepository {
         }
     }
     fun addQuota(market: MarketModel.Market, produce: List<QuotasRepository.ProduceQuota>) {
-        db.collection("quotas").document(market.id)
+        db.collection("quotas").document(market.quotaID)
             .update("produce", produce.associate {
                 it.produceName to it.produceGoalAmount
             })
