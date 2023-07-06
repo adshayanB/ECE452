@@ -3,6 +3,8 @@ package com.example.farmeraid.navigation
 sealed class NavRoute(val route: String) {
     object SignIn : NavRoute("signin_route")
     object SignUp: NavRoute("signup_route")
+    object CreateFarm: NavRoute("create_farm_route")
+    object FarmCode: NavRoute("farm_code_route")
     object SignOut : NavRoute("signout_route")
     object Home : NavRoute("home_route")
     object Farm : NavRoute("farm_route")
