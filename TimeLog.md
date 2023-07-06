@@ -50,3 +50,4 @@
 | 07/03/2023 | 3        | 3      | 3        | 3    | 3      | 3         | Database design review + sync for next steps  
 | 07/04/2023 | 3        | 0      | 0        | 0    | 0      | 0         | Script to seed and design firebase database using proposed schema design
 | 07/04/2023 | 0        | 4      | 0        | 0    | 0      | 0         | Create view quota page and refactor quota/market classes
+| 07/05/2023 | 0        | 0      | 5        | 0    | 0      | 0         | Built the create farm and farm code screens and added navigation from signin page
