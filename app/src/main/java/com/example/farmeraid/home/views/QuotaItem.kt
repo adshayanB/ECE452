@@ -108,15 +108,16 @@ fun QuotaItemPreview() {
             name = "Test",
             quota = QuotasRepository.Quota(
                 id = "0",
-                saleAmount = mutableMapOf(),
                 produceQuotaList = listOf(
                 QuotasRepository.ProduceQuota(
                     produceName = "Apples",
                     produceGoalAmount = 20,
+                    saleAmount = 2
                                ),
                 QuotasRepository.ProduceQuota(
                     produceName = "Bananas",
                     produceGoalAmount = 40,
+                    saleAmount = 5
                     ),
                 )
             )
