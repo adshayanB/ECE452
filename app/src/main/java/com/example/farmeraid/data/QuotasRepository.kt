@@ -62,19 +62,9 @@ class QuotasRepository {
         }
     }
     fun addQuota(market: MarketModel.Market, produce: List<QuotasRepository.ProduceQuota>) {
-        val produceQuota = mutableMapOf<String, Int>()
-
-        for (prod in produce) {
-            produceQuota[prod.produceName] = prod.produceGoalAmount
-        }
-
-        val data = hashMapOf(
-            "produce" to produceQuota,
-            "sale" to SALES,
-        )
         db.collection("quotas").document(market.id)
-            .set(data)
-            .addOnSuccessListener { Log.d("Success", "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w("Error", "Error writing document", e) }
+            .update("produce", produce.associate {
+                it.produceName to it.produceGoalAmount
+            })
     }
 }
