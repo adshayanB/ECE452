@@ -1,5 +1,9 @@
 package com.example.farmeraid.data
 
+import android.util.Log
+import com.example.farmeraid.data.model.ResponseModel.FAResponse
+import com.example.farmeraid.data.model.ResponseModel.FAResponseWithData
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,48 +19,73 @@ class InventoryRepository(
     private val userRepository: UserRepository
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val inventory: MutableMap<String, Int> = mutableMapOf<String, Int>().apply {
-        put("Apple", 15)
-        put("Banana", 20)
-        put("Orange", 50)
-        put("Strawberry", 30)
-        put("Mango", 10)
-    }
-    suspend fun getInventory(): Flow<MutableMap<String, Int>> {
+    suspend fun getInventory(): Flow<FAResponseWithData<MutableMap<String,Int>>> {
         return flow {
             emit(readInventoryData())
         }.flowOn(Dispatchers.IO)
     }
-    private suspend fun readInventoryData(): MutableMap<String, Int> {
-        val docRef = userRepository.getFarmId()?.let { db.collection("inventory").document(it) }
-
-        val map  = docRef?.get()?.await()?.data?.get("produce")
-        return if (map != null) {
-            map as MutableMap<String, Int>
-        } else{
-            mutableMapOf()
-        }
+    private suspend fun readInventoryData(): FAResponseWithData<MutableMap<String, Int>> {
+        return userRepository.getFarmId()?.let { id ->
+            try {
+                db.collection("inventory").document(id)
+                    .get()
+                    .await()
+                    .data?.get("produce")?.let {
+                        FAResponseWithData.Success(it as MutableMap<String, Int>)
+                    } ?: FAResponseWithData.Error("Error fetching produce")
+            } catch (e : Exception) {
+                Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                FAResponseWithData.Error(e.message ?: "Unknown error while getting inventory")
+            }
+        } ?: FAResponseWithData.Error("User is not part of a farm")
     }
 
-    fun addNewProduce(produceName: String, produceAmount: Int) {
-        if (inventory.containsKey(produceName)) { }
-        else {
-            inventory[produceName] = produceAmount
-        }
+    suspend fun addNewProduce(produceName: String, produceAmount: Int) : FAResponse {
+        return userRepository.getFarmId()
+            ?.let {
+                try {
+                    val docRef : MutableMap<String, Int> = db.collection("inventory").document(it).get().await() as MutableMap<String,Int>
+                    if (!docRef.containsKey(produceName)) {
+                        db.collection("farm").document(it).update("produce.${produceName}", produceAmount).await()
+                        FAResponse.Success
+                    } else {
+                        FAResponse.Error("This produce already exists")
+                    }
+
+                } catch (e : Exception) {
+                    Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                    FAResponse.Error(e.message ?: "Unknown error while adding new produce")
+                }
+            } ?: FAResponse.Error("User is not part of a farm")
     }
 
-    fun editProduce(produceName: String, produceAmount: Int) {
-        if (!inventory.containsKey(produceName)) { }
-        else inventory[produceName] = produceAmount
+    suspend fun editProduce(produceName: String, produceAmount: Int) : FAResponse {
+        return userRepository.getFarmId()
+                ?.let {
+                    try {
+                        db.collection("inventory").document(it)
+                            .update("produce.${produceName}", produceAmount).await()
+                        FAResponse.Success
+                    } catch (e: Exception) {
+                        Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                        FAResponse.Error(e.message ?: "Unknown error while editing produce")
+                    }
+                } ?: FAResponse.Error("User is not part of a farm")
     }
 
-    suspend fun harvest(harvestChanges: MutableMap<String, Int> ) {
-        val inv = readInventoryData();
-        for ((produceName, produceAmount) in harvestChanges.entries) {
-            inv[produceName] = inv[produceName] !! + produceAmount
-          //  inventory[produceName] = inventory[produceName]!! + produceAmount
-        }
-        userRepository.getFarmId()
-            ?.let { db.collection("inventory").document(it).update("produce", inv) }
+    suspend fun harvest(harvestChanges: Map<String, Int>) : FAResponse {
+        return userRepository.getFarmId()
+            ?.let {
+                try {
+                    db.collection("inventory").document(it).update(harvestChanges.entries.associate{
+                            (produceName, produceAmount) ->
+                        "produce.${produceName}" to FieldValue.increment(produceAmount.toLong())
+                    }).await()
+                    FAResponse.Success
+                } catch (e : Exception) {
+                    Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                    FAResponse.Error(e.message ?: "Unknown error while while updating harvests")
+                } }
+            ?: FAResponse.Error("User is not part of a farm")
     }
 }

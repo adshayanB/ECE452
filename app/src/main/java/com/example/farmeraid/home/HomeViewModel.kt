@@ -60,7 +60,11 @@ class HomeViewModel @Inject constructor(
             combine(marketRepository.getMarketsWithQuota(), inventoryRepository.getInventory()) {quotas, inventory -> Pair(quotas, inventory)}
                 .collect { (quotas, inventory) ->
                     quotasList.value = quotas
-                    inventoryList.value = inventory
+                    inventory.data?.let {
+                        inventoryList.value = it
+                    } ?: run {
+                        snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
+                    }
                     isLoading.value = false
                 }
         }
