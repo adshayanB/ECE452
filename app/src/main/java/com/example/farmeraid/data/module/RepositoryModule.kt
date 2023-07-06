@@ -6,7 +6,6 @@ import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.TransactionRepository
 import com.example.farmeraid.data.UserRepository
-import com.google.android.play.integrity.internal.f
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,10 +43,9 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideMarketRepository(quotasRepository: QuotasRepository, farmRepository: FarmRepository): MarketRepository {
+    fun provideMarketRepository(quotasRepository: QuotasRepository): MarketRepository {
         return MarketRepository(
-            quotasRepository = quotasRepository,
-            farmRepository = farmRepository
+            quotasRepository = quotasRepository
         )
     }
 

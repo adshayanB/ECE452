@@ -2,7 +2,6 @@ package com.example.farmeraid.data
 
 import android.util.Log
 import com.example.farmeraid.data.model.FarmModel
-import com.example.farmeraid.data.model.ResponseModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -39,6 +38,10 @@ class FarmRepository(
         }catch(e: Exception){
             Log.e("FarmRepository - createFarm()", e.message?:"Unknown error")
         }
+
+
+
+
     }
     suspend fun joinFarm(farmCode: String){
         try {
@@ -59,23 +62,6 @@ class FarmRepository(
             Log.e("FarmRepository - joinFarm()", e.message?:"Unknown error")
         }
 
-    }
-
-    suspend fun getMarketIds (): ResponseModel.FAResponseWithData.Success<MutableList<String>> {
-        Log.d("TEST", "called")
-        return (userRepository.getFarmId()?.let { id ->
-            try {
-                db.collection("farm").document(id)
-                    .get()
-                    .await()
-                    .data?.get("markets")?.let {
-                        ResponseModel.FAResponseWithData.Success(it as MutableList<String>)
-                    } ?: ResponseModel.FAResponseWithData.Error("Error fetching markets")
-            } catch (e : Exception) {
-                Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
-                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting inventory")
-            }
-        } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm")) as ResponseModel.FAResponseWithData.Success<MutableList<String>>
     }
 
 

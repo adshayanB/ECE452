@@ -5,8 +5,7 @@ import com.example.farmeraid.data.QuotasRepository
 class MarketModel {
     data class Market(
         val id : String,
-        val name: String,
-        val quotaID: String
+        val name: String
     ) {
         override fun toString(): String = name
     }
