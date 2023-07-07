@@ -14,7 +14,6 @@ class FarmRepository(
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     suspend fun createFarm(farmName: String){
-        //if db.collection("farm").get
         try {
             userRepository.getUserId()?.let{
                 val docRef = db.collection("farm").add(
@@ -50,8 +49,6 @@ class FarmRepository(
                         )
                     }
                 }
-
-
                 //TODO update userRespository with new farmID
                 //TODO Function needs to be made on UserRepo
             }
@@ -61,7 +58,7 @@ class FarmRepository(
 
     }
 
-    suspend fun getMarketIds (): ResponseModel.FAResponseWithData.Success<MutableList<String>> {
+    suspend fun getMarketIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
         Log.d("TEST", "called")
         return (userRepository.getFarmId()?.let { id ->
             try {
@@ -75,8 +72,6 @@ class FarmRepository(
                 Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
                 ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting inventory")
             }
-        } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm")) as ResponseModel.FAResponseWithData.Success<MutableList<String>>
+        } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
-
-
 }

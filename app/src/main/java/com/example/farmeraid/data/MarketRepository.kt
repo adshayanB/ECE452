@@ -19,7 +19,7 @@ class MarketRepository(
         val marketIds = farmRepository.getMarketIds()
         val marketModel = marketIds.data?.map { element ->
             db.collection("market").document(element).get().await()
-        }?.toList()
+        }
 
         val marketModelList = mutableListOf<MarketModel.Market>()
 
@@ -28,25 +28,24 @@ class MarketRepository(
                 Log.e("ID", market.id)
                 marketModelList.add(MarketModel.Market(
                     id = market.id,
-                    name = market.get("name") as String,
-                    quotaID = market.get("quota_id") as String
+                    name = market.get("name") as String
                 ))
             }
         }
 
-        return ResponseModel.FAResponseWithData.Success(marketModelList as List<MarketModel.Market>)
+        return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
     private suspend fun readMarketDataWithQuotas(): ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>> {
         val marketIds = farmRepository.getMarketIds()
         val marketModel = marketIds.data?.map { element ->
             db.collection("market").document(element).get().await()
-        }?.toList()
+        }
 
         val marketModelList = mutableListOf<MarketModel.MarketWithQuota>()
 
         if (marketModel != null) {
             for (market in marketModel) {
-                quotasRepository.getQuota(market.get("quota_id") as String)?.let {
+                quotasRepository.getQuota(market.id)?.let {
                     MarketModel.MarketWithQuota(
                         id = market.id,
                         name = market.get("name") as String,
@@ -56,7 +55,7 @@ class MarketRepository(
             }
         }
 
-        return ResponseModel.FAResponseWithData.Success(marketModelList as List<MarketModel.MarketWithQuota>)
+        return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 
     suspend fun getMarkets(): Flow<ResponseModel.FAResponseWithData<List<MarketModel.Market>>> {
@@ -66,7 +65,6 @@ class MarketRepository(
     }
 
     suspend fun getMarketsWithQuota() : Flow<ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>>> {
-        Log.e("test", readMarketData().data.toString())
         return flow {
             emit(
                 readMarketDataWithQuotas()

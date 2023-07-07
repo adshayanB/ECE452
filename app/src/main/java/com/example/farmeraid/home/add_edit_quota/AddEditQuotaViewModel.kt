@@ -98,7 +98,7 @@ class AddEditQuotaViewModel @Inject constructor(
     private suspend fun internalSelectMarket(market: MarketModel.Market) {
         selectedMarket.value = market
         produceRows.value =
-            (quotasRepository.getQuota(market.quotaID)?.produceQuotaList?.map { produceQuota ->
+            (quotasRepository.getQuota(market.id)?.produceQuotaList?.map { produceQuota ->
                 AddEditQuotaModel.ProduceRow(
                     produce = produceQuota.produceName,
                     quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)

@@ -55,7 +55,7 @@ class QuotasRepository {
         }
     }
     fun addQuota(market: MarketModel.Market, produce: List<QuotasRepository.ProduceQuota>) {
-        db.collection("quotas").document(market.quotaID)
+        db.collection("quotas").document(market.id)
             .update("produce", produce.associate {
                 it.produceName to it.produceGoalAmount
             })
