@@ -64,6 +64,34 @@ class AddEditProduceViewModel @Inject constructor(
         produceAmount.value = amount
     }
 
+    fun confirmDeleteProduce() {
+        snackbarDelegate.showSnackbar(
+            message = "Are you sure you want to delete ${produceName.value}",
+            actionLabel = "Yes",
+            onAction = { deleteProduce() }
+        )
+    }
+
+    private fun deleteProduce() {
+        viewModelScope.launch {
+            submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
+            val prodName = produceName.value
+            if (prodName == null) {
+                snackbarDelegate.showSnackbar("Invalid produce name")
+            } else if (initialProduceName != null) {
+                when (val deleteResult = inventoryRepository.deleteProduce(prodName)) {
+                    is ResponseModel.FAResponse.Success -> {
+                        appNavigator.navigateBack()
+                    }
+                    is ResponseModel.FAResponse.Error -> {
+                        snackbarDelegate.showSnackbar(deleteResult.error ?: "Unknown error")
+                    }
+                }
+            }
+            submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
+        }
+    }
+
     fun submitProduce() {
         viewModelScope.launch {
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
