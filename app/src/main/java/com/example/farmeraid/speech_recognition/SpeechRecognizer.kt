@@ -29,6 +29,18 @@ class SpeechRecognizerUtility() {
     private val permission = Manifest.permission.RECORD_AUDIO
     private var activityContext: Context ?= null
 
+    val stringToNum: Map<String,String> = mapOf(
+        "one" to "1",
+        "two" to "2",
+        "three" to "3",
+        "four" to "4",
+        "five" to "5",
+        "six" to "6",
+        "seven" to "7",
+        "eight" to "8",
+        "nine" to "9",
+    )
+
     private val recognizerIntent: Intent by lazy {
         Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
@@ -55,7 +67,11 @@ class SpeechRecognizerUtility() {
         override fun onEvent(eventType: Int, params: Bundle?) {}
         override fun onResults(results: Bundle?) {
             val res = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            speechRecognizerResult.value = res?.get(0) ?: ""
+            var speechResult = res?.get(0)?: ""
+            stringToNum.forEach {pair->
+                speechResult = speechResult.replace(pair.key, pair.value)
+            }
+            speechRecognizerResult.value = speechResult
             startSpeechRecognition()
         }
     }
@@ -99,3 +115,4 @@ class SpeechRecognizerUtility() {
         activityContext = context
     }
 }
+
