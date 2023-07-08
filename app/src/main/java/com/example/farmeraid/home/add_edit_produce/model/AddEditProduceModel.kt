@@ -1,14 +1,13 @@
 package com.example.farmeraid.home.add_edit_produce.model
 
-import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 class AddEditProduceModel {
     data class AddEditProduceViewState(
-        val produceName : String?,
-        val produceAmount : Int,
+        val produceName : String? = null,
+        val produceAmount : Int? = null,
         val submitButtonUiState : UiComponentModel.ButtonUiState,
-        val isAddProduce : Boolean,
+        val isAddProduce : Boolean = true,
     )
 }
 
