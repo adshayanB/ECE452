@@ -60,7 +60,7 @@ fun CreateFarmScreenView() {
              ) {
                  Text(text = "Create New Farm", style = TextStyle(fontSize = 30.sp))
 
-                 Spacer(modifier = Modifier.height(20.dp))
+                 Spacer(modifier = Modifier.height(50.dp))
 
                  TextField(
                      label = { Text(text = "Farm Name") },
@@ -75,7 +75,7 @@ fun CreateFarmScreenView() {
                      modifier = Modifier.fillMaxWidth(),
                  )
 
-                 Spacer(modifier = Modifier.height(20.dp))
+                 Spacer(modifier = Modifier.height(50.dp))
                  Row(
                      modifier = Modifier
                          .fillMaxWidth(),

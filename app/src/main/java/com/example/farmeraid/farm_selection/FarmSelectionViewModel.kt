@@ -17,14 +17,10 @@ class FarmSelectionViewModel @Inject constructor(
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
     fun navigateToCreateFarm(){
-        snackbarDelegate.showSnackbar(
-            message = "Navigate to Create Farm Page"
-        )
+        appNavigator.navigateToCreateFarm()
     }
 
     fun navigateToJoinFarm(){
-        snackbarDelegate.showSnackbar(
-            message = "Navigate to Join Farm Page"
-        )
+        appNavigator.navigateToJoinFarm()
     }
 }
