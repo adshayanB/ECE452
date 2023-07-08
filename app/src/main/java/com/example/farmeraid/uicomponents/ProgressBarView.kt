@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.farmeraid.uicomponents.models.UiComponentModel
+import java.lang.Float.max
 import kotlin.math.min
 
 @Composable
@@ -62,6 +64,12 @@ fun ProgressBarView(
                     drawRect(
                         color = progressBarUiState.progressColor,
                         size = Size(width = size.width * progress, height = size.height),
+                        blendMode = BlendMode.SrcOut
+                    )
+                    drawRect(
+                        color = progressBarUiState.expectedProgressColor,
+                        topLeft = Offset(size.width * progress, 0f),
+                        size = Size(width = max(size.width * progressBarUiState.expectedProgress, size.width * progress) - (size.width * progress), height = size.height),
                         blendMode = BlendMode.SrcOut
                     )
                     restoreToCount(checkPoint)

@@ -11,11 +11,11 @@ class MarketRepository(
     private val quotasRepository: QuotasRepository
 ) {
     private val markets: MutableList<MarketModel.Market> = mutableListOf(
-        MarketModel.Market(id = "1", name = "St. Jacob's", quotaId = "1"),
-        MarketModel.Market(id = "2", name = "St. Lawrence", quotaId = "2"),
-        MarketModel.Market(id = "3",name = "Kensington Market", quotaId = "3"),
-        MarketModel.Market(id = "4",name = "St. Catherines Market", quotaId = "4"),
-        MarketModel.Market(id = "5", name = "Test Market", quotaId = "5"),
+        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "St. Jacob's"),
+        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "St. Lawrence"),
+        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "Kensington Market"),
+        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "St. Catherines Market"),
+        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "Test Market"),
     )
 
     fun getMarkets(): Flow<List<MarketModel.Market>> {
@@ -28,7 +28,7 @@ class MarketRepository(
         return flow {
             emit(
                 markets.mapNotNull { market ->
-                    quotasRepository.getQuota(market.quotaId)
+                    quotasRepository.getQuota(market.id)
                         ?.let { quota ->
                             MarketModel.MarketWithQuota(
                                 id = market.id,
@@ -45,10 +45,10 @@ class MarketRepository(
         return markets.firstOrNull { it.id == id }
     }
 
-    fun getMarketWithQuota(id : String) : MarketModel.MarketWithQuota? {
+    suspend fun getMarketWithQuota(id : String) : MarketModel.MarketWithQuota? {
         return markets.firstOrNull { it.id == id }
             ?.let { market ->
-                quotasRepository.getQuota(market.quotaId)
+                quotasRepository.getQuota(market.id)
                     ?.let { quota ->
                         MarketModel.MarketWithQuota(
                             id = market.id,
@@ -59,12 +59,12 @@ class MarketRepository(
             }
     }
 
-    fun updateMarketQuota(marketId : String, quotaId : String) {
-        val marketIndex : Int = markets.indexOfFirst { it.id == marketId }
-        if (marketIndex >= 0) {
-            markets[marketIndex] = markets[marketIndex].copy(quotaId = quotaId)
-        } else {
-            Log.e("MarketRepository", "Market with id $marketId does not exist")
-        }
-    }
+//    fun updateMarketQuota(marketId : String) {
+//        val marketIndex : Int = markets.indexOfFirst { it.id == marketId }
+//        if (marketIndex >= 0) {
+//            markets[marketIndex] = markets[marketIndex].copy(id = marketId)
+//        } else {
+//            Log.e("MarketRepository", "Market with id $marketId does not exist")
+//        }
+//    }
 }

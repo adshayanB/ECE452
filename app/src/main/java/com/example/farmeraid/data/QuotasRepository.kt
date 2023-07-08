@@ -1,115 +1,65 @@
 package com.example.farmeraid.data
 
+import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
-import com.example.farmeraid.home.model.HomeModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+import org.checkerframework.checker.units.qual.s
 
 // TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
 // TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
 
 class QuotasRepository {
     data class ProduceQuota(
-        val produceName : String,
-        val produceGoalAmount : Int,
+        val produceName: String,
+        val produceGoalAmount: Int,
+        val saleAmount: Int
     )
 
     data class Quota(
         val id: String,
-        val produceQuotaList : List<ProduceQuota>,
+        val produceQuotaList: List<ProduceQuota>
     )
 
-    private var currentId : String = "5"
+    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    private val quotasList: MutableList<Quota> = mutableListOf(Quota(
-        id = "1",
-        produceQuotaList = listOf(
-            ProduceQuota(
-                produceName = "Apple",
-                produceGoalAmount = 25,
-            ),
-            ProduceQuota(
-                produceName = "Banana",
-                produceGoalAmount = 10,
-            ),
-            ProduceQuota(
-                produceName = "Mango",
-                produceGoalAmount = 1,
-            ),
-            ProduceQuota(
-                produceName = "Strawberry",
-                produceGoalAmount = 2,
-            ),
-        )
-    ), Quota(
-        id = "2",
-        produceQuotaList = listOf(
-            ProduceQuota(
-                produceName = "Strawberry",
-                produceGoalAmount = 15,
-            ),
-            ProduceQuota(
-                produceName = "Apple",
-                produceGoalAmount = 24,
-            ),
-        )
-    ), Quota(
-        id = "3",
-        produceQuotaList = listOf(
-            ProduceQuota(
-                produceName = "Apple",
-                produceGoalAmount = 4,
-            ),
-            ProduceQuota(
-                produceName = "Banana",
-                produceGoalAmount = 10,
-            ),
-            ProduceQuota(
-                produceName = "Mango",
-                produceGoalAmount = 5,
-            ),
-        )
-    ), Quota(
-        id = "4",
-        produceQuotaList = listOf(
-            ProduceQuota(
-                produceName = "Banana",
-                produceGoalAmount = 5,
-            ),
-            ProduceQuota(
-                produceName = "Mango",
-                produceGoalAmount = 12,
-            ),
-        )
-    ),
+    //Todo: Refactor to not mock sales data
+    private var SALES = hashMapOf(
+        "mangoes" to 4,
+        "apple" to 2,
+        "strawberry" to 7,
+        "bananas" to 2,
+        "strawberry" to 4
     )
 
-    fun getCategorizedQuotas(): Flow<MutableList<Quota>> {
-        return flow {
-            emit(quotasList)
-        }.flowOn(Dispatchers.IO)
-    }
+    suspend fun getQuota(id: String): Quota? {
+        val docRef = db.collection("quotas").document(id)
+        val docRead = docRef.get().await()
 
-    fun getQuota(id : String): Quota? {
-        return quotasList.firstOrNull { quota -> quota.id == id }
-    }
+        val quotas = docRead.data?.get("produce")
+        val saleCount = docRead.data?.get("sale")
 
-    fun addQuota(market : MarketModel.Market, produce : List<ProduceQuota>) : String? {
-        val quotaIndex : Int = quotasList.indexOfFirst { quota -> quota.id == market.quotaId }
-
-        return if (quotaIndex >= 0) {
-            quotasList[quotaIndex] = quotasList[quotaIndex].copy(produceQuotaList = produce)
-            null
-        } else {
-            quotasList.add(Quota(
-                id = currentId,
-                produceQuotaList = produce,
-            ))
-            val tempId = currentId
-            currentId = (currentId.toInt() + 1).toString()
-            tempId
+        if (quotas != null && saleCount != null) {
+            val quotasMap = quotas as MutableMap<String, Int>
+            val sale = saleCount as MutableMap<String, Int>
+            return Quota(
+                id = id,
+                produceQuotaList = quotasMap.map{ (produceName, goal) ->
+                    ProduceQuota(
+                        produceName = produceName,
+                        produceGoalAmount = goal,
+                        saleAmount = sale.getOrDefault(produceName, 0),
+                    )
+                })
         }
+        else {
+            return null
+        }
+    }
+    fun addQuota(market: MarketModel.Market, produce: List<QuotasRepository.ProduceQuota>) {
+        db.collection("quotas").document(market.id)
+            .update("produce", produce.associate {
+                it.produceName to it.produceGoalAmount
+            })
     }
 }

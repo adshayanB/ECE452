@@ -13,6 +13,7 @@ import com.example.farmeraid.farm.model.getMicButton
 import com.example.farmeraid.farm.model.getStopButton
 import com.example.farmeraid.farm.model.getSubmitButton
 import com.example.farmeraid.navigation.AppNavigator
+import com.example.farmeraid.snackbar.SnackbarDelegate
 import com.example.farmeraid.speech_recognition.KontinuousSpeechRecognizer
 import com.example.farmeraid.speech_recognition.SpeechRecognizerUtility
 import com.example.farmeraid.uicomponents.models.UiComponentModel
@@ -30,6 +31,7 @@ class FarmViewModel @Inject constructor(
     private val speechRecognizerUtility: SpeechRecognizerUtility,
     private val kontinuousSpeechRecognizer: KontinuousSpeechRecognizer,
     private val appNavigator: AppNavigator,
+    private val snackbarDelegate: SnackbarDelegate,
     ): ViewModel() {
     private val _state = MutableStateFlow(FarmViewState(
         micFabUiState = getMicButton(),
@@ -84,13 +86,15 @@ class FarmViewModel @Inject constructor(
     init{
         viewModelScope.launch {
                 inventoryRepository.getInventory().collect{ produce ->
-                    if (produce != null) {
-                        harvestList.value = produce.map {(produceName, _) ->
+                    produce.data?.let {
+                        harvestList.value = it.map {(produceName, _) ->
                             FarmModel.ProduceHarvest(
                                 produceName = produceName,
                                 produceCount = 0,
                             )
                         }
+                    } ?: run {
+                        snackbarDelegate.showSnackbar(produce.error ?: "Unknown error")
                     }
                 }
         }
@@ -119,21 +123,31 @@ class FarmViewModel @Inject constructor(
     private fun parseSpeech(speechResult: String): List<FarmModel.ProduceHarvest>{
 
         speechRes.value = speechResult
+
+
+
         return harvestList.value.map { produce ->
-            var re = Regex("(add)( )*([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
-            var matches = re.findAll(speechResult.lowercase())
+            var reAdd = Regex("(add|at)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*")
+            var addMatches = reAdd.findAll(speechResult.lowercase())
             var count = 0
-            matches.forEach { m ->
-                val action = m.groupValues[1]
-                val quantity = m.groupValues[3].toIntOrNull()
-                //need to handle case when digits are less than 9
-                Log.d("Recognize","${action} ${quantity} ${produce.produceName}")
-                if(quantity != null && action != "" && action == "add"){
-                    count += quantity
+            //Get every add phrase in our speech Result
+            addMatches.forEach { addM ->
+                val addCommand:String = addM.value
+                var reAddAmount = Regex("([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
+                var amountMatches = reAddAmount.findAll(addCommand)
+                //Get every instance of the current produce being incremented in the add phrase
+                amountMatches.forEach { amountM ->
+                    val quantity = amountM.groupValues[1].toIntOrNull()
+                    if (quantity != null){
+                        count += quantity
+                    }
                 }
+
             }
-            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + count )
+
+            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + count)
         }
+
     }
 
     private fun getMicButtonEvent(): UiComponentModel.FabUiEvent {
@@ -174,9 +188,9 @@ class FarmViewModel @Inject constructor(
     fun submitHarvest() {
         viewModelScope.launch {
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
-            val harvestMap: MutableMap<String, Int> = harvestList.value.associate {
-                Pair(it.produceName, it.produceCount)
-            }.toMutableMap()
+            val harvestMap: Map<String, Int> = harvestList.value.associate {
+                it.produceName to it.produceCount
+            }
 
             inventoryRepository.harvest(harvestMap)
 
