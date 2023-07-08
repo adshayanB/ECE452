@@ -52,7 +52,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-    init { fetchData() }
 
     fun fetchData() {
         viewModelScope.launch {
