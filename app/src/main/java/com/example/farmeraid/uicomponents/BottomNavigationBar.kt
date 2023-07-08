@@ -49,6 +49,8 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
         NavRoute.SignIn.route,
         NavRoute.SignUp.route,
         NavRoute.JoinFarm.route,
+        NavRoute.CreateFarm.route,
+        NavRoute.FarmCode.route,
     )
 
     AnimatedVisibility(

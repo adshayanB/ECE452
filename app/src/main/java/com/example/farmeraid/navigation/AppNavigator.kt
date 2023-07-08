@@ -38,4 +38,12 @@ class AppNavigator {
     fun navigateToJoinFarm() {
         _navController?.navigate(NavRoute.JoinFarm.route)
     }
+    
+    fun navigateToCreateFarm() {
+        _navController?.navigate(NavRoute.CreateFarm.route)
+    }
+
+    fun navigateToFarmCode() {
+        _navController?.navigate(NavRoute.FarmCode.route)
+    }
 }
