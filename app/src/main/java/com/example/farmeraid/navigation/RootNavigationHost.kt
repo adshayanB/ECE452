@@ -1,5 +1,6 @@
 package com.example.farmeraid.navigation
 
+import AddEditProduceScreenView
 import AddEditQuotaScreenView
 import BottomNavigationBar
 import FarmScreenView
@@ -81,7 +82,10 @@ fun RootNavigationHost(
                 }
                 composable(
                     route = NavRoute.AddEditQuota.route + "?marketId={marketId}",
-                    arguments = listOf(navArgument("marketId") { nullable = true })
+                    arguments = listOf(navArgument("marketId") {
+                        type = NavType.StringType
+                        nullable = true
+                    })
                 ) {
                     AddEditQuotaScreenView()
                 }
@@ -93,6 +97,21 @@ fun RootNavigationHost(
                     arguments = listOf(navArgument("marketId") { type = NavType.StringType})
                 ) {
                     ViewQuotaScreenView()
+                }
+                composable(
+                    route = NavRoute.AddEditProduce.route + "?produceName={produceName}&produceAmount={produceAmount}",
+                    arguments = listOf(
+                        navArgument("produceName") {
+                            type = NavType.StringType
+                            nullable = true
+                        },
+                        navArgument("produceAmount") {
+                            type = NavType.IntType
+                            nullable = true
+                        }
+                    )
+                ) {
+                    AddEditProduceScreenView()
                 }
                 composable(NavRoute.FarmSelection.route){
                     FarmSelectionScreenView()

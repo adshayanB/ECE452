@@ -1,4 +1,6 @@
-package com.example.farmeraid.home.add_edit_produce.views
+import androidx.compose.runtime.Composable
 
-class AddEditProduceScreenView {
+@Composable
+fun AddEditProduceScreenView() {
+
 }
