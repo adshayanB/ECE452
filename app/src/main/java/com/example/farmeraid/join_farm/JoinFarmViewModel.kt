@@ -56,7 +56,7 @@ class JoinFarmViewModel @Inject constructor(
 
         appNavigator.navigateToMode(NavRoute.Home)
 
-
+        //TODO ensure farm code is being updated on user document as farmID
 //        when (result) {
 //            is ResponseModel.FAResponse.Success -> {
 //                Log.d("MESSAGE - joinFarm()", "SUCCESSFULLY CREATED A FARM")
