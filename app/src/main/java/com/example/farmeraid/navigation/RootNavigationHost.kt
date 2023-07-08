@@ -106,7 +106,7 @@ fun RootNavigationHost(
                             nullable = true
                         },
                         navArgument("produceAmount") {
-                            type = NavType.IntType
+                            type = NavType.StringType
                             nullable = true
                         }
                     )

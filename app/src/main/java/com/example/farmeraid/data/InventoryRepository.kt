@@ -44,9 +44,9 @@ class InventoryRepository(
         return userRepository.getFarmId()
             ?.let {
                 try {
-                    val docRef : MutableMap<String, Int> = db.collection("inventory").document(it).get().await() as MutableMap<String,Int>
-                    if (!docRef.containsKey(produceName)) {
-                        db.collection("farm").document(it).update("produce.${produceName}", produceAmount).await()
+                    val produceMap : MutableMap<String, Int> = db.collection("inventory").document(it).get().await().get("produce") as MutableMap<String,Int>
+                    if (!produceMap.containsKey(produceName)) {
+                        db.collection("inventory").document(it).update("produce.${produceName}", produceAmount).await()
                         FAResponse.Success
                     } else {
                         FAResponse.Error("This produce already exists")
