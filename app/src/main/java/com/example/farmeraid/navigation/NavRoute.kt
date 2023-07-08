@@ -16,4 +16,6 @@ sealed class NavRoute(val route: String) {
     object AddEditQuota : NavRoute("add_edit_quota_route")
 
     object ViewQuota : NavRoute("view_quota_route")
+
+    object AddEditProduce : NavRoute("add_edit_produce_route")
 }
