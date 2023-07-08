@@ -48,6 +48,7 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
         null,
         NavRoute.SignIn.route,
         NavRoute.SignUp.route,
+        NavRoute.JoinFarm.route,
         NavRoute.CreateFarm.route,
         NavRoute.FarmCode.route,
     )

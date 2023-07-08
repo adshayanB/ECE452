@@ -21,6 +21,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.farmeraid.join_farm.views.JoinFarmScreenView
 import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
 import com.example.farmeraid.sign_in.views.SignInScreenView
@@ -53,7 +54,7 @@ fun RootNavigationHost(
         ) { padding ->
             NavHost(
                 navController = appNavigator.navController!!,
-                startDestination = NavRoute.SignIn.route,
+                startDestination = NavRoute.JoinFarm.route,
                 modifier = Modifier.padding(padding)
             ) {
                 composable(NavRoute.SignUp.route){
@@ -62,12 +63,15 @@ fun RootNavigationHost(
                 composable(NavRoute.SignIn.route) {
                     SignInScreenView()
                 }
+                composable(NavRoute.JoinFarm.route) {
+                    JoinFarmScreenView()
+                }            
                 composable(NavRoute.CreateFarm.route) {
                     CreateFarmScreenView()
-                }
+                }           
                 composable(NavRoute.FarmCode.route) {
                     FarmCodeScreenView()
-                }
+                }          
                 composable(NavRoute.Farm.route) {
                     FarmScreenView()
                 }

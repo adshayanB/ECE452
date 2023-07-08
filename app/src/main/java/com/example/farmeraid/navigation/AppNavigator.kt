@@ -35,6 +35,10 @@ class AppNavigator {
         _navController?.navigate(NavRoute.ViewQuota.route + "/${marketId}")
     }
 
+    fun navigateToJoinFarm() {
+        _navController?.navigate(NavRoute.JoinFarm.route)
+    }
+    
     fun navigateToCreateFarm() {
         _navController?.navigate(NavRoute.CreateFarm.route)
     }
@@ -42,6 +46,4 @@ class AppNavigator {
     fun navigateToFarmCode() {
         _navController?.navigate(NavRoute.FarmCode.route)
     }
-
-
 }
