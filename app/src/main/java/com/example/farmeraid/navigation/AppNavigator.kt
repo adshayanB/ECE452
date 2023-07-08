@@ -46,4 +46,8 @@ class AppNavigator {
     fun navigateToFarmCode() {
         _navController?.navigate(NavRoute.FarmCode.route)
     }
+    
+    fun navigateToFarmSelection(){
+        _navController?.navigate(NavRoute.FarmSelection.route)
+    }
 }

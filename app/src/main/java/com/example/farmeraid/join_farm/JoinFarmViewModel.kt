@@ -54,10 +54,9 @@ class JoinFarmViewModel @Inject constructor(
         //val result: ResponseModel.FAResponse = farmRepository.joinFarm(farmCode.value)
         buttonUiState.value = buttonUiState.value.copy(isLoading = false)
 
-        snackbarDelegate.showSnackbar(
-            message = "Navigates to Home"
-        )
+        appNavigator.navigateToMode(NavRoute.Home)
 
+        //TODO ensure farm code is being updated on user document as farmID
 //        when (result) {
 //            is ResponseModel.FAResponse.Success -> {
 //                Log.d("MESSAGE - joinFarm()", "SUCCESSFULLY CREATED A FARM")
