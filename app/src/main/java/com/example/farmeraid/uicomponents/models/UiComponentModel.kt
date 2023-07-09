@@ -66,7 +66,9 @@ class UiComponentModel {
         val text : String,
         val containerColor : Color = Color.White,
         val progressColor : Color = Color.Black,
+        val expectedProgressColor : Color = Color.Gray,
         val progress : Float = 0f,
+        val expectedProgress : Float = 0f,
         val fontSize : TextUnit = 14.sp,
         val fontWeight : FontWeight = FontWeight.Normal,
     )

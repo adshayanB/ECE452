@@ -13,8 +13,9 @@ class FarmRepository(
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    suspend fun createFarm(farmName: String){
-        try {
+    suspend fun createFarm(farmName: String) : ResponseModel.FAResponse {
+        //if db.collection("farm").get
+        return try {
             userRepository.getUserId()?.let{
                 val docRef = db.collection("farm").add(
                     mapOf (
@@ -33,14 +34,16 @@ class FarmRepository(
 
                 //TODO update userRespository with new farmID
                 //TODO Function needs to be made on UserRepo
-
-            }
+                ResponseModel.FAResponse.Success
+            } ?: ResponseModel.FAResponse.Error("User does not exist")
         }catch(e: Exception){
-            Log.e("FarmRepository - createFarm()", e.message?:"Unknown error")
+            return ResponseModel.FAResponse.Error(e.message?:"Error creating a farm. Please try again.")
+            //Log.e("FarmRepository - createFarm()", e.message?:"Unknown error")
         }
     }
-    suspend fun joinFarm(farmCode: String){
-        try {
+
+    suspend fun joinFarm(farmCode: String) : ResponseModel.FAResponse {
+        return try {
             userRepository.getUserId()?.let{id ->
                 db.collection("farm").let{ ref ->
                     ref.whereEqualTo("code", farmCode).get().await().let{ snap ->
@@ -52,8 +55,11 @@ class FarmRepository(
                 //TODO update userRespository with new farmID
                 //TODO Function needs to be made on UserRepo
             }
+
+            ResponseModel.FAResponse.Success
         }catch (e: Exception){
-            Log.e("FarmRepository - joinFarm()", e.message?:"Unknown error")
+            return ResponseModel.FAResponse.Error(e.message?:"Error joining a farm. Please try again.")
+//            Log.e("FarmRepository - joinFarm()", e.message?:"Unknown error")
         }
 
     }
