@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
-    ) : ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state: StateFlow<HomeViewState>
         get() = _state
@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(quotasList, inventoryList, selectedTab, isLoading) {
-                quotasList: List<MarketModel.MarketWithQuota>, inventoryList: MutableMap<String, Int>, selectedTab: Tab, isLoading : Boolean ->
+                    quotasList: List<MarketModel.MarketWithQuota>, inventoryList: MutableMap<String, Int>, selectedTab: Tab, isLoading : Boolean ->
                 HomeViewState(
                     quotasList = quotasList,
                     inventoryList = inventoryList,
@@ -59,7 +59,12 @@ class HomeViewModel @Inject constructor(
             isLoading.value = true
             combine(marketRepository.getMarketsWithQuota(), inventoryRepository.getInventory()) {quotas, inventory -> Pair(quotas, inventory)}
                 .collect { (quotas, inventory) ->
-                    quotasList.value = quotas
+//                    quotasList.value = quotas
+                    quotas.data?.let{
+                        quotasList.value = it
+                    } ?: run {
+                        snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
+                    }
                     inventory.data?.let {
                         inventoryList.value = it
                     } ?: run {

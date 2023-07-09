@@ -52,8 +52,6 @@ class FarmRepository(
                         )
                     }
                 }
-
-
                 //TODO update userRespository with new farmID
                 //TODO Function needs to be made on UserRepo
             }
@@ -66,5 +64,20 @@ class FarmRepository(
 
     }
 
-
+    suspend fun getMarketIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
+        Log.d("TEST", "called")
+        return (userRepository.getFarmId()?.let { id ->
+            try {
+                db.collection("farm").document(id)
+                    .get()
+                    .await()
+                    .data?.get("markets")?.let {
+                        ResponseModel.FAResponseWithData.Success(it as MutableList<String>)
+                    } ?: ResponseModel.FAResponseWithData.Error("Error fetching markets")
+            } catch (e : Exception) {
+                Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting inventory")
+            }
+        } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
+    }
 }

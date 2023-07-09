@@ -2,69 +2,111 @@ package com.example.farmeraid.data
 
 import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.ResponseModel
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 
 class MarketRepository(
-    private val quotasRepository: QuotasRepository
+    private val quotasRepository: QuotasRepository,
+    private val farmRepository: FarmRepository
 ) {
-    private val markets: MutableList<MarketModel.Market> = mutableListOf(
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "St. Jacob's"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "St. Lawrence"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "Kensington Market"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu",name = "St. Catherines Market"),
-        MarketModel.Market(id = "NanrSSGcmdsG2nYwbZRu", name = "Test Market"),
-    )
+    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private suspend fun readMarketData(): ResponseModel.FAResponseWithData<List<MarketModel.Market>> {
+        val marketIds = farmRepository.getMarketIds()
+        if (marketIds.error != null) {
+            return ResponseModel.FAResponseWithData.Error(marketIds.error)
+        }
 
-    fun getMarkets(): Flow<List<MarketModel.Market>> {
+        val marketModel: MutableList<DocumentSnapshot> = mutableListOf()
+        marketIds.data?.forEach {
+            try {
+                marketModel.add(db.collection("market").document(it).get().await())
+            } catch (e: Exception) {
+                return ResponseModel.FAResponseWithData.Error(
+                    e.message ?: "Unknown error while fetching market"
+                )
+            }
+        }
+
+        val marketModelList = mutableListOf<MarketModel.Market>()
+
+        for (market in marketModel) {
+            MarketModel.Market(
+                id = market.id,
+                name = market.get("name") as String,
+            )
+                .let { marketModelList.add(it) }
+        }
+
+        return ResponseModel.FAResponseWithData.Success(marketModelList)
+    }
+
+    private suspend fun readMarketDataWithQuotas(): ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>> {
+        val marketIds = farmRepository.getMarketIds()
+        if (marketIds.error != null) {
+            return ResponseModel.FAResponseWithData.Error(marketIds.error)
+        }
+
+        val marketModel : MutableList<DocumentSnapshot> = mutableListOf()
+        marketIds.data?.forEach {
+            try {
+                marketModel.add(db.collection("market").document(it).get().await())
+            } catch (e : Exception) {
+                return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
+            }
+        }
+
+        val marketModelList = mutableListOf<MarketModel.MarketWithQuota>()
+
+        for (market in marketModel) {
+            quotasRepository.getQuota(market.id)?.let {
+                MarketModel.MarketWithQuota(
+                    id = market.id,
+                    name = market.get("name") as String,
+                    quota = it
+                )
+            }?.let { marketModelList.add(it) }
+        }
+
+        return ResponseModel.FAResponseWithData.Success(marketModelList)
+    }
+
+    suspend fun getMarkets(): Flow<ResponseModel.FAResponseWithData<List<MarketModel.Market>>> {
         return flow {
-            emit(markets)
+            emit(readMarketData())
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getMarketsWithQuota() : Flow<List<MarketModel.MarketWithQuota>> {
+    suspend fun getMarketsWithQuota() : Flow<ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>>> {
         return flow {
             emit(
-                markets.mapNotNull { market ->
-                    quotasRepository.getQuota(market.id)
-                        ?.let { quota ->
-                            MarketModel.MarketWithQuota(
-                                id = market.id,
-                                name = market.name,
-                                quota = quota,
-                            )
-                        }
-                }
+                readMarketDataWithQuotas()
             )
         }
     }
 
-    fun getMarket(id: String) : MarketModel.Market? {
-        return markets.firstOrNull { it.id == id }
-    }
+    suspend fun getMarketWithQuota(id : String) : ResponseModel.FAResponseWithData<MarketModel.MarketWithQuota> {
 
-    suspend fun getMarketWithQuota(id : String) : MarketModel.MarketWithQuota? {
-        return markets.firstOrNull { it.id == id }
-            ?.let { market ->
-                quotasRepository.getQuota(market.id)
-                    ?.let { quota ->
-                        MarketModel.MarketWithQuota(
-                            id = market.id,
-                            name = market.name,
-                            quota = quota,
-                        )
-                    }
+        val marketModel : DocumentSnapshot
+
+            try {
+                marketModel = db.collection("market").document(id).get().await()
+            } catch (e : Exception) {
+                return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
             }
-    }
 
-//    fun updateMarketQuota(marketId : String) {
-//        val marketIndex : Int = markets.indexOfFirst { it.id == marketId }
-//        if (marketIndex >= 0) {
-//            markets[marketIndex] = markets[marketIndex].copy(id = marketId)
-//        } else {
-//            Log.e("MarketRepository", "Market with id $marketId does not exist")
-//        }
-//    }
+        val marketWithQuota = quotasRepository.getQuota(marketModel.id)?.let {
+                    MarketModel.MarketWithQuota(
+                        id = marketModel.id,
+                        name = marketModel.get("name") as String,
+                        quota = it
+                    )}
+
+        return ResponseModel.FAResponseWithData.Success(marketWithQuota)
+    }
 }

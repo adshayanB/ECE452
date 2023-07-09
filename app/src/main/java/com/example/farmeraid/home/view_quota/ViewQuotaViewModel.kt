@@ -35,8 +35,15 @@ class ViewQuotaViewModel @Inject constructor(
         get() = _state
 
     private val quota : Flow<MarketModel.MarketWithQuota?> = flow {
-        marketId?.let{
-            emit(marketRepository.getMarketWithQuota(marketId))
+        marketId?.let{ id ->
+            marketRepository.getMarketWithQuota(id).let { marketWithQuota ->
+                marketWithQuota.data?.let {
+                    emit(it)
+                } ?: run {
+                    snackbarDelegate.showSnackbar(marketWithQuota.error ?: "Unknown error")
+                    emit(null)
+                }
+            }
         } ?: run {
             emit(null)
         }
