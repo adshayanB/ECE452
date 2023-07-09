@@ -1,6 +1,8 @@
 package com.example.farmeraid.data
 
+import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.ResponseModel
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -54,10 +56,31 @@ class QuotasRepository {
             return null
         }
     }
-    fun addQuota(market: MarketModel.Market, produce: List<QuotasRepository.ProduceQuota>) {
-        db.collection("quotas").document(market.id)
-            .update("produce", produce.associate {
-                it.produceName to it.produceGoalAmount
-            })
+    suspend fun addQuota(market: MarketModel.Market, produce: List<QuotasRepository.ProduceQuota>) {
+        if (db.collection("quotas").document(market.id).get().await().exists()) {
+            db.collection("quotas").document(market.id)
+                .update("produce", produce.associate {
+                    it.produceName to it.produceGoalAmount
+                })
+        } else {
+            db.collection("quotas").document(market.id).set(
+                mapOf(
+                    "produce" to produce.associate {
+                        it.produceName to it.produceGoalAmount
+                    },
+                    "sale" to emptyMap<String, Int>(),
+                )
+            )
+        }
+    }
+
+    suspend fun deleteQuota(id : String) : ResponseModel.FAResponse {
+        return try {
+                    db.collection("quotas").document(id).delete().await()
+                    ResponseModel.FAResponse.Success
+                } catch (e: Exception) {
+                    Log.e("QuotasRepository", e.message ?: e.stackTraceToString())
+                    ResponseModel.FAResponse.Error(e.message ?: "Unknown error while deleting quota")
+                }
     }
 }

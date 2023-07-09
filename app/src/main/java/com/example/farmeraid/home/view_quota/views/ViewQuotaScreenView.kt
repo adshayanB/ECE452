@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -67,10 +68,18 @@ fun ViewQuotaScreenView() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { viewModel.navigateToEditQuota(state.quota!!.id) }) {
+                    IconButton(onClick = { viewModel.navigateToEditQuota() }) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
                             contentDescription = "Edit ${state.quota?.name ?: "Unknown"} Quota",
+                            tint = WhiteContentColour,
+                        )
+                    }
+                    IconButton(onClick = { viewModel.confirmDeleteQuota() }) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Delete ${state.quota?.name ?: "Unknown"} Quota",
+                            tint = WhiteContentColour,
                         )
                     }
                 },

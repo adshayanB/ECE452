@@ -66,7 +66,7 @@ class AddEditProduceViewModel @Inject constructor(
 
     fun confirmDeleteProduce() {
         snackbarDelegate.showSnackbar(
-            message = "Are you sure you want to delete ${produceName.value}",
+            message = "Are you sure you want to delete ${produceName.value}?",
             actionLabel = "Yes",
             onAction = { deleteProduce() }
         )

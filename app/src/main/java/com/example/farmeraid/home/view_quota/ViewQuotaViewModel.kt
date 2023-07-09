@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.home.model.HomeModel
 import com.example.farmeraid.home.view_quota.model.ViewQuotaModel
 import com.example.farmeraid.navigation.AppNavigator
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class ViewQuotaViewModel @Inject constructor(
     marketRepository: MarketRepository,
     savedStateHandle: SavedStateHandle,
+    private val quotasRepository: QuotasRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
@@ -59,11 +61,38 @@ class ViewQuotaViewModel @Inject constructor(
         }
     }
 
+    fun confirmDeleteQuota() {
+        snackbarDelegate.showSnackbar(
+            message = "Are you sure you want to delete ${_state.value.quota?.name}'s quota?",
+            actionLabel = "Yes",
+            onAction = { deleteProduce() }
+        )
+    }
+
+    private fun deleteProduce() {
+        viewModelScope.launch {
+            _state.value.quota?.id?.let {
+                when (val deleteResult = quotasRepository.deleteQuota(it)) {
+                    is ResponseModel.FAResponse.Success -> {
+                        appNavigator.navigateBack()
+                    }
+                    is ResponseModel.FAResponse.Error -> {
+                        snackbarDelegate.showSnackbar(deleteResult.error ?: "Unknown error")
+                    }
+                }
+            } ?: run {
+                snackbarDelegate.showSnackbar("No quota id provided")
+            }
+        }
+    }
+
     fun navigateBack() {
         appNavigator.navigateBack()
     }
 
-    fun navigateToEditQuota(id : String) {
-        appNavigator.navigateToEditQuota(id)
+    fun navigateToEditQuota() {
+        marketId?.let {
+            appNavigator.navigateToEditQuota(it)
+        }
     }
 }
