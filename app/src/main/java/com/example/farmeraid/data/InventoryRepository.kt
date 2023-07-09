@@ -44,9 +44,9 @@ class InventoryRepository(
         return userRepository.getFarmId()
             ?.let {
                 try {
-                    val docRef : MutableMap<String, Int> = db.collection("inventory").document(it).get().await() as MutableMap<String,Int>
-                    if (!docRef.containsKey(produceName)) {
-                        db.collection("farm").document(it).update("produce.${produceName}", produceAmount).await()
+                    val produceMap : MutableMap<String, Int> = db.collection("inventory").document(it).get().await().get("produce") as MutableMap<String,Int>
+                    if (!produceMap.containsKey(produceName)) {
+                        db.collection("inventory").document(it).update("produce.${produceName}", produceAmount).await()
                         FAResponse.Success
                     } else {
                         FAResponse.Error("This produce already exists")
@@ -71,6 +71,20 @@ class InventoryRepository(
                         FAResponse.Error(e.message ?: "Unknown error while editing produce")
                     }
                 } ?: FAResponse.Error("User is not part of a farm")
+    }
+
+    suspend fun deleteProduce(produceName: String) : FAResponse {
+        return userRepository.getFarmId()
+            ?.let {
+                try {
+                    db.collection("inventory").document(it)
+                        .update("produce.${produceName}", FieldValue.delete()).await()
+                    FAResponse.Success
+                } catch (e: Exception) {
+                    Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                    FAResponse.Error(e.message ?: "Unknown error while editing produce")
+                }
+            } ?: FAResponse.Error("User is not part of a farm")
     }
 
     suspend fun harvest(harvestChanges: Map<String, Int>) : FAResponse {

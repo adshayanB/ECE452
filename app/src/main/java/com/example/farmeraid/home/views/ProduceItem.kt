@@ -1,6 +1,7 @@
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ fun ProduceItem(
     produceName : String,
     produceAmount : Int,
     modifier : Modifier = Modifier,
+    onClick : () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -36,6 +38,7 @@ fun ProduceItem(
             .background(
                 color = Color.White,
             )
+            .clickable { onClick() }
             .padding(20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,

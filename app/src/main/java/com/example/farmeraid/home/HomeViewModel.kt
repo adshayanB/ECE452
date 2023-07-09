@@ -52,7 +52,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-    init { fetchData() }
 
     fun fetchData() {
         viewModelScope.launch {
@@ -83,12 +82,14 @@ class HomeViewModel @Inject constructor(
         appNavigator.navigateToAddQuota()
     }
     fun navigateToAddProduce() {
-        snackbarDelegate.showSnackbar(
-            message = "Navigates to Add Produce"
-        )
+        appNavigator.navigateToAddProduce()
     }
 
     fun navigateToViewQuota(id : String) {
         appNavigator.navigateToViewQuota(id)
+    }
+
+    fun navigateToEditProduce(produceName : String, produceAmount : Int) {
+        appNavigator.navigateToEditProduce(produceName, produceAmount)
     }
 }
