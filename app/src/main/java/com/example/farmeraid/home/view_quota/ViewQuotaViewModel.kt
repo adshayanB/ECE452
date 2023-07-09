@@ -36,7 +36,7 @@ class ViewQuotaViewModel @Inject constructor(
 
     private val quota : Flow<MarketModel.MarketWithQuota?> = flow {
         marketId?.let{
-            emit(marketRepository.getMarketWithQuota(marketId))
+            emit(marketRepository.getMarketWithQuota(marketId).data)
         } ?: run {
             emit(null)
         }

@@ -43,7 +43,7 @@ class MarketRepository(
                 .let { marketModelList.add(it) }
         }
 
-        return ResponseModel.FAResponseWithData.Success(marketModelList as List<MarketModel.Market>)
+        return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 
     private suspend fun readMarketDataWithQuotas(): ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>> {
@@ -73,7 +73,7 @@ class MarketRepository(
             }?.let { marketModelList.add(it) }
         }
 
-        return ResponseModel.FAResponseWithData.Success(marketModelList as List<MarketModel.MarketWithQuota>)
+        return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 
     suspend fun getMarkets(): Flow<ResponseModel.FAResponseWithData<List<MarketModel.Market>>> {
@@ -90,7 +90,11 @@ class MarketRepository(
         }
     }
 
-    suspend fun getMarketWithQuota(id : String) : MarketModel.MarketWithQuota? {
-        return readMarketDataWithQuotas().data?.firstOrNull { it.id == id }
+    suspend fun getMarketWithQuota(id : String) : ResponseModel.FAResponseWithData<MarketModel.MarketWithQuota> {
+        return readMarketDataWithQuotas().let { marketWithQuotas ->
+            marketWithQuotas.data?.let { it ->
+                ResponseModel.FAResponseWithData.Success(it.firstOrNull { it.id == id })
+            } ?: ResponseModel.FAResponseWithData.Error(marketWithQuotas.error ?: "Unkown error reading quotas")
+        }
     }
 }
