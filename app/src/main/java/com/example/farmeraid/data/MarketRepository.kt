@@ -91,10 +91,22 @@ class MarketRepository(
     }
 
     suspend fun getMarketWithQuota(id : String) : ResponseModel.FAResponseWithData<MarketModel.MarketWithQuota> {
-        return readMarketDataWithQuotas().let { marketWithQuotas ->
-            marketWithQuotas.data?.let { it ->
-                ResponseModel.FAResponseWithData.Success(it.firstOrNull { it.id == id })
-            } ?: ResponseModel.FAResponseWithData.Error(marketWithQuotas.error ?: "Unkown error reading quotas")
-        }
+
+        val marketModel : DocumentSnapshot
+
+            try {
+                marketModel = db.collection("market").document(id).get().await()
+            } catch (e : Exception) {
+                return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
+            }
+
+        val marketWithQuota = quotasRepository.getQuota(marketModel.id)?.let {
+                    MarketModel.MarketWithQuota(
+                        id = marketModel.id,
+                        name = marketModel.get("name") as String,
+                        quota = it
+                    )}
+
+        return ResponseModel.FAResponseWithData.Success(marketWithQuota)
     }
 }
