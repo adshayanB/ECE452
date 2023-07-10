@@ -75,7 +75,7 @@ class FarmViewModel @Inject constructor(
     init{
         viewModelScope.launch {
             speechRecognizerUtility.speechRecognizerResult.collect {speechText ->
-                harvestList.value = parseSpeech(speechText)
+                harvestList.value = updateCount(speechText)
             }
 //            kontinuousSpeechRecognizer.speechRecognizerResult.collect {speechText ->
 //                harvestList.value = parseSpeech(speechText)
@@ -120,34 +120,49 @@ class FarmViewModel @Inject constructor(
         //kontinuousSpeechRecognizer.stopRecognition()
     }
 
-    private fun parseSpeech(speechResult: String): List<FarmModel.ProduceHarvest>{
+    private fun updateCount(speechResult: String): List<FarmModel.ProduceHarvest>{
 
         speechRes.value = speechResult
 
 
-
         return harvestList.value.map { produce ->
-            var reAdd = Regex("(add|at)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*")
-            var addMatches = reAdd.findAll(speechResult.lowercase())
-            var count = 0
-            //Get every add phrase in our speech Result
-            addMatches.forEach { addM ->
-                val addCommand:String = addM.value
-                var reAddAmount = Regex("([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
-                var amountMatches = reAddAmount.findAll(addCommand)
-                //Get every instance of the current produce being incremented in the add phrase
-                amountMatches.forEach { amountM ->
-                    val quantity = amountM.groupValues[1].toIntOrNull()
-                    if (quantity != null){
-                        count += quantity
-                    }
-                }
+            val addCount = parseSpeech(speechResult,"(add|at)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*", produce)
 
+            val removeCount = parseSpeech(speechResult,"(remove|take away)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*", produce)
+
+            var total = 0
+            if(produce.produceCount == 0 && (addCount-removeCount) < 0){
+                snackbarDelegate.showSnackbar(message = "Do not have any ${produce.produceName} to remove!")
+            } else if(produce.produceCount + (addCount-removeCount) < 0){
+            snackbarDelegate.showSnackbar(message = "Do not have that many ${produce.produceName} to remove!")
+            } else{
+                total = addCount-removeCount
             }
 
-            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + count)
+            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + total)
         }
 
+    }
+
+    private fun parseSpeech(speechResult:String, regexPattern: String, produce: FarmModel.ProduceHarvest): Int{
+        var reAdd = Regex(regexPattern)
+        var addMatches = reAdd.findAll(speechResult.lowercase())
+        var count = 0
+        //Get every add phrase in our speech Result
+        addMatches.forEach { addM ->
+            val addCommand:String = addM.value
+            var reAddAmount = Regex("([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
+            var amountMatches = reAddAmount.findAll(addCommand)
+            //Get every instance of the current produce being incremented in the add phrase
+            amountMatches.forEach { amountM ->
+                val quantity = amountM.groupValues[1].toIntOrNull()
+                if (quantity != null){
+                    count += quantity
+                }
+            }
+
+        }
+        return count
     }
 
     private fun getMicButtonEvent(): UiComponentModel.FabUiEvent {
