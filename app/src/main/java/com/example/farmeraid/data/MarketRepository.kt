@@ -64,13 +64,20 @@ class MarketRepository(
         val marketModelList = mutableListOf<MarketModel.MarketWithQuota>()
 
         for (market in marketModel) {
-            quotasRepository.getQuota(market.id)?.let {
-                MarketModel.MarketWithQuota(
-                    id = market.id,
-                    name = market.get("name") as String,
-                    quota = it
-                )
-            }?.let { marketModelList.add(it) }
+            quotasRepository.getQuota(market.id).let { quotaResponse ->
+                quotaResponse.data?.let {
+                    marketModelList.add(
+                        MarketModel.MarketWithQuota(
+                            id = market.id,
+                            name = market.get("name") as String,
+                            quota = it
+                        )
+                    )
+                } ?: run {
+                    return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while getting quotas")
+                }
+
+            }
         }
 
         return ResponseModel.FAResponseWithData.Success(marketModelList)
@@ -92,20 +99,23 @@ class MarketRepository(
 
     suspend fun getMarketWithQuota(id : String) : ResponseModel.FAResponseWithData<MarketModel.MarketWithQuota> {
 
-        val marketModel : DocumentSnapshot
-
-            try {
-                marketModel = db.collection("market").document(id).get().await()
+        val marketModel : DocumentSnapshot = try {
+                db.collection("market").document(id).get().await()
             } catch (e : Exception) {
                 return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
             }
 
-        val marketWithQuota = quotasRepository.getQuota(marketModel.id)?.let {
+        val marketWithQuota = quotasRepository.getQuota(marketModel.id).let { quotaResponse ->
+                quotaResponse.data?.let {
                     MarketModel.MarketWithQuota(
                         id = marketModel.id,
                         name = marketModel.get("name") as String,
                         quota = it
-                    )}
+                    )
+                } ?: run {
+                    return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while fetching market's quota")
+                }
+            }
 
         return ResponseModel.FAResponseWithData.Success(marketWithQuota)
     }

@@ -9,6 +9,7 @@ import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.home.add_edit_quota.model.getSubmitButton
 import com.example.farmeraid.home.add_edit_quota.model.AddEditQuotaModel
 import com.example.farmeraid.home.add_edit_quota.model.initializeProduceRow
@@ -98,12 +99,19 @@ class AddEditQuotaViewModel @Inject constructor(
     private suspend fun internalSelectMarket(market: MarketModel.Market) {
         selectedMarket.value = market
         produceRows.value =
-            (quotasRepository.getQuota(market.id)?.produceQuotaList?.map { produceQuota ->
-                AddEditQuotaModel.ProduceRow(
-                    produce = produceQuota.produceName,
-                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)
-                )
-            } ?: emptyList()) + initializeProduceRow()
+            quotasRepository.getQuota(market.id).let { quotaResponse ->
+                quotaResponse.data?.let {
+                    it.produceQuotaList.map { produceQuota ->
+                        AddEditQuotaModel.ProduceRow(
+                            produce = produceQuota.produceName,
+                            quantityPickerUiState = UiComponentModel.QuantityPickerUiState(produceQuota.produceGoalAmount)
+                        )
+                    }
+                } ?: run {
+                    snackbarDelegate.showSnackbar(quotaResponse.error ?: "Unknown error")
+                    emptyList()
+                }
+            } + initializeProduceRow()
     }
 
     fun selectMarket(market: MarketModel.Market) {
@@ -156,7 +164,7 @@ class AddEditQuotaViewModel @Inject constructor(
             } else if (produceList.distinctBy { it.produce }.size != produceList.size) {
                 snackbarDelegate.showSnackbar("Cannot have duplicate produce")
             } else {
-                quotasRepository.addQuota(market, produceList.mapNotNull { row ->
+                val addResult = quotasRepository.addQuota(market, produceList.mapNotNull { row ->
                     row.produce?.let {
                         QuotasRepository.ProduceQuota(
                             produceName = row.produce,
@@ -165,6 +173,13 @@ class AddEditQuotaViewModel @Inject constructor(
                         )
                     }
                 })
+
+                when (addResult) {
+                    is ResponseModel.FAResponse.Success -> {}
+                    is ResponseModel.FAResponse.Error -> {
+                        snackbarDelegate.showSnackbar(addResult.error ?: "Unknown error")
+                    }
+                }
             }
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
