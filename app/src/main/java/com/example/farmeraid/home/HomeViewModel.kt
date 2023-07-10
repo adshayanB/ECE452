@@ -62,7 +62,7 @@ class HomeViewModel @Inject constructor(
                     quotas.data?.let{
                         quotasList.value = it
                     } ?: run {
-                        snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
+                        snackbarDelegate.showSnackbar(quotas.error ?: "Unknown error")
                     }
                     inventory.data?.let {
                         inventoryList.value = it

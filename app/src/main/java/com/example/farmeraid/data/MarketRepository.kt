@@ -74,7 +74,9 @@ class MarketRepository(
                         )
                     )
                 } ?: run {
-                    return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while getting quotas")
+                    if (quotaResponse.error != "Quota does not exist") {
+                        return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while getting quotas")
+                    }
                 }
 
             }
@@ -104,6 +106,10 @@ class MarketRepository(
             } catch (e : Exception) {
                 return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
             }
+
+        if (!marketModel.exists()) {
+            return ResponseModel.FAResponseWithData.Error("Market does not exist")
+        }
 
         val marketWithQuota = quotasRepository.getQuota(marketModel.id).let { quotaResponse ->
                 quotaResponse.data?.let {

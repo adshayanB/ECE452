@@ -25,13 +25,18 @@ class QuotasRepository {
 
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+
     suspend fun getQuota(id: String): ResponseModel.FAResponseWithData<Quota?> {
         val docRead : DocumentSnapshot
         try {
             docRead = db.collection("quotas").document(id).get().await()
         } catch (e : Exception) {
             Log.e("QuotasRepository",e.message ?: e.stackTraceToString())
-            return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while ")
+            return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching quota")
+        }
+
+        if (!docRead.exists()) {
+            return ResponseModel.FAResponseWithData.Error("Quota does not exist")
         }
 
         val quotas = docRead.data?.get("produce")

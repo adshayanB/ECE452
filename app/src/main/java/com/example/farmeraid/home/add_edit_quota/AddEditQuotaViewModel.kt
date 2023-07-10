@@ -108,7 +108,9 @@ class AddEditQuotaViewModel @Inject constructor(
                         )
                     }
                 } ?: run {
-                    snackbarDelegate.showSnackbar(quotaResponse.error ?: "Unknown error")
+                    if (quotaResponse.error != "Quota does not exist") {
+                        snackbarDelegate.showSnackbar(quotaResponse.error ?: "Unknown error")
+                    }
                     emptyList()
                 }
             } + initializeProduceRow()
