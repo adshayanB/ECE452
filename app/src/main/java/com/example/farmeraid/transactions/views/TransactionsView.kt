@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.farmeraid.transactions.TransactionsViewModel
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
+import com.example.farmeraid.uicomponents.TransactionsFilterChip
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -111,9 +112,9 @@ fun TransactionsView() {
                 .padding(20.dp, 20.dp, 20.dp, 0.dp),
         ){
             LazyRow {
-//                items(){
-//
-//                }
+                items(1) {
+                    TransactionsFilterChip()
+                }
             }
             Spacer(modifier = Modifier.height(20.dp))
             Divider()
