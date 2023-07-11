@@ -137,6 +137,9 @@ fun TransactionsView() {
 
                 //filter pills
 
+                items(1) {
+                    TransactionsFilterChip()
+                }
             }
             Spacer(modifier = Modifier.height(20.dp))
             Divider()
