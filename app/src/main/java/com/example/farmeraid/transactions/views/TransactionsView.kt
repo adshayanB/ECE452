@@ -37,6 +37,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -128,13 +130,13 @@ fun TransactionsView() {
                 .padding(20.dp, 20.dp, 20.dp, 0.dp),
         ){
             LazyRow {
-<<<<<<< HEAD
+
                 items(1) {
                     TransactionsFilterChip()
                 }
-=======
+
                 //filter pills
->>>>>>> 8f519e7 (Added lazy row and reformatted column on transactions page)
+
             }
             Spacer(modifier = Modifier.height(20.dp))
             Divider()
@@ -157,11 +159,7 @@ fun TransactionsView() {
                         ){
                             Text(modifier = Modifier
                                 .padding(10.dp),
-<<<<<<< HEAD
                                 text = trans.transactionType,
-=======
-                                text = trans.transactionType.stringValue,
->>>>>>> 8f519e7 (Added lazy row and reformatted column on transactions page)
                                 color = Color.Black,
                                 fontSize = 25.sp
                             )
