@@ -56,4 +56,4 @@
 | 07/05/2023 | 0        | 0      | 0        | 0    | 0      | 5         | Created the FarmRepository module and functions to create and join a farm via Firebase
 | 07/06/2023 | 0        | 0      | 0        | 0    | 0      | 3         | Polished speech recognizer parser to handle more natural phrases and adjusted result to fit command criteria
 | 07/09/2023 | 2        | 0      | 0        | 0    | 0      | 0         | Mocked Transaction db on firestore, updated seeding script and improved databse design
-
+| 07/09/2023 | 0        | 0      | 2        | 0    | 0      | 0         | Built the join farm added navigation from signin page
