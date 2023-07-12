@@ -1,5 +1,6 @@
 import firebase_admin
 import uuid
+import datetime
 
 
 from firebase_admin import credentials
@@ -37,6 +38,13 @@ def create_market():
                 "bananas": 90,
                 "mangoes":23,
                 "pineapples":12
+            },
+            "sale":{
+                "apple":2,
+                "orange":3,
+                "banana": 8,
+                "mangoes":5,
+                "strawberry":13
             }
         }
     )
@@ -47,7 +55,7 @@ def create_market():
     coll_ref = db.collection("market")
     create_time, doc_ref = coll_ref.add(
         {
-            "name": "Sath Market",
+            "name": "Soumil Market",
             "quota_id": quota_id,
             "prices": {
                 "apple":1,
@@ -109,6 +117,78 @@ def create_charity():
     doc_ref = db.collection("farm").document(FARM_ID)
     doc_ref.update({"charities": [charity_id]})
 
+def create_specfic_quota():
+    doc_ref = db.collection("quotas").document("kUjSCofinDQXX9jkDoYP")
+    doc_ref.set(
+        {
+           "produce":{
+                "apple":10,
+                "orange":23,
+                "bananas": 90,
+                "mangoes":23,
+                "pineapples":12,
+                "soumil":30,
+                "preyansh":12,
+                "neel":1
+            },
+            "sale":{
+                "apple":0,
+                "orange":3,
+                "bananas":0,
+                "mangoes":3,
+                "pineapples":2,
+                "soumil":3,
+                "preyansh":2,
+                "neel":0
+            }
+        }
+    )
+
+def create_transactions():
+    date = datetime.datetime.now().strftime("%m/%d/%Y")
+    time = datetime.datetime.now(tz=datetime.timezone.utc)
+
+    doc_ref = db.collection("transactions").document("XIefGtyqhiyEaoQmGl2j")
+    doc_ref.set({
+        #date/time/action/produce/market/count/price
+         "t1": {
+              "date":date,
+              "timestamp": time,
+               "type": "SELL",
+               "produce": "apple",
+               "destination": "Rishan Market",
+               "count": 2,
+               "price": 12
+             },
+            "t2": {
+              "date":date,
+              "timestamp": time,
+               "type": "HARVEST",
+               "produce": "oranges",
+               "destination": "Rishan Farm",
+               "count": 3,
+               "price": 15
+             },
+         "t3": {
+             "date": date,
+             "timestamp": time,
+             "type":"DONATE",
+             "produce": "bananas",
+             "destination":"Sath Charity",
+             "count":8,
+             "price": 15},
+        "t4": {
+             "date": date,
+             "timestamp": time,
+             "type":"HARVEST",
+             "produce": "mangos",
+             "destination":"Rishan Farm",
+             "count":8,
+             "price": 15},
+    })
+
+create_transactions()
+# rando()
 # create_farm()
 # create_market()
 # create_user()
