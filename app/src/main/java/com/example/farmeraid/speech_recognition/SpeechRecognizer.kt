@@ -34,6 +34,7 @@ class SpeechRecognizerUtility() {
         "two" to "2",
         "three" to "3",
         "four" to "4",
+        "for" to "4",
         "five" to "5",
         "six" to "6",
         "seven" to "7",
