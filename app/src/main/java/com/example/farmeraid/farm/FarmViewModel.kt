@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cesarferreira.pluralize.pluralize
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.farm.model.FarmModel
@@ -151,7 +152,8 @@ class FarmViewModel @Inject constructor(
         //Get every add phrase in our speech Result
         addMatches.forEach { addM ->
             val addCommand:String = addM.value
-            var reAddAmount = Regex("([0-9]+)( )*${produce.produceName.lowercase()}(s|es)?")
+            val prod = produce.produceName.lowercase()
+            var reAddAmount = Regex("([0-9]+)( )*(${prod}|${prod.pluralize()})")
             var amountMatches = reAddAmount.findAll(addCommand)
             //Get every instance of the current produce being incremented in the add phrase
             amountMatches.forEach { amountM ->
