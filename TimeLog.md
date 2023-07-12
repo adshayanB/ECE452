@@ -57,3 +57,5 @@
 | 07/06/2023 | 0        | 0      | 0        | 0    | 0      | 3         | Polished speech recognizer parser to handle more natural phrases and adjusted result to fit command criteria
 | 07/09/2023 | 2        | 0      | 0        | 0    | 0      | 0         | Mocked Transaction db on firestore, updated seeding script and improved databse design
 | 07/09/2023 | 0        | 0      | 2        | 0    | 0      | 0         | Built the join farm added navigation from signin page
+| 07/09/2023 | 0        | 0      | 0        | 0    | 0      | 4         | Improved speech recognizer to now handle removal of produces, with edge case checks
+| 07/12/2023 | 0        | 0      | 0        | 0    | 0      | 2         | Researched and integrated a pluralizer library to better scale the speech recognizer's produce recognition abilities
