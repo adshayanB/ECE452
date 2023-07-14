@@ -43,7 +43,7 @@ class UiComponentModel {
         val title: String,
         val onIncrement: () -> Unit,
         val onDecrement: () -> Unit,
-        val setQuantity: (count : Int) -> Unit,
+        val setQuantity: (count : Int?) -> Unit,
         val quantityPickerState : QuantityPickerUiState,
         val price: Double? = null,
         val showPrice: Boolean = false,
@@ -51,12 +51,12 @@ class UiComponentModel {
 
     // Quantity Picker Models
     data class QuantityPickerUiState(
-        val count : Int = 0,
+        val count : Int? = 0,
         val enabled : Boolean = true,
     )
 
     data class QuantityPickerUiEvent(
-        val setQuantity: (Int) -> Unit = {},
+        val setQuantity: (Int?) -> Unit = {},
         val onIncrement: () -> Unit = {},
         val onDecrement: () -> Unit = {},
     )

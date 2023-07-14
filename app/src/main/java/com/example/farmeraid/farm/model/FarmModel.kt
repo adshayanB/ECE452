@@ -21,7 +21,7 @@ class FarmModel {
 
     data class ProduceHarvest(
         val produceName: String,
-        val produceCount: Int,
+        val produceCount: Int?,
     )
 }
 

@@ -1,7 +1,10 @@
 package com.example.farmeraid.uicomponents
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -58,7 +62,7 @@ fun QuantityPickerView(
                 containerColor = SecondaryColour,
                 contentColor = WhiteContentColour,
             ),
-            enabled = quantityPickerUiState.count > 0 && quantityPickerUiState.enabled
+            enabled = quantityPickerUiState.count != null && quantityPickerUiState.count > 0 && quantityPickerUiState.enabled
         ) {
             Icon(
                 imageVector = Icons.Filled.Remove,
@@ -66,35 +70,24 @@ fun QuantityPickerView(
             )
         }
 
-        CustomTextField(value = "${quantityPickerUiState.count}",
-            modifier = Modifier
-                .width(55.dp)
-                .align(Alignment.CenterVertically),
-            onValueChange = { quantityPickerUiEvent.setQuantity(it.toInt()) },
-            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-        )
+        Column(modifier = Modifier
+            .width(45.dp)
+            .align(Alignment.CenterVertically)
 
-//        TextField(
-//            value = "${quantityPickerUiState.count}",
-//            onValueChange = { quantityPickerUiEvent.setQuantity(it.toInt()) },
-//            modifier = Modifier
-//                .width(55.dp)
-//                .height(48.dp),
-//            colors = TextFieldDefaults.textFieldColors(
-//                cursorColor = PrimaryColour,
-//                focusedIndicatorColor = PrimaryColour,
-//                focusedLabelColor = PrimaryColour,
-//                focusedSupportingTextColor = PrimaryColour,
-//            ),
-//            textStyle = LocalTextStyle.current.copy(
-//                fontSize = 14.sp,
-//                textAlign = TextAlign.Center,
-//            ),
-//            enabled = quantityPickerUiState.enabled,
-//            // TODO: Fix textfield so that we can write in it
-//            readOnly = true,
-//        )
+        ) {
+            BasicTextField(
+                value = quantityPickerUiState.count?.toString().orEmpty(),
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { quantityPickerUiEvent.setQuantity(it.toIntOrNull()) },
+                textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
+            Spacer(Modifier.height(10.dp))
+            Divider(Modifier.fillMaxWidth())
+        }
+
+
         FilledIconButton(modifier = Modifier
             .align(Alignment.CenterVertically)
             .padding(start = 5.dp)
