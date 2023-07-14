@@ -38,8 +38,11 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideTransactionRepository(): TransactionRepository {
-        return TransactionRepository()
+    fun provideTransactionRepository(farmRepository: FarmRepository, userRepository: UserRepository): TransactionRepository {
+        return TransactionRepository(
+            farmRepository = farmRepository,
+            userRepository = userRepository
+        )
     }
 
     @Singleton

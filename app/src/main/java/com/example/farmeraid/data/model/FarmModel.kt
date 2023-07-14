@@ -6,6 +6,7 @@ class FarmModel {
         val name: String,
         val users: List<String>,
         val markets : List<String>,
-        val charities: List<String>
+        val charities: List<String>,
+        val transactions: List<String>
     )
 }

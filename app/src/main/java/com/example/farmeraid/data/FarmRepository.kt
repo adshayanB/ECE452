@@ -80,4 +80,21 @@ class FarmRepository(
             }
         } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
+
+    suspend fun getTransactionIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
+        Log.d("TEST", "called")
+        return (userRepository.getFarmId()?.let { id ->
+            try {
+                db.collection("farm").document(id)
+                    .get()
+                    .await()
+                    .data?.get("transactions")?.let {
+                        ResponseModel.FAResponseWithData.Success(it as MutableList<String>)
+                    } ?: ResponseModel.FAResponseWithData.Error("Error fetching transactions")
+            } catch (e : Exception) {
+                Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting transactions")
+            }
+        } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
+    }
 }
