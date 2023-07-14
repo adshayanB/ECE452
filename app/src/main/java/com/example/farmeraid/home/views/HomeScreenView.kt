@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.farmeraid.home.HomeViewModel
 import com.example.farmeraid.home.model.HomeModel.Tab
 import com.example.farmeraid.navigation.NavRoute
+import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.TertiaryColour
 import com.example.farmeraid.uicomponents.ButtonView
@@ -119,30 +120,46 @@ fun HomeScreenView() {
                 )
             } else {
                 if (state.selectedTab == Tab.Quotas) {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(30.dp),
-                        contentPadding = PaddingValues(20.dp),
-                    ) {
-                        items(state.quotasList) { quota ->
-                            QuotaItem(
-                                marketWithQuota = quota,
-                                onClick = { viewModel.navigateToViewQuota(quota.id) }
-                            )
+                    if (!state.quotasList.isEmpty()) {
+                        Text(
+                            modifier = Modifier.padding(20.dp),
+                            color = Color.Black,
+                            text ="Looks like you have no weekly quotas!\nClick the \"+\" button to add a new quota."
+                        )
+                    } else {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(30.dp),
+                            contentPadding = PaddingValues(20.dp),
+                        ) {
+                            items(state.quotasList) { quota ->
+                                QuotaItem(
+                                    marketWithQuota = quota,
+                                    onClick = { viewModel.navigateToViewQuota(quota.id) }
+                                )
+                            }
                         }
                     }
                 } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(150.dp),
-                        verticalArrangement = Arrangement.spacedBy(20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        contentPadding = PaddingValues(20.dp),
-                    ) {
-                        items(state.inventoryList.toList()) { (produceName, produceAmount) ->
-                            ProduceItem(
-                                produceName = produceName,
-                                produceAmount = produceAmount,
-                                onClick = { viewModel.navigateToEditProduce(produceName, produceAmount) }
-                            )
+                    if (!state.inventoryList.isEmpty()) {
+                        Text(
+                            modifier = Modifier.padding(20.dp),
+                            color = Color.Black,
+                            text = "Looks like your inventory is empty!\nClick the \"+\" button to add new produce."
+                        )
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(150.dp),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                            contentPadding = PaddingValues(20.dp),
+                        ) {
+                            items(state.inventoryList.toList()) { (produceName, produceAmount) ->
+                                ProduceItem(
+                                    produceName = produceName,
+                                    produceAmount = produceAmount,
+                                    onClick = { viewModel.navigateToEditProduce(produceName, produceAmount) }
+                                )
+                            }
                         }
                     }
                 }
