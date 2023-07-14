@@ -124,7 +124,7 @@ fun HomeScreenView() {
                         Text(
                             modifier = Modifier.padding(20.dp),
                             color = Color.Black,
-                            text ="Looks like you have no weekly quotas!\nClick the \"+\" button to add a new quota."
+                            text ="Looks like you have no weekly quotas!\nTap the \"+\" button to add a new quota."
                         )
                     } else {
                         LazyColumn(
@@ -144,7 +144,7 @@ fun HomeScreenView() {
                         Text(
                             modifier = Modifier.padding(20.dp),
                             color = Color.Black,
-                            text = "Looks like your inventory is empty!\nClick the \"+\" button to add new produce."
+                            text = "Looks like your inventory is empty!\nTap the \"+\" button to add new produce."
                         )
                     } else {
                         LazyVerticalGrid(
