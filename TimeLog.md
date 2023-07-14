@@ -60,5 +60,5 @@
 | 07/09/2023 | 0        | 0      | 0        | 0    | 0      | 4         | Improved speech recognizer to now handle removal of produces, with edge case checks
 | 07/12/2023 | 0        | 0      | 0        | 0    | 0      | 2         | Researched and integrated a pluralizer library to better scale the speech recognizer's produce recognition abilities
 | 07/13/2023 | 3        | 0      | 0        | 0    | 0      | 2         | Researched and built database index to query transaction data efficently. Refactored TransactionTable to support this
-| 07/12/2023 | 4        | 0      | 0        | 0    | 0      | 0         | Refactored Tranaction REpo to support firebase schema to add, delete and get recent transaction data
+| 07/13/2023 | 4        | 0      | 0        | 0    | 0      | 0         | Refactored Tranaction REpo to support firebase schema to add, delete and get recent transaction data
 
