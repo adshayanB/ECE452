@@ -60,7 +60,7 @@
 | 07/08/2023 | 0        | 1      | 0        | 0    | 0      | 0         | Add expected progress indicator to progress bar
 | 07/09/2023 | 2        | 0      | 0        | 0    | 0      | 0         | Mocked Transaction db on firestore, updated seeding script and improved databse design
 | 07/09/2023 | 0        | 0      | 2        | 0    | 0      | 0         | Built the join farm added navigation from signin page
-| 07/09/2023 | 0        | 0      | 0        | 0    | 0      | 4         | Improved speech recognizer to now handle removal of produces, with edge case checksu
+| 07/09/2023 | 0        | 0      | 0        | 0    | 0      | 4         | Improved speech recognizer to now handle removal of produces, with edge case checks
 | 07/09/2023 | 0        | 5      | 0        | 0    | 0      | 0         | Create add/edit produce page
 | 07/10/2023 | 0        | 0.5    | 0        | 0    | 0      | 0         | Hide keyboard and unfocus on button press
 | 07/10/2023 | 0        | 2      | 0        | 0    | 0      | 0         | Add ability to delete quota
