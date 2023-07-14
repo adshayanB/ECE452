@@ -132,15 +132,15 @@ class FarmViewModel @Inject constructor(
             val removeCount = parseSpeech(speechResult,"(remove|take away)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*", produce)
 
             var total = 0
-            if(produce.produceCount == 0 && (addCount-removeCount) < 0){
+            if((produce.produceCount?:0) == 0 && (addCount-removeCount) < 0){
                 snackbarDelegate.showSnackbar(message = "Do not have any ${produce.produceName} to remove!")
-            } else if(produce.produceCount + (addCount-removeCount) < 0){
+            } else if((produce.produceCount?:0) + (addCount-removeCount) < 0){
             snackbarDelegate.showSnackbar(message = "Do not have that many ${produce.produceName} to remove!")
             } else{
                 total = addCount-removeCount
             }
 
-            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = produce.produceCount + total)
+            FarmModel.ProduceHarvest(produceName = produce.produceName, produceCount = (produce.produceCount?:0) + total)
         }
 
     }
@@ -179,7 +179,7 @@ class FarmViewModel @Inject constructor(
         harvestList.value = harvestList.value.map { produceHarvest ->
             FarmModel.ProduceHarvest(
                 produceName = produceHarvest.produceName,
-                produceCount = produceHarvest.produceCount + if (produceName == produceHarvest.produceName) 1 else 0
+                produceCount = (produceHarvest.produceCount?:0) + if (produceName == produceHarvest.produceName) 1 else 0
             )
         }
     }
@@ -188,12 +188,12 @@ class FarmViewModel @Inject constructor(
         harvestList.value = harvestList.value.map { produceHarvest ->
             FarmModel.ProduceHarvest(
                 produceName = produceHarvest.produceName,
-                produceCount = produceHarvest.produceCount - if (produceName == produceHarvest.produceName) 1 else 0
+                produceCount = (produceHarvest.produceCount?:1) - if (produceName == produceHarvest.produceName) 1 else 0
             )
         }
     }
 
-    fun setProduceCount(produceName : String, count : Int) {
+    fun setProduceCount(produceName : String, count : Int?) {
         harvestList.value = harvestList.value.map { produceHarvest ->
             FarmModel.ProduceHarvest(
                 produceName = produceHarvest.produceName,
@@ -205,17 +205,23 @@ class FarmViewModel @Inject constructor(
     fun submitHarvest() {
         viewModelScope.launch {
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
-            val harvestMap: Map<String, Int> = harvestList.value.associate {
-                it.produceName to it.produceCount
-            }
+            // error check
+            if (harvestList.value.any { it.produceCount == null }) {
+                snackbarDelegate.showSnackbar("There are one or more invalid values")
+            } else {
 
-            inventoryRepository.harvest(harvestMap)
+                val harvestMap: Map<String, Int> = harvestList.value.associate {
+                    it.produceName to (it.produceCount ?: 0)
+                }
 
-            harvestList.value = harvestList.value.map {(produceName, _) ->
-                FarmModel.ProduceHarvest(
-                    produceName = produceName,
-                    produceCount = 0,
-                )
+                inventoryRepository.harvest(harvestMap)
+
+                harvestList.value = harvestList.value.map {(produceName, _) ->
+                    FarmModel.ProduceHarvest(
+                        produceName = produceName,
+                        produceCount = 0,
+                    )
+                }
             }
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
