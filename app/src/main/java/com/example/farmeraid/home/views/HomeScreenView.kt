@@ -120,7 +120,7 @@ fun HomeScreenView() {
                 )
             } else {
                 if (state.selectedTab == Tab.Quotas) {
-                    if (!state.quotasList.isEmpty()) {
+                    if (state.quotasList.isEmpty()) {
                         Text(
                             modifier = Modifier.padding(20.dp),
                             color = Color.Black,
@@ -140,7 +140,7 @@ fun HomeScreenView() {
                         }
                     }
                 } else {
-                    if (!state.inventoryList.isEmpty()) {
+                    if (state.inventoryList.isEmpty()) {
                         Text(
                             modifier = Modifier.padding(20.dp),
                             color = Color.Black,
