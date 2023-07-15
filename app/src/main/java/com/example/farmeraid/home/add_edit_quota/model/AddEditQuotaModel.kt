@@ -30,6 +30,6 @@ fun initializeProduceRow() : AddEditQuotaModel.ProduceRow {
     return AddEditQuotaModel.ProduceRow(
             id = UUID.randomUUID(),
             produce = null,
-            quantityPickerUiState = UiComponentModel.QuantityPickerUiState(0, false)
+            quantityPickerUiState = UiComponentModel.QuantityPickerUiState(0, null,false)
         )
 }

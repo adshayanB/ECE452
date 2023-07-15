@@ -143,7 +143,7 @@ class AddEditQuotaViewModel @Inject constructor(
                 id -> AddEditQuotaModel.ProduceRow(
                     id = row.id,
                     produce = row.produce,
-                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(newAmount, row.produce != null)
+                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(newAmount, null,row.produce != null)
                 )
                 else -> row
             }

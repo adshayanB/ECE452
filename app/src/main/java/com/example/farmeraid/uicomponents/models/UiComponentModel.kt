@@ -2,6 +2,7 @@ package com.example.farmeraid.uicomponents.models
 
 import android.graphics.drawable.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -47,12 +48,15 @@ class UiComponentModel {
         val quantityPickerState : QuantityPickerUiState,
         val price: Double? = null,
         val showPrice: Boolean = false,
+        val progressBarUiState: ProgressBarUiState = ProgressBarUiState(),
+        val showProgressBar: Boolean = false,
     )
 
     // Quantity Picker Models
     data class QuantityPickerUiState(
         val count : Int = 0,
-        val enabled : Boolean = true,
+        val limit : Int? = null,
+        var enabled : Boolean = true,
     )
 
     data class QuantityPickerUiEvent(
@@ -63,7 +67,7 @@ class UiComponentModel {
 
     // Progress Bar Models
     data class ProgressBarUiState(
-        val text : String,
+        val text : String = "",
         val containerColor : Color = Color.White,
         val progressColor : Color = Color.Black,
         val expectedProgressColor : Color = Color.Gray,

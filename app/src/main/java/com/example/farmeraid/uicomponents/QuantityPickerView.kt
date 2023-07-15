@@ -89,7 +89,7 @@ fun QuantityPickerView(
                 containerColor = SecondaryColour,
                 contentColor = WhiteContentColour,
             ),
-            enabled = quantityPickerUiState.enabled,
+            enabled = ((quantityPickerUiState.limit == null) || (quantityPickerUiState.count < quantityPickerUiState.limit)) && quantityPickerUiState.enabled,
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
