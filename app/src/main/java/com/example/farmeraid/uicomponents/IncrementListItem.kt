@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -64,6 +65,15 @@ fun IncrementListItemView(
                 fontSize = 16.sp
             )
 
+            QuantityPickerView(
+                quantityPickerUiState = produceItem.quantityPickerState,
+                quantityPickerUiEvent = UiComponentModel.QuantityPickerUiEvent(
+                    setQuantity = { count -> produceItem.setQuantity(count) },
+                    onIncrement = { produceItem.onIncrement() },
+                    onDecrement = { produceItem.onDecrement() }
+                ),
+            )
+
             if (produceItem.showPrice) {
                 Text(
                     modifier = Modifier
@@ -75,15 +85,19 @@ fun IncrementListItemView(
                     fontSize = 14.sp,
                 )
             }
-
-            QuantityPickerView(
-                quantityPickerUiState = produceItem.quantityPickerState,
-                quantityPickerUiEvent = UiComponentModel.QuantityPickerUiEvent(
-                    setQuantity = { count -> produceItem.setQuantity(count) },
-                    onIncrement = { produceItem.onIncrement() },
-                    onDecrement = { produceItem.onDecrement() }
-                ),
-            )
+        }
+        if (produceItem.showProgressBar) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ProgressBarView(
+                    progressBarUiState = produceItem.progressBarUiState,
+                    modifier = Modifier.weight(1f).fillMaxSize(),
+                )
+            }
         }
     }
 }
@@ -95,13 +109,22 @@ fun IncrementListItemPreview() {
         produceItem = UiComponentModel.IncrementListItemUiState(
             title = "Apples",
             price = 4.99,
-            showPrice = false,
+            showPrice = true,
             quantityPickerState = UiComponentModel.QuantityPickerUiState(
                 count = 100
             ),
             setQuantity = {},
             onIncrement = {},
             onDecrement = {},
+            progressBarUiState = UiComponentModel.ProgressBarUiState(
+                text = "30/100",
+                progress = 0.1f,
+                expectedProgress = 0.1f,
+                fontSize = 14.sp,
+                containerColor = PrimaryColour.copy(alpha = 0.2f),
+                progressColor = PrimaryColour,
+            ),
+            showProgressBar = true,
         )
     )
 }
