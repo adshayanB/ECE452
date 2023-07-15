@@ -106,6 +106,7 @@ fun QuotaItemPreview() {
         marketWithQuota = MarketModel.MarketWithQuota(
             id = "0",
             name = "Test",
+            prices = hashMapOf("Apples" to 20, "Bananas" to 30),
             quota = QuotasRepository.Quota(
                 id = "0",
                 produceQuotaList = listOf(

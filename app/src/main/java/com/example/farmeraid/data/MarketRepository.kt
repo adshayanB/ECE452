@@ -39,6 +39,7 @@ class MarketRepository(
             MarketModel.Market(
                 id = market.id,
                 name = market.get("name") as String,
+                prices = market.get("prices") as MutableMap<String, Int>
             )
                 .let { marketModelList.add(it) }
         }
@@ -70,7 +71,8 @@ class MarketRepository(
                         MarketModel.MarketWithQuota(
                             id = market.id,
                             name = market.get("name") as String,
-                            quota = it
+                            quota = it,
+                            prices = market.get("prices") as MutableMap<String, Int>
                         )
                     )
                 } ?: run {
@@ -116,7 +118,8 @@ class MarketRepository(
                     MarketModel.MarketWithQuota(
                         id = marketModel.id,
                         name = marketModel.get("name") as String,
-                        quota = it
+                        quota = it,
+                        prices = marketModel.get("prices") as MutableMap<String, Int>
                     )
                 } ?: run {
                     return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while fetching market's quota")
