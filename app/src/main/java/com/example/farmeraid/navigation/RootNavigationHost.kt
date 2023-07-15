@@ -5,6 +5,8 @@ import AddEditQuotaScreenView
 import BottomNavigationBar
 import FarmScreenView
 import HomeScreenView
+import MarketScreenView
+import SellProduceView
 import TransactionsView
 import ViewQuotaScreenView
 import androidx.compose.foundation.border
@@ -80,6 +82,9 @@ fun RootNavigationHost(
                 composable(NavRoute.Home.route) {
                     HomeScreenView()
                 }
+                composable(NavRoute.Market.route) {
+                    MarketScreenView()
+                }
                 composable(
                     route = NavRoute.AddEditQuota.route + "?marketId={marketId}",
                     arguments = listOf(navArgument("marketId") {
@@ -115,6 +120,12 @@ fun RootNavigationHost(
                 }
                 composable(NavRoute.FarmSelection.route){
                     FarmSelectionScreenView()
+                }
+                composable(
+                    route = NavRoute.SellProduce.route + "/{marketId}",
+                    arguments = listOf(navArgument("marketId") { type = NavType.StringType})
+                ) {
+                    SellProduceView()
                 }
             }
         }
