@@ -149,11 +149,11 @@ fun AddEditQuotaScreenView() {
                                 quantityPickerUiEvent = UiComponentModel.QuantityPickerUiEvent(
                                     onIncrement = { viewModel.selectQuotaAmount(
                                         id = row.id,
-                                        newAmount = row.quantityPickerUiState.count + 1)
+                                        newAmount = (row.quantityPickerUiState.count ?: 0) + 1)
                                     },
                                     onDecrement = { viewModel.selectQuotaAmount(
                                         id = row.id,
-                                        newAmount = row.quantityPickerUiState.count - 1)
+                                        newAmount = (row.quantityPickerUiState.count ?: 1) - 1)
                                     },
                                     setQuantity = { amount -> viewModel.selectQuotaAmount(
                                         id = row.id,
