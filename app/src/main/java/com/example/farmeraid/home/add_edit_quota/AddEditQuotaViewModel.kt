@@ -9,6 +9,7 @@ import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.home.add_edit_quota.model.getSubmitButton
 import com.example.farmeraid.home.add_edit_quota.model.AddEditQuotaModel
@@ -143,7 +144,7 @@ class AddEditQuotaViewModel @Inject constructor(
                 id -> AddEditQuotaModel.ProduceRow(
                     id = row.id,
                     produce = row.produce,
-                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(newAmount, row.produce != null)
+                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(newAmount ?: 0, null,row.produce != null)
                 )
                 else -> row
             }
@@ -171,7 +172,7 @@ class AddEditQuotaViewModel @Inject constructor(
                 val addResult = quotasRepository.addQuota(market, produceList.mapNotNull { row ->
                     row.produce?.let {
                         row.quantityPickerUiState.count?.let{
-                            QuotasRepository.ProduceQuota(
+                            QuotaModel.ProduceQuota(
                                 produceName = row.produce,
                                 produceGoalAmount = row.quantityPickerUiState.count,
                                 saleAmount = TO_BE_CHANGED

@@ -66,7 +66,7 @@ class UiComponentModel {
 
     // Progress Bar Models
     data class ProgressBarUiState(
-        val text : String,
+        val text : String = "",
         val containerColor : Color = Color.White,
         val progressColor : Color = Color.Black,
         val expectedProgressColor : Color = Color.Gray,

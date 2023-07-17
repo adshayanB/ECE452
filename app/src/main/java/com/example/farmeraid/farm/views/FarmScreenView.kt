@@ -94,7 +94,7 @@ fun FarmScreenView() {
                     IncrementListItemView(
                         produceItem = UiComponentModel.IncrementListItemUiState(
                             title = produce.produceName,
-                            quantityPickerState = UiComponentModel.QuantityPickerUiState(produce.produceCount),
+                            quantityPickerState = UiComponentModel.QuantityPickerUiState(produce.produceCount ?: 0),
                             onIncrement = { viewModel.incrementProduceCount(produce.produceName) },
                             onDecrement = { viewModel.decrementProduceCount(produce.produceName) },
                             setQuantity = { count -> viewModel.setProduceCount(produce.produceName, count) },

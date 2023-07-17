@@ -78,7 +78,7 @@ fun QuantityPickerView(
             BasicTextField(
                 value = quantityPickerUiState.count?.toString().orEmpty(),
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { quantityPickerUiEvent.setQuantity(it.toIntOrNull()) },
+                onValueChange = { quantityPickerUiEvent.setQuantity(if (it.toIntOrNull() != null) it.toInt() else 0) },
                 textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 singleLine = true,
