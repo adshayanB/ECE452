@@ -6,7 +6,7 @@ class MarketModel {
     data class Market(
         val id : String,
         val name: String,
-        val prices: MutableMap<String, Int>,
+        val prices: MutableMap<String, Double>,
     ) {
         override fun toString(): String = name
     }
@@ -14,8 +14,8 @@ class MarketModel {
     data class MarketWithQuota(
         val id : String,
         val name : String,
-        val prices: MutableMap<String, Int>,
-        val quota : QuotasRepository.Quota,
+        val prices: MutableMap<String, Double>,
+        val quota : QuotaModel.Quota,
     ) {
         override fun toString(): String = name
     }

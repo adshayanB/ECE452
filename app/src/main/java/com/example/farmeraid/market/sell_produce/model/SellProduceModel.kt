@@ -21,8 +21,8 @@ class SellProduceModel {
             val produceName: String,
             val produceCount: Int,
             val produceInventory: Int,
-            val producePrice: Int,
-            val produceTotalPrice: Int,
+            val producePrice: Double,
+            val produceTotalPrice: Double,
             val produceQuotaCurrentProgress: Int,
             val produceQuotaTotalGoal: Int
     )

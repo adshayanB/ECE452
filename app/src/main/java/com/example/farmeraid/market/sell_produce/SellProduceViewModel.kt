@@ -12,6 +12,7 @@ import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.farm.model.FarmModel
 import com.example.farmeraid.farm.model.FarmModel.FarmViewState
 import com.example.farmeraid.farm.model.getMicButton
@@ -82,14 +83,14 @@ class SellProduceViewModel @Inject constructor(
             if (marketWithQuota != null && inventory != null) {
                 marketName.value = marketWithQuota.name
                 produceSellList.value = marketWithQuota.prices.map {(produceName, price) ->
-                    val produceQuota: QuotasRepository.ProduceQuota? = marketWithQuota.quota.produceQuotaList.find { it.produceName == produceName}
+                    val produceQuota: QuotaModel.ProduceQuota? = marketWithQuota.quota.produceQuotaList.find { it.produceName == produceName}
 
                     SellProduceModel.ProduceSell(
                         produceName = produceName,
                         produceCount = 0,
                         produceInventory = inventory.getOrDefault(produceName, 0),
                         producePrice = price,
-                        produceTotalPrice = 0,
+                        produceTotalPrice = 0.0,
                         produceQuotaCurrentProgress = produceQuota?.saleAmount ?: 0,
                         produceQuotaTotalGoal = produceQuota?.produceGoalAmount ?: -1
                     )
@@ -105,7 +106,7 @@ class SellProduceViewModel @Inject constructor(
                 produceCount = produceSell.produceCount + if (produceName == produceSell.produceName) 1 else 0,
                 produceInventory = produceSell.produceInventory,
                 producePrice = produceSell.producePrice,
-                produceTotalPrice = produceSell.produceTotalPrice + if (produceName == produceSell.produceName) produceSell.producePrice else 0,
+                produceTotalPrice = produceSell.produceTotalPrice + if (produceName == produceSell.produceName) produceSell.producePrice else 0.0,
                 produceQuotaCurrentProgress = produceSell.produceQuotaCurrentProgress,
                 produceQuotaTotalGoal = produceSell.produceQuotaTotalGoal
             )
@@ -119,7 +120,7 @@ class SellProduceViewModel @Inject constructor(
                 produceCount = produceSell.produceCount - if (produceName == produceSell.produceName) 1 else 0,
                 produceInventory = produceSell.produceInventory,
                 producePrice = produceSell.producePrice,
-                produceTotalPrice = produceSell.produceTotalPrice - if (produceName == produceSell.produceName) produceSell.producePrice else 0,
+                produceTotalPrice = produceSell.produceTotalPrice - if (produceName == produceSell.produceName) produceSell.producePrice else 0.0,
                 produceQuotaCurrentProgress = produceSell.produceQuotaCurrentProgress,
                 produceQuotaTotalGoal = produceSell.produceQuotaTotalGoal
             )
@@ -143,7 +144,7 @@ class SellProduceViewModel @Inject constructor(
                     produceCount = 0,
                     produceInventory = produceSell.produceInventory - produceSell.produceCount,
                     producePrice = produceSell.producePrice,
-                    produceTotalPrice = 0,
+                    produceTotalPrice = 0.0,
                     produceQuotaCurrentProgress = produceSell.produceQuotaCurrentProgress + produceSell.produceCount,
                     produceQuotaTotalGoal = produceSell.produceQuotaTotalGoal
                 )
@@ -153,7 +154,7 @@ class SellProduceViewModel @Inject constructor(
         }
     }
 
-    fun getTotalEarnings(): Int {
+    fun getTotalEarnings(): Double {
         return produceSellList.value.sumOf { produceSell -> produceSell.produceTotalPrice }
     }
 

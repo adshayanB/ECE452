@@ -9,6 +9,7 @@ import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.home.add_edit_quota.model.getSubmitButton
 import com.example.farmeraid.home.add_edit_quota.model.AddEditQuotaModel
@@ -168,7 +169,7 @@ class AddEditQuotaViewModel @Inject constructor(
             } else {
                 val addResult = quotasRepository.addQuota(market, produceList.mapNotNull { row ->
                     row.produce?.let {
-                        QuotasRepository.ProduceQuota(
+                        QuotaModel.ProduceQuota(
                             produceName = row.produce,
                             produceGoalAmount = row.quantityPickerUiState.count,
                             saleAmount = TO_BE_CHANGED

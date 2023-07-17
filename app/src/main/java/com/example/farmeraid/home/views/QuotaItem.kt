@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.uicomponents.ProgressBarView
@@ -106,16 +107,16 @@ fun QuotaItemPreview() {
         marketWithQuota = MarketModel.MarketWithQuota(
             id = "0",
             name = "Test",
-            prices = hashMapOf("Apples" to 20, "Bananas" to 30),
-            quota = QuotasRepository.Quota(
+            prices = hashMapOf("Apples" to 20.0, "Bananas" to 30.0),
+            quota = QuotaModel.Quota(
                 id = "0",
                 produceQuotaList = listOf(
-                QuotasRepository.ProduceQuota(
+                    QuotaModel.ProduceQuota(
                     produceName = "Apples",
                     produceGoalAmount = 20,
                     saleAmount = 2
                                ),
-                QuotasRepository.ProduceQuota(
+                    QuotaModel.ProduceQuota(
                     produceName = "Bananas",
                     produceGoalAmount = 40,
                     saleAmount = 5
