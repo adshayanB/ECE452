@@ -125,7 +125,7 @@ fun SellProduceView() {
                                 count = produceSell.produceCount,
                                 limit = produceSell.produceInventory
                             ),
-                            setQuantity = { },
+                            setQuantity = { count -> viewModel.setProduceCount(produceSell.produceName, count)},
                             onIncrement = {
                                 viewModel.incrementProduceCount(produceSell.produceName)
                             },

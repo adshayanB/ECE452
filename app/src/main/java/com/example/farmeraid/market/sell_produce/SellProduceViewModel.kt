@@ -127,7 +127,19 @@ class SellProduceViewModel @Inject constructor(
         }
     }
 
-    // TODO: Add method to setProduceCount that will be used with the new functionality of inputting values into the quantity picker component
+    fun setProduceCount(produceName: String, produceCount: Int) {
+        produceSellList.value = produceSellList.value.map { produceSell ->
+            SellProduceModel.ProduceSell(
+                produceName = produceSell.produceName,
+                produceCount = if (produceName == produceSell.produceName) produceCount else produceSell.produceCount,
+                produceInventory = produceSell.produceInventory,
+                producePrice = produceSell.producePrice,
+                produceTotalPrice = if (produceName == produceSell.produceName) produceCount * produceSell.producePrice else produceSell.produceTotalPrice,
+                produceQuotaCurrentProgress = produceSell.produceQuotaCurrentProgress,
+                produceQuotaTotalGoal = produceSell.produceQuotaTotalGoal
+            )
+        }
+    }
 
     fun submitSell() {
         viewModelScope.launch {
