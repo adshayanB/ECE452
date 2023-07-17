@@ -9,7 +9,6 @@ import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.MarketModel
-import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.home.add_edit_quota.model.getSubmitButton
 import com.example.farmeraid.home.add_edit_quota.model.AddEditQuotaModel
@@ -138,13 +137,13 @@ class AddEditQuotaViewModel @Inject constructor(
         }
     }
 
-    fun selectQuotaAmount(id : UUID, newAmount : Int) {
+    fun selectQuotaAmount(id : UUID, newAmount : Int?) {
         produceRows.value = produceRows.value.map { row ->
             when (row.id) {
                 id -> AddEditQuotaModel.ProduceRow(
                     id = row.id,
                     produce = row.produce,
-                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(newAmount, null,row.produce != null)
+                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(newAmount, row.produce != null)
                 )
                 else -> row
             }
@@ -166,14 +165,18 @@ class AddEditQuotaViewModel @Inject constructor(
                 snackbarDelegate.showSnackbar("Select at least 1 produce")
             } else if (produceList.distinctBy { it.produce }.size != produceList.size) {
                 snackbarDelegate.showSnackbar("Cannot have duplicate produce")
+            } else if (produceList.any { it.quantityPickerUiState.count == null }) {
+                snackbarDelegate.showSnackbar("There are one or more invalid values")
             } else {
                 val addResult = quotasRepository.addQuota(market, produceList.mapNotNull { row ->
                     row.produce?.let {
-                        QuotaModel.ProduceQuota(
-                            produceName = row.produce,
-                            produceGoalAmount = row.quantityPickerUiState.count,
-                            saleAmount = TO_BE_CHANGED
-                        )
+                        row.quantityPickerUiState.count?.let{
+                            QuotasRepository.ProduceQuota(
+                                produceName = row.produce,
+                                produceGoalAmount = row.quantityPickerUiState.count,
+                                saleAmount = TO_BE_CHANGED
+                            )
+                        }
                     }
                 })
 
