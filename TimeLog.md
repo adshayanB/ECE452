@@ -72,6 +72,6 @@
 | 07/14/2023 | 0        | 0.5   | 0       | 0   | 0     | 0        | Add empty inventory and empty quotas message
 | 07/14/2023 | 0        | 0   | 3       | 0   | 0     | 0        | Added keyboard input feature for the quantity picker component to improve UX
 | 07/18/2023 | 3        | 3   | 3       | 3   | 3     | 3        | Synced and worked on D5 report
-| 07/18/2023 | 3        |  0  | 0       | 0   | 0     | 0        | Completed user creation and farm creation flow to allow the creation of a new farm for a new user linking the firestore db
+| 07/18/2023 | 2        |  0  | 0       | 0   | 0     | 0        | Completed user creation and farm creation flow to allow the creation of a new farm for a new user linking the firestore db
 
 
