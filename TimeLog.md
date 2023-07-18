@@ -71,3 +71,5 @@
 | 07/13/2023 | 4        | 0      | 0        | 0    | 0      | 0         | Refactored Tranaction Repo to support firebase schema to add, delete and get recent transaction data
 | 07/14/2023 | 0        | 0.5    | 0        | 0    | 0      | 0         | Add empty inventory and empty quotas message
 | 07/14/2023 | 0        | 0    | 3        | 0    | 0      | 0         | Added keyboard input feature for the quantity picker component to improve UX
+| 07/18/2023 | 3        | 3    | 3        | 3    | 3      | 3         | Synced and worked on D5 report
+
