@@ -3,6 +3,7 @@ package com.example.farmeraid.data
 import android.util.Log
 import com.example.farmeraid.data.model.FarmModel
 import com.example.farmeraid.data.model.ResponseModel
+import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,7 +15,6 @@ class FarmRepository(
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     suspend fun createFarm(farmName: String) : ResponseModel.FAResponse {
-        //if db.collection("farm").get
         return try {
             userRepository.getUserId()?.let{
                 val docRef = db.collection("farm").add(
@@ -32,8 +32,8 @@ class FarmRepository(
 
                 //TODO create new transaction document for the farm
 
-                //TODO update userRespository with new farmID
-                //TODO Function needs to be made on UserRepo
+                 db.collection("users").document(userRepository.getUserId()!!).update(mapOf("farmID" to docRef.id, "admin" to true)).await()
+
                 ResponseModel.FAResponse.Success
             } ?: ResponseModel.FAResponse.Error("User does not exist")
         }catch(e: Exception){
