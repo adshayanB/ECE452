@@ -15,7 +15,6 @@ class FarmRepository(
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     suspend fun createFarm(farmName: String) : ResponseModel.FAResponse {
-        //if db.collection("farm").get
         return try {
             userRepository.getUserId()?.let{
                 val docRef = db.collection("farm").add(
@@ -32,9 +31,9 @@ class FarmRepository(
                 )
 
                 //TODO create new transaction document for the farm
-                //TODO update userRespository with new farmID
+
                  db.collection("users").document(userRepository.getUserId()!!).update(mapOf("farmID" to docRef.id, "admin" to true)).await()
-                //TODO Function needs to be made on UserRepo
+
                 ResponseModel.FAResponse.Success
             } ?: ResponseModel.FAResponse.Error("User does not exist")
         }catch(e: Exception){
