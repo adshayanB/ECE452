@@ -37,12 +37,14 @@ class UserRepository {
         if (userName.isNotEmpty() && password.isNotEmpty()) {
             return try {
                 val res = firebaseAuth.createUserWithEmailAndPassword(userName, password).await()
-                val docRef = db.collection("users").add(
-                    mapOf (
-                        "admin" to false,
-                        "farmID" to null
-                    )
-                ).await()
+                val docRef = res.user?.let {
+                    db.collection("users").document(it.uid).set(
+                        mapOf (
+                            "admin" to false,
+                            "farmID" to "none"
+                        )
+                    ).await()
+                }
                 SignUpModel.AuthResponse.Success
             } catch (e: Exception) {
                 return SignUpModel.AuthResponse.Error(
