@@ -92,7 +92,6 @@ class FarmRepository(
     }
 
     suspend fun getTransactionIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
-        Log.d("TEST", "called")
         return (userRepository.getFarmId()?.let { id ->
             try {
                 db.collection("farm").document(id)
@@ -107,6 +106,7 @@ class FarmRepository(
             }
         } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
+
     //Taken from: https://www.techiedelight.com/generate-a-random-alphanumeric-string-in-kotlin/
     fun generateFarmCode(length: Int) : String {
         val charset = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz0123456789"
