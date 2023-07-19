@@ -51,25 +51,25 @@ class JoinFarmViewModel @Inject constructor(
 
     fun submitFarmCode() = viewModelScope.launch {
         buttonUiState.value = buttonUiState.value.copy(isLoading = true)
-        //val result: ResponseModel.FAResponse = farmRepository.joinFarm(farmCode.value)
+        val result: ResponseModel.FAResponse = farmRepository.joinFarm(farmCode.value)
         buttonUiState.value = buttonUiState.value.copy(isLoading = false)
 
-        appNavigator.navigateToMode(NavRoute.Home)
+        //appNavigator.navigateToMode(NavRoute.Home)
 
         //TODO ensure farm code is being updated on user document as farmID
-//        when (result) {
-//            is ResponseModel.FAResponse.Success -> {
-//                Log.d("MESSAGE - joinFarm()", "SUCCESSFULLY CREATED A FARM")
-//                appNavigator.navigateToMode(NavRoute.Home)
-//            }
-//
-//            is ResponseModel.FAResponse.Error -> {
-//                Log.e("ERROR - joinFarm()", result.error?:"Unknown error")
-//                snackbarDelegate.showSnackbar(
-//                    message = result.error?:"Unknown error"
-//                )
-//            }
-//        }
+        when (result) {
+            is ResponseModel.FAResponse.Success -> {
+                Log.d("MESSAGE - joinFarm()", "SUCCESSFULLY JOINED A FARM")
+                appNavigator.navigateToMode(NavRoute.Home)
+            }
+
+            is ResponseModel.FAResponse.Error -> {
+                Log.e("ERROR - joinFarm()", result.error?:"Unknown error")
+                snackbarDelegate.showSnackbar(
+                    message = result.error?:"Unknown error"
+                )
+            }
+        }
     }
 
     fun setFarmCode(newVal: String) {

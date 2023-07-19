@@ -51,26 +51,25 @@ class FarmRepository(
         return try {
             userRepository.getUserId()?.let{id ->
                 db.collection("farm").let{ ref ->
-                    ref.whereEqualTo("code", farmCode).get().await().let{ snap ->
+                    ref.whereEqualTo("farmCode", farmCode).get().await().let{ snap ->
                         db.collection("farm").document(snap.documents[0].id).update(
                             "users", FieldValue.arrayUnion(id)
                         )
+                        //Update user with farmID
+                        db.collection("users").document(userRepository.getUserId()!!).update(mapOf("farmID" to snap.documents[0].id, "admin" to false)).await()
                     }
                 }
-                //TODO update userRespository with new farmID
-                //TODO Function needs to be made on UserRepo
             }
 
             ResponseModel.FAResponse.Success
         }catch (e: Exception){
-            return ResponseModel.FAResponse.Error(e.message?:"Error joining a farm. Please try again.")
+            return ResponseModel.FAResponse.Error("Error joining a farm. Please ensure the code is correct.")
 //            Log.e("FarmRepository - joinFarm()", e.message?:"Unknown error")
         }
 
     }
-
     suspend fun getMarketIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
-        Log.d("TEST", "called")
+        Log.d("getMarketIds", "called")
         return (userRepository.getFarmId()?.let { id ->
             try {
                 db.collection("farm").document(id)
