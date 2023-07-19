@@ -59,45 +59,6 @@ import com.example.farmeraid.ui.theme.WhiteContentColour
 import com.example.farmeraid.uicomponents.TransactionsFilterChip
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ExposedDropdownMenuSample() {
-//    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
-//    var expanded by remember { mutableStateOf(false) }
-//    var selectedOptionText by remember { mutableStateOf(options[0]) }
-//    // We want to react on tap/press on TextField to show menu
-//    ExposedDropdownMenuBox(
-//        expanded = expanded,
-//        onExpandedChange = { expanded = !expanded },
-//    ) {
-//        TextField(
-//            // The `menuAnchor` modifier must be passed to the text field for correctness.
-//            modifier = Modifier.menuAnchor(),
-//            readOnly = true,
-//            value = selectedOptionText,
-//            onValueChange = {},
-//            label = { Text("Label") },
-//            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-//            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-//        )
-//        ExposedDropdownMenu(
-//            expanded = expanded,
-//            onDismissRequest = { expanded = false },
-//        ) {
-//            options.forEach { selectionOption ->
-//                DropdownMenuItem(
-//                    text = { Text(selectionOption) },
-//                    onClick = {
-//                        selectedOptionText = selectionOption
-//                        expanded = false
-//                    },
-//                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-//                )
-//            }
-//        }
-//    }
-//}
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

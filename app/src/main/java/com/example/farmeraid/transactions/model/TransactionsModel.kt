@@ -5,12 +5,6 @@ import com.example.farmeraid.data.model.MarketModel
 
 class TransactionsModel {
 
-//    data class Transaction(
-//        val mode: String = "",
-//        val description: String = "",
-//        val ID: Int = 0
-//    )
-
     data class TransactionViewState(
         val transactionList: List<TransactionRepository.Transaction> = emptyList(),
         val filterList: List<Filter> = emptyList()

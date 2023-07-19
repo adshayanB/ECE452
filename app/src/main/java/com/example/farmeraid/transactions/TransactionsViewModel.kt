@@ -75,7 +75,6 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
-
     init {
         viewModelScope.launch {
             combine(transactionList, marketItemsList, produceItemsList) {
@@ -117,7 +116,4 @@ class TransactionsViewModel @Inject constructor(
     fun navigateBack() {
         appNavigator.navigateBack()
     }
-
-
-
 }
