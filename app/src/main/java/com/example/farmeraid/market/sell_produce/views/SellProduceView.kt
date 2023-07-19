@@ -131,14 +131,14 @@ fun SellProduceView() {
                             },
                             onDecrement = { viewModel.decrementProduceCount(produceSell.produceName) },
                             progressBarUiState = UiComponentModel.ProgressBarUiState(
-                                text = "${produceSell.produceQuotaCurrentProgress + produceSell.produceCount}/${produceSell.produceQuotaTotalGoal}",
-                                progress = produceSell.produceQuotaCurrentProgress.toFloat() / produceSell.produceQuotaTotalGoal,
-                                expectedProgress = (produceSell.produceQuotaCurrentProgress.toFloat() + produceSell.produceCount) / produceSell.produceQuotaTotalGoal,
+                                text = if (produceSell.produceQuotaTotalGoal != -1) "${produceSell.produceQuotaCurrentProgress + produceSell.produceCount}/${produceSell.produceQuotaTotalGoal}" else "No Quota Available",
+                                progress = if (produceSell.produceQuotaTotalGoal != -1) produceSell.produceQuotaCurrentProgress.toFloat() / produceSell.produceQuotaTotalGoal else 0f,
+                                expectedProgress = if (produceSell.produceQuotaTotalGoal != -1) (produceSell.produceQuotaCurrentProgress.toFloat() + produceSell.produceCount) / produceSell.produceQuotaTotalGoal else 0f,
                                 fontSize = 14.sp,
                                 containerColor = PrimaryColour.copy(alpha = 0.2f),
                                 progressColor = PrimaryColour,
                             ),
-                            showProgressBar = produceSell.produceQuotaTotalGoal != -1,
+                            showProgressBar = true,
                         ),
                         modifier = Modifier.fillMaxWidth(),
                     )
