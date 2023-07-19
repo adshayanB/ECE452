@@ -57,6 +57,4 @@ class FarmCodeViewModel @Inject constructor(
     fun navigateToHome() {
         appNavigator.navigateToMode(NavRoute.Home)
     }
-
-    // TODO: create a function to get the RNG Farm Code from Firebase
 }

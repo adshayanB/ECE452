@@ -67,8 +67,6 @@ fun FarmCodeScreenView() {
 
                  Spacer(modifier = Modifier.height(10.dp))
 
-                 // TODO: need to get the RNG Farm Code
-//                 Text(text = "Farm Code: 12345", style = TextStyle(fontSize = 18.sp))
                 Text(text = state.code, style = TextStyle(fontSize = 18.sp ))
 
                  Spacer(modifier = Modifier.height(20.dp))
