@@ -107,11 +107,11 @@ class FarmRepository(
             }
         } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
-    //Taken from: https://stackoverflow.com/questions/46943860/idiomatic-way-to-generate-a-random-alphanumeric-string-in-kotlin
+    //Taken from: https://www.techiedelight.com/generate-a-random-alphanumeric-string-in-kotlin/
     fun generateFarmCode(length: Int) : String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        val charset = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz0123456789"
         return (1..length)
-            .map { allowedChars.random() }
+            .map { charset.random() }
             .joinToString("")
     }
 
