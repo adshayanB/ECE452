@@ -74,5 +74,6 @@
 | 07/18/2023 | 3        | 3   | 3        | 3   | 3     | 3        | Synced and worked on D5 report
 | 07/18/2023 | 1        |  0  | 1        | 0   | 0     | 0        | Investigated user creation to joining/creating farm flow
 | 07/18/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed user creation and farm creation flow to allow the creation of a new farm for a new user linking the firestore db
+| 07/18/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Generated code for newly created farm, stored in firestore, updated view to support new dynamic code creation
 
 

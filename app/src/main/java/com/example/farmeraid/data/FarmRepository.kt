@@ -1,16 +1,11 @@
 package com.example.farmeraid.data
 
 import android.util.Log
-import com.example.farmeraid.data.model.FarmModel
 import com.example.farmeraid.data.model.ResponseModel
-import com.example.farmeraid.data.model.UserModel
-import com.google.android.gms.tasks.Tasks.await
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
-import kotlin.random.Random
 
 class FarmRepository(
     val farmCode: MutableStateFlow<String> = MutableStateFlow(""),
