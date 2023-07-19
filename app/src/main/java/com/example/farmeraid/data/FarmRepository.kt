@@ -31,6 +31,7 @@ class FarmRepository(
                         "farmCode" to code
                     )
                 ).await()
+
                 //Set code state
                 farmCode.value = code
 
