@@ -127,21 +127,19 @@ fun TransactionsView() {
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(20.dp, 20.dp, 20.dp, 0.dp),
+                .padding(20.dp, 10.dp, 20.dp, 0.dp),
         ){
-            LazyRow {
-
-                items(1) {
-                    TransactionsFilterChip()
-                }
-
-                //filter pills
-
-                items(1) {
-                    TransactionsFilterChip()
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ){
+                items(state.filterList) {filterChip ->
+                    TransactionsFilterChip(
+                        modifier = Modifier.width(75.dp),
+                        filter = filterChip
+                    )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Divider()
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(20.dp),
