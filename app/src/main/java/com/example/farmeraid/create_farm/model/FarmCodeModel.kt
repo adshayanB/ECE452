@@ -6,6 +6,7 @@ class FarmCodeModel {
     data class FarmCodeViewState(
         val buttonUiState: UiComponentModel.ButtonUiState,
         val isLoading : Boolean = false,
+        val code: String = "",
     )
 }
 
