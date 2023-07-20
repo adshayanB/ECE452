@@ -77,6 +77,19 @@ fun MarketScreenView() {
     val state by viewModel.state.collectAsState()
 
     Scaffold(
+        floatingActionButton = {
+            FloatingActionButtonView(
+                fabUiState = UiComponentModel.FabUiState(
+                    icon = Icons.Filled.Add,
+                    contentDescription = "Add Market",
+                ),
+                fabUiEvent = UiComponentModel.FabUiEvent(
+                    onClick = {
+                        viewModel.navigateToAddMarket()
+                    }
+                )
+            )
+        },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {

@@ -105,4 +105,8 @@ class MarketViewModel @Inject constructor(
     fun navigateToTransactions() {
         appNavigator.navigateToTransactions()
     }
+
+    fun navigateToAddMarket() {
+        appNavigator.navigateToAddMarket()
+    }
 }

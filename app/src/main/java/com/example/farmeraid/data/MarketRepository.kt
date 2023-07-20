@@ -2,8 +2,11 @@ package com.example.farmeraid.data
 
 import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -13,9 +16,31 @@ import kotlinx.coroutines.tasks.await
 
 class MarketRepository(
     private val quotasRepository: QuotasRepository,
-    private val farmRepository: FarmRepository
+    private val farmRepository: FarmRepository,
+    private val userRepository: UserRepository,
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    suspend fun addMarket(marketName: String, producePrices: Map<String, Double>) : ResponseModel.FAResponse {
+        return try {
+            val docRef = db.collection("market").add(
+                mapOf (
+                    "name" to marketName,
+                    "prices" to producePrices,
+                )
+            ).await()
+
+            userRepository.getUserId()?.let{
+                db.collection("farm").document(userRepository.getFarmId()!!).update(
+                    "markets", FieldValue.arrayUnion(docRef.id)
+                )
+            }
+
+            ResponseModel.FAResponse.Success
+        } catch(e: Exception) {
+            return ResponseModel.FAResponse.Error(e.message?:"Error creating a market. Please try again.")
+        }
+    }
     private suspend fun readMarketData(): ResponseModel.FAResponseWithData<List<MarketModel.Market>> {
         val marketIds = farmRepository.getMarketIds()
         if (marketIds.error != null) {

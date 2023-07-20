@@ -28,6 +28,7 @@ import com.example.farmeraid.join_farm.views.JoinFarmScreenView
 import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
 import com.example.farmeraid.farm_selection.views.FarmSelectionScreenView
+import com.example.farmeraid.market.add_market.views.AddMarketScreenView
 import com.example.farmeraid.sign_in.views.SignInScreenView
 import com.example.farmeraid.sign_up.views.SignUpScreenView
 import com.example.farmeraid.ui.theme.LightGrayColour
@@ -126,6 +127,9 @@ fun RootNavigationHost(
                     arguments = listOf(navArgument("marketId") { type = NavType.StringType})
                 ) {
                     SellProduceView()
+                }
+                composable(NavRoute.AddMarket.route) {
+                    AddMarketScreenView()
                 }
             }
         }

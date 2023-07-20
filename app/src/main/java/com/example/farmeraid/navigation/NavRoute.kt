@@ -22,4 +22,6 @@ sealed class NavRoute(val route: String) {
     object SellProduce : NavRoute("sell_produce_route")
 
     object AddEditProduce : NavRoute("add_edit_produce_route")
+
+    object AddMarket : NavRoute("add_market_route")
 }

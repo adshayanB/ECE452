@@ -62,4 +62,8 @@ class AppNavigator {
     fun navigateToSellProduce(marketId: String) {
         _navController?.navigate(NavRoute.SellProduce.route + "/${marketId}")
     }
+
+    fun navigateToAddMarket() {
+        _navController?.navigate(NavRoute.AddMarket.route)
+    }
 }
