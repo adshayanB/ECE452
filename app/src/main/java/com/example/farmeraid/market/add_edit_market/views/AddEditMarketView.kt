@@ -40,7 +40,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,7 +50,6 @@ import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
 import com.example.farmeraid.uicomponents.ButtonView
-import com.example.farmeraid.uicomponents.QuantityPickerView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

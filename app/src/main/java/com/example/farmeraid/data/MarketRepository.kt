@@ -1,10 +1,7 @@
 package com.example.farmeraid.data
 
-import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
-import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore

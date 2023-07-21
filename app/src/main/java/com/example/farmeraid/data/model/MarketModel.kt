@@ -1,7 +1,5 @@
 package com.example.farmeraid.data.model
 
-import com.example.farmeraid.data.QuotasRepository
-
 class MarketModel {
     data class Market(
         val id : String,

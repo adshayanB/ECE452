@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,16 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.model.MarketModel
-import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.ui.theme.LightGrayColour
-import com.example.farmeraid.ui.theme.PrimaryColour
-import com.example.farmeraid.uicomponents.ProgressBarView
-import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 @Composable
 fun MarketItem(
