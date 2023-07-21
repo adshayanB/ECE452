@@ -64,6 +64,10 @@ class AppNavigator {
     }
 
     fun navigateToAddMarket() {
-        _navController?.navigate(NavRoute.AddMarket.route)
+        _navController?.navigate(NavRoute.AddEditMarket.route)
+    }
+
+    fun navigateToEditMarket(marketId : String) {
+        _navController?.navigate(NavRoute.AddEditMarket.route + "?marketId=${marketId}")
     }
 }

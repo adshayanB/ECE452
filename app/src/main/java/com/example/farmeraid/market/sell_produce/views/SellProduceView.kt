@@ -74,7 +74,7 @@ fun SellProduceView() {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "${state.marketName}",
+                        text = "Sell - ${state.marketName}",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -89,10 +89,18 @@ fun SellProduceView() {
                     }
                 },
                 actions = {
+                    IconButton(onClick = { viewModel.navigateToEditMarket(state.marketId) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "Edit ${state.marketName ?: "Unknown"} Market",
+                            tint = WhiteContentColour,
+                        )
+                    }
                     IconButton(onClick = { viewModel.navigateToTransactions() }) {
                         Icon(
                             imageVector = Icons.Filled.List,
-                            contentDescription = "Localized description"
+                            contentDescription = "Navigate to Transactions",
+                            tint = WhiteContentColour,
                         )
                     }
                 },
@@ -107,84 +115,103 @@ fun SellProduceView() {
         Column (
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(20.dp, 0.dp, 20.dp, 20.dp),
+                .padding(20.dp, 0.dp, 20.dp, 20.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
         ) {
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(0.dp, 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-            ) {
-                items(state.produceSellList) { produceSell ->
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    color = PrimaryColour,
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .size(25.0.dp),
+                    strokeWidth = 3.0.dp,
+                )
+            }
+            else {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(0.dp, 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    items(state.produceSellList) { produceSell ->
 
-                    IncrementListItemView(
-                        produceItem = UiComponentModel.IncrementListItemUiState(
-                            title = produceSell.produceName,
-                            price = produceSell.produceTotalPrice.toDouble(),
-                            showPrice = true,
-                            quantityPickerState = UiComponentModel.QuantityPickerUiState(
-                                count = produceSell.produceCount,
-                                limit = produceSell.produceInventory
+                        IncrementListItemView(
+                            produceItem = UiComponentModel.IncrementListItemUiState(
+                                title = produceSell.produceName,
+                                price = produceSell.produceTotalPrice.toDouble(),
+                                showPrice = true,
+                                quantityPickerState = UiComponentModel.QuantityPickerUiState(
+                                    count = produceSell.produceCount,
+                                    limit = produceSell.produceInventory
+                                ),
+                                setQuantity = { count ->
+                                    viewModel.setProduceCount(
+                                        produceSell.produceName,
+                                        count
+                                    )
+                                },
+                                onIncrement = {
+                                    viewModel.incrementProduceCount(produceSell.produceName)
+                                },
+                                onDecrement = { viewModel.decrementProduceCount(produceSell.produceName) },
+                                progressBarUiState = UiComponentModel.ProgressBarUiState(
+                                    text = if (produceSell.produceQuotaTotalGoal != -1) "Quota Progress: ${produceSell.produceQuotaCurrentProgress + produceSell.produceCount}/${produceSell.produceQuotaTotalGoal}" else "No Quota Available",
+                                    progress = if (produceSell.produceQuotaTotalGoal != -1) produceSell.produceQuotaCurrentProgress.toFloat() / produceSell.produceQuotaTotalGoal else 0f,
+                                    expectedProgress = if (produceSell.produceQuotaTotalGoal != -1) (produceSell.produceQuotaCurrentProgress.toFloat() + produceSell.produceCount) / produceSell.produceQuotaTotalGoal else 0f,
+                                    fontSize = 14.sp,
+                                    containerColor = PrimaryColour.copy(alpha = 0.2f),
+                                    progressColor = PrimaryColour,
+                                ),
+                                showProgressBar = true,
                             ),
-                            setQuantity = { count -> viewModel.setProduceCount(produceSell.produceName, count)},
-                            onIncrement = {
-                                viewModel.incrementProduceCount(produceSell.produceName)
-                            },
-                            onDecrement = { viewModel.decrementProduceCount(produceSell.produceName) },
-                            progressBarUiState = UiComponentModel.ProgressBarUiState(
-                                text = if (produceSell.produceQuotaTotalGoal != -1) "Quota Progress: ${produceSell.produceQuotaCurrentProgress + produceSell.produceCount}/${produceSell.produceQuotaTotalGoal}" else "No Quota Available",
-                                progress = if (produceSell.produceQuotaTotalGoal != -1) produceSell.produceQuotaCurrentProgress.toFloat() / produceSell.produceQuotaTotalGoal else 0f,
-                                expectedProgress = if (produceSell.produceQuotaTotalGoal != -1) (produceSell.produceQuotaCurrentProgress.toFloat() + produceSell.produceCount) / produceSell.produceQuotaTotalGoal else 0f,
-                                fontSize = 14.sp,
-                                containerColor = PrimaryColour.copy(alpha = 0.2f),
-                                progressColor = PrimaryColour,
-                            ),
-                            showProgressBar = true,
-                        ),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Divider(modifier = Modifier.height(1.dp), color = LightGrayColour)
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Divider(modifier = Modifier.height(1.dp), color = LightGrayColour)
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
+                Row(
                     modifier = Modifier
-                        .align(Alignment.CenterVertically),
-                    text = "Total Earnings:",
-                    fontWeight = FontWeight.Bold,
-                    color = BlackColour,
-                    fontSize = 16.sp
-                )
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically),
+                        text = "Total Earnings:",
+                        fontWeight = FontWeight.Bold,
+                        color = BlackColour,
+                        fontSize = 16.sp
+                    )
 
-                Text(
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically),
+                        text = "$${viewModel.getTotalEarnings()}",
+                        fontWeight = FontWeight.Medium,
+                        color = Color.DarkGray,
+                        fontSize = 14.sp,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Divider(modifier = Modifier.height(1.dp), color = LightGrayColour)
+                Spacer(modifier = Modifier.height(20.dp))
+
+                ButtonView(
+                    buttonUiState = state.submitButtonUiState,
+                    buttonUiEvent = UiComponentModel.ButtonUiEvent(
+                        onClick = { viewModel.submitSell() }),
                     modifier = Modifier
-                        .align(Alignment.CenterVertically),
-                    text = "$${viewModel.getTotalEarnings()}",
-                    fontWeight = FontWeight.Medium,
-                    color = Color.DarkGray,
-                    fontSize = 14.sp,
+                        .fillMaxWidth()
+                        .height(50.dp)
                 )
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
-            Divider(modifier = Modifier.height(1.dp), color = LightGrayColour)
-            Spacer(modifier = Modifier.height(20.dp))
-
-            ButtonView(
-                buttonUiState = state.submitButtonUiState,
-                buttonUiEvent = UiComponentModel.ButtonUiEvent(
-                    onClick = { viewModel.submitSell() }),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-            )
         }
     }
 }

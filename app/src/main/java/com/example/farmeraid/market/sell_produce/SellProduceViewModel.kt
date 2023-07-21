@@ -55,19 +55,25 @@ class SellProduceViewModel @Inject constructor(
         get() = _state
 
     private val marketName : MutableStateFlow<String> = MutableStateFlow("")
+    private val marketIdFlow : MutableStateFlow<String> = MutableStateFlow("")
     private val produceSellList : MutableStateFlow<List<SellProduceModel.ProduceSell>> = MutableStateFlow(listOf())
     private val submitButtonUiState: MutableStateFlow<UiComponentModel.ButtonUiState> = MutableStateFlow(_state.value.submitButtonUiState)
+    private val isLoading : MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
 
     init {
         viewModelScope.launch {
-            combine(marketName, produceSellList, submitButtonUiState) {
+            combine(marketName, marketIdFlow, produceSellList, submitButtonUiState, isLoading) {
                     marketName: String,
+                    marketIdFlow: String,
                     produceSellList: List<SellProduceModel.ProduceSell>,
-                    submitButtonUiState: UiComponentModel.ButtonUiState ->
+                    submitButtonUiState: UiComponentModel.ButtonUiState,
+                    isLoading: Boolean ->
                 SellProduceModel.SellProduceViewState(
                     marketName = marketName,
+                    marketId = marketIdFlow,
                     produceSellList = produceSellList,
                     submitButtonUiState = submitButtonUiState,
+                    isLoading = isLoading,
                 )
             }.collect {
                 _state.value = it
@@ -77,11 +83,13 @@ class SellProduceViewModel @Inject constructor(
 
     init{
         viewModelScope.launch {
+            isLoading.value = true
             val marketWithQuota: MarketModel.MarketWithQuota? = if (marketId != null) marketRepository.getMarketWithQuota(marketId).data else null
             val inventory: MutableMap<String, Int>? = inventoryRepository.getInventory().single().data
 
             if (marketWithQuota != null && inventory != null) {
                 marketName.value = marketWithQuota.name
+                marketIdFlow.value = marketWithQuota.id
                 produceSellList.value = marketWithQuota.prices.map {(produceName, price) ->
                     val produceQuota: QuotaModel.ProduceQuota? = marketWithQuota.quota.produceQuotaList.find { it.produceName == produceName}
 
@@ -96,6 +104,7 @@ class SellProduceViewModel @Inject constructor(
                     )
                 }
             }
+            isLoading.value = false
         }
     }
 
@@ -176,5 +185,9 @@ class SellProduceViewModel @Inject constructor(
 
     fun navigateBack() {
         appNavigator.navigateBack()
+    }
+
+    fun navigateToEditMarket(marketId: String) {
+        appNavigator.navigateToEditMarket(marketId)
     }
 }
