@@ -9,7 +9,7 @@ class AddEditMarketModel {
     data class ProduceRow(
         val id: UUID = UUID.randomUUID(),
         val produce : String?,
-        val quantityPickerUiState: UiComponentModel.QuantityPickerUiState,
+        val producePrice: Double,
     )
 
     data class AddEditMarketViewState(
@@ -33,6 +33,6 @@ fun initializeProduceRow() : AddEditMarketModel.ProduceRow {
     return AddEditMarketModel.ProduceRow(
         id = UUID.randomUUID(),
         produce = null,
-        quantityPickerUiState = UiComponentModel.QuantityPickerUiState(0, null,false)
+        producePrice = 0.0,
     )
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -39,6 +40,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -137,7 +140,7 @@ fun AddEditMarketScreenView() {
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             SearchableExpandedDropDownMenuView(
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.weight(1.1f),
                                 listOfItems = state.produce.toList().map { it.first },
                                 selectedOption = row.produce,
                                 dropdownItem = { produceName ->
@@ -145,7 +148,7 @@ fun AddEditMarketScreenView() {
                                 },
                                 placeholder = {
                                     Text(
-                                        fontSize = 14.sp,
+                                        fontSize = 13.5.sp,
                                         text = "Select Produce"
                                     )
                                 },
@@ -158,48 +161,35 @@ fun AddEditMarketScreenView() {
                                         produceName
                                     )
                                 },
+                                fontSize = 13.5.sp,
                             )
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Row(
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                QuantityPickerView(
-                                    quantityPickerUiState = row.quantityPickerUiState,
-                                    quantityPickerUiEvent = UiComponentModel.QuantityPickerUiEvent(
-                                        onIncrement = {
-                                            viewModel.selectProducePrice(
-                                                id = row.id,
-                                                newAmount = (row.quantityPickerUiState.count
-                                                    ?: 0) + 1
-                                            )
-                                        },
-                                        onDecrement = {
-                                            viewModel.selectProducePrice(
-                                                id = row.id,
-                                                newAmount = (row.quantityPickerUiState.count
-                                                    ?: 1) - 1
-                                            )
-                                        },
-                                        setQuantity = { amount ->
-                                            viewModel.selectProducePrice(
-                                                id = row.id,
-                                                newAmount = amount
-                                            )
-                                        }
-                                    ),
+
+                            Spacer(modifier = Modifier.width(20.dp))
+
+                            TextField(
+                                label = { Text(text = "Price of Produce") },
+                                value = "${row.producePrice}",
+                                onValueChange = { viewModel.setProducePrice(row.id, it.toDoubleOrNull())},
+                                colors = TextFieldDefaults.textFieldColors(
+                                    cursorColor = PrimaryColour,
+                                    focusedIndicatorColor = PrimaryColour,
+                                    focusedLabelColor = PrimaryColour,
+                                    focusedSupportingTextColor = PrimaryColour,
+                                ),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                modifier = Modifier.weight(0.9f),
+                            )
+
+                            if (state.produceRows.size > 1) {
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Icon(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .clickable { viewModel.removeProduceRow(row.id) },
+                                    imageVector = Icons.Filled.Close,
+                                    contentDescription = "Remove Produce Row",
+                                    tint = LightGrayColour,
                                 )
-                                if (state.produceRows.size > 1) {
-                                    Spacer(modifier = Modifier.width(10.dp))
-                                    Icon(
-                                        modifier = Modifier
-                                            .size(20.dp)
-                                            .clickable { viewModel.removeProduceRow(row.id) },
-                                        imageVector = Icons.Filled.Close,
-                                        contentDescription = "Remove Produce Row",
-                                        tint = LightGrayColour,
-                                    )
-                                }
                             }
                         }
                     }

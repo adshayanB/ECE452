@@ -130,7 +130,7 @@ class AddEditMarketViewModel @Inject constructor(
                     it.prices.map { producePrice ->
                         AddEditMarketModel.ProduceRow(
                             produce = producePrice.key,
-                            quantityPickerUiState = UiComponentModel.QuantityPickerUiState(producePrice.value.toInt())
+                            producePrice = producePrice.value,
                         )
                     }
                 } ?: run {
@@ -152,20 +152,20 @@ class AddEditMarketViewModel @Inject constructor(
                 id -> AddEditMarketModel.ProduceRow(
                     id = row.id,
                     produce = newProduce,
-                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(row.quantityPickerUiState.count),
+                    producePrice = row.producePrice,
                 )
                 else -> row
             }
         }
     }
 
-    fun selectProducePrice(id : UUID, newAmount : Int?) {
+    fun setProducePrice(id : UUID, newAmount : Double?) {
         produceRows.value = produceRows.value.map { row ->
             when (row.id) {
                 id -> AddEditMarketModel.ProduceRow(
                     id = row.id,
                     produce = row.produce,
-                    quantityPickerUiState = UiComponentModel.QuantityPickerUiState(newAmount ?: 0, null,row.produce != null)
+                    producePrice = newAmount ?: 0.0,
                 )
                 else -> row
             }
@@ -191,10 +191,10 @@ class AddEditMarketViewModel @Inject constructor(
                 snackbarDelegate.showSnackbar("Select at least 1 produce")
             } else if (produceList.distinctBy { it.produce }.size != produceList.size) {
                 snackbarDelegate.showSnackbar("Cannot have duplicate produce")
-            } else if (produceList.any { it.quantityPickerUiState.count == null }) {
+            } else if (produceList.any { it.producePrice == 0.0 }) {
                 snackbarDelegate.showSnackbar("There are one or more invalid values")
             } else {
-                val result = marketRepository.addOrUpdateMarket(marketName.value, produceList.filter{ it.produce != null }.associate { produce -> produce.produce!! to produce.quantityPickerUiState.count.toDouble() })
+                val result = marketRepository.addOrUpdateMarket(marketName.value, produceList.filter{ it.produce != null }.associate { produce -> produce.produce!! to produce.producePrice })
 
                 when (result) {
                     is ResponseModel.FAResponse.Success -> {}
