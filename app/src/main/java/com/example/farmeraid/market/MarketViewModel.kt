@@ -64,16 +64,16 @@ class MarketViewModel @Inject constructor(
     val state: StateFlow<MarketPageModel.MarketViewState>
         get() = _state
 
-    private val marketWithQuotaList: MutableStateFlow<List<MarketModel.MarketWithQuota>> = MutableStateFlow(listOf())
+    private val marketList: MutableStateFlow<List<MarketModel.Market>> = MutableStateFlow(listOf())
     private val isLoading : MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
 
     init {
         viewModelScope.launch {
-            combine(marketWithQuotaList, isLoading) {
-                    marketWithQuotaList: List<MarketModel.MarketWithQuota>,
+            combine(marketList, isLoading) {
+                    marketList: List<MarketModel.Market>,
                     isLoading: Boolean ->
                 MarketPageModel.MarketViewState(
-                    marketWithQuotaList = marketWithQuotaList,
+                    marketList = marketList,
                     isLoading = isLoading,
                 )
             }.collect {
@@ -86,11 +86,11 @@ class MarketViewModel @Inject constructor(
         viewModelScope.launch {
             isLoading.value = true
 
-            marketRepository.getMarketsWithQuota().collect { marketsWithQuota ->
-                marketsWithQuota.data?.let {
-                    marketWithQuotaList.value = it
+            marketRepository.getMarkets().collect { markets ->
+                markets.data?.let {
+                    marketList.value = it
                 } ?: run {
-                        snackbarDelegate.showSnackbar(marketsWithQuota.error ?: "Unknown error")
+                        snackbarDelegate.showSnackbar(markets.error ?: "Unknown error")
                 }
             }
 

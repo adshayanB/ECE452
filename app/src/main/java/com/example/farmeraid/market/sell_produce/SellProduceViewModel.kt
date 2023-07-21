@@ -13,6 +13,7 @@ import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
+import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.farm.model.FarmModel
 import com.example.farmeraid.farm.model.FarmModel.FarmViewState
 import com.example.farmeraid.farm.model.getMicButton
@@ -39,6 +40,7 @@ import javax.inject.Inject
 class SellProduceViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository,
     private val marketRepository: MarketRepository,
+    private val quotasRepository: QuotasRepository,
     savedStateHandle: SavedStateHandle,
     private val appNavigator: AppNavigator,
 ): ViewModel() {
@@ -84,25 +86,27 @@ class SellProduceViewModel @Inject constructor(
     init{
         viewModelScope.launch {
             isLoading.value = true
-            val marketWithQuota: MarketModel.MarketWithQuota? = if (marketId != null) marketRepository.getMarketWithQuota(marketId).data else null
-            val inventory: MutableMap<String, Int>? = inventoryRepository.getInventory().single().data
+            val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
+            val inventory: MutableMap<String, Int> = inventoryRepository.getInventory().single().data!!
+            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId!!)
 
-            if (marketWithQuota != null && inventory != null) {
-                marketName.value = marketWithQuota.name
-                marketIdFlow.value = marketWithQuota.id
-                produceSellList.value = marketWithQuota.prices.map {(produceName, price) ->
-                    val produceQuota: QuotaModel.ProduceQuota? = marketWithQuota.quota.produceQuotaList.find { it.produceName == produceName}
+            val quota: QuotaModel.Quota? = if (quotaRes.error != null) quotaRes.data
+            else null
 
-                    SellProduceModel.ProduceSell(
-                        produceName = produceName,
-                        produceCount = 0,
-                        produceInventory = inventory.getOrDefault(produceName, 0),
-                        producePrice = price,
-                        produceTotalPrice = 0.0,
-                        produceQuotaCurrentProgress = produceQuota?.saleAmount ?: 0,
-                        produceQuotaTotalGoal = produceQuota?.produceGoalAmount ?: -1
-                    )
-                }
+            marketName.value = market.name
+            marketIdFlow.value = market.id
+            produceSellList.value = market.prices.map {(produceName, price) ->
+                val produceQuota: QuotaModel.ProduceQuota? = quota?.produceQuotaList?.find { it.produceName == produceName}
+
+                SellProduceModel.ProduceSell(
+                    produceName = produceName,
+                    produceCount = 0,
+                    produceInventory = inventory.getOrDefault(produceName, 0),
+                    producePrice = price,
+                    produceTotalPrice = 0.0,
+                    produceQuotaCurrentProgress = produceQuota?.saleAmount ?: 0,
+                    produceQuotaTotalGoal = produceQuota?.produceGoalAmount ?: -1
+                )
             }
             isLoading.value = false
         }

@@ -13,7 +13,7 @@ import com.example.farmeraid.uicomponents.models.UiComponentModel
 class MarketPageModel {
 
     data class MarketViewState(
-        val marketWithQuotaList: List<MarketModel.MarketWithQuota> = emptyList(),
+        val marketList: List<MarketModel.Market> = emptyList(),
         val isLoading: Boolean = false,
     )
 }

@@ -57,6 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.farmeraid.home.HomeViewModel
 import com.example.farmeraid.home.model.HomeModel.Tab
 import com.example.farmeraid.market.MarketViewModel
+import com.example.farmeraid.market.views.MarketItem
 import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
@@ -136,10 +137,10 @@ fun MarketScreenView() {
                     verticalArrangement = Arrangement.spacedBy(30.dp),
                     contentPadding = PaddingValues(20.dp),
                 ) {
-                    items(state.marketWithQuotaList) { marketWithQuota ->
-                        QuotaItem(
-                            marketWithQuota = marketWithQuota,
-                            onClick = { viewModel.navigateToSellProduce(marketWithQuota.id) }
+                    items(state.marketList) { market ->
+                        MarketItem(
+                            market = market,
+                            onClick = { viewModel.navigateToSellProduce(market.id) }
                         )
                     }
                 }
