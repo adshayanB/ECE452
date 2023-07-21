@@ -104,8 +104,9 @@ def create_charity():
     coll_ref = db.collection("charity")
     create_time, doc_ref = coll_ref.add(
         {
-            "name": "Mei's Charity",
-            "donations":{
+            "charityName": "Rishan's Charity",
+            "location": "Faire Icon Office",
+            "produce":{
                 "Apple": 12,
                 "Mango":122
             }
@@ -148,49 +149,48 @@ def create_transactions():
     date = datetime.datetime.now().strftime("%m/%d/%Y")
     time = datetime.datetime.now(tz=datetime.timezone.utc)
 
-    doc_ref = db.collection("transactions").document("XIefGtyqhiyEaoQmGl2j")
-    doc_ref.set({
+    doc_ref = db.collection("transactions")
+    doc_ref.add({
         #date/time/action/produce/market/count/price
-         "t1": {
-              "date":date,
-              "timestamp": time,
-               "type": "SELL",
-               "produce": "apple",
-               "destination": "Rishan Market",
-               "count": 2,
-               "price": 12
-             },
-            "t2": {
-              "date":date,
-              "timestamp": time,
-               "type": "HARVEST",
-               "produce": "oranges",
-               "destination": "Rishan Farm",
-               "count": 3,
-               "price": 15
-             },
-         "t3": {
-             "date": date,
-             "timestamp": time,
-             "type":"DONATE",
-             "produce": "bananas",
-             "destination":"Sath Charity",
-             "count":8,
-             "price": 15},
-        "t4": {
+            #   "date":date,
+            #   "timestamp": time,
+            #    "type": "SELL",
+            #    "produce": "apple",
+            #    "destination": "Rishan Market",
+            #    "count": 2,
+            #    "price": 12
+
+
+            #   "date":date,
+            #   "timestamp": time,
+            #    "type": "HARVEST",
+            #    "produce": "oranges",
+            #    "destination": "Rishan Farm",
+            #    "count": 3,
+            #    "price": 15
+
+            #  "date": date,
+            #  "timestamp": time,
+            #  "type":"DONATE",
+            #  "produce": "bananas",
+            #  "destination":"Sath Charity",
+            #  "count":8,
+            #  "price": 15
+
              "date": date,
              "timestamp": time,
              "type":"HARVEST",
              "produce": "mangos",
              "destination":"Rishan Farm",
-             "count":8,
-             "price": 15},
+             "count":18,
+             "price": 15,
+             "message": "Harvested 18 mangos"
     })
 
-create_transactions()
+# create_transactions()
 # rando()
 # create_farm()
 # create_market()
 # create_user()
 # create_inventory()
-# create_charity()
+create_charity()
