@@ -120,7 +120,7 @@ class MarketRepository(
 
             }
         }
-
+        marketModelList.sortBy { it.name }
         return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 

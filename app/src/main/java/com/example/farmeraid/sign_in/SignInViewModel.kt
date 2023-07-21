@@ -69,9 +69,10 @@ class SignInViewModel @Inject constructor(
                 Log.d("MESSAGE", "LOGGED IN")
                 userRepository.getUserId()?.let { Log.d("UserID", it) }
 
-                val farmId = userRepository.getFarmId()
+                val farmId = userRepository.getFarmId().toString()
+                Log.d("FARM ID", farmId)
 
-                if (farmId.isNullOrEmpty()) {
+                if (farmId == "none") {
                     appNavigator.navigateToFarmSelection()
                 } else {
                     appNavigator.navigateToMode(NavRoute.Home)

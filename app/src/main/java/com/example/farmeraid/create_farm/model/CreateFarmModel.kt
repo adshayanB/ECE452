@@ -6,7 +6,7 @@ class CreateFarmModel {
     data class CreateFarmViewState(
         val buttonUiState: UiComponentModel.ButtonUiState,
         val farmName: String = "",
-        val location: String = "",
+        val location: String = ""
     )
 }
 
