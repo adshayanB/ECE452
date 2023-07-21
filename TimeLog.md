@@ -78,4 +78,4 @@
 | 07/19/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed the join farm feature, valdiated functionality via Firestore, updated users who joined with a farmID and role
 | 07/19/2023 | 0.75     |  0  | 0        | 0   | 0     | 0        | Returned values in alphabetical order for Markets and Produce
 | 07/21/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Created Charity Repository Model with add or get charities using FireStore, designed Fridge Object to store charity information from firestore
-
+| 07/21/2023 | 1        |  0  | 0        | 0   | 0     | 0        | Refactored database schema to support new charity schema, updated seeding script to seed database
