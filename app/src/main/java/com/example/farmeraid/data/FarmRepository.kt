@@ -101,6 +101,7 @@ class FarmRepository(
         } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
 
+    //Get list of charities
     suspend fun getCharityIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
         Log.d("getCharityIds", "called")
         return (userRepository.getFarmId()?.let { id ->
