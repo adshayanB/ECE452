@@ -1,6 +1,7 @@
 package com.example.farmeraid.data
 
 import android.util.Log
+import com.example.farmeraid.data.model.CharityModel
 import com.example.farmeraid.data.model.FridgeModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.google.firebase.firestore.DocumentSnapshot
@@ -13,10 +14,6 @@ class CharityRepository (
     private val userRepository: UserRepository
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    data class ProduceFridge(
-        val produceName: String,
-        val produceDonateAmount: Int,
-    )
 
     suspend fun createCharity(charityName: String, location:String, produce: List<QuotasRepository.ProduceQuota>): ResponseModel.FAResponse{
         return try {
@@ -72,11 +69,11 @@ class CharityRepository (
                     fridgeName = fridgeName,
                     location = charityLocation,
                     items = itemsMap.map { (produceName, goal) ->
-                        ProduceFridge(
+                        CharityModel.ProduceFridge(
                             produceName = produceName,
                             produceDonateAmount = goal,
 
-                        )
+                            )
                     }
                 )
             )
