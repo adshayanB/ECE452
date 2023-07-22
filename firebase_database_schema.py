@@ -145,8 +145,6 @@ def create_specfic_quota():
     )
 
 def create_transactions():
-    time = datetime.datetime.now(tz=datetime.timezone.utc)
-
     doc_ref = db.collection("transactions").document("Kycf6h9tSfRjckshgQSz")
     doc_ref.set({
         "type": "HARVEST",
