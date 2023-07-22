@@ -62,7 +62,7 @@ class QuotasRepository {
             ResponseModel.FAResponseWithData.Error("Quota object does not have produce or sale information")
         }
     }
-    suspend fun addQuota(market: MarketModel.Market, produce: List<ProduceQuota>) : ResponseModel.FAResponse {
+    suspend fun addOrUpdateQuota(market: MarketModel.Market, produce: List<ProduceQuota>) : ResponseModel.FAResponse {
         val doc : DocumentSnapshot = try {
             db.collection("quotas").document(market.id).get().await()
         } catch (e : Exception) {
@@ -73,16 +73,15 @@ class QuotasRepository {
         return try {
             if (doc.exists()) {
                 db.collection("quotas").document(market.id)
-                    .update("produce", produce.associate {
-                        it.produceName to it.produceGoalAmount
-                    })
+                    .update(
+                        "produce", produce.associate{ it.produceName to it.produceGoalAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                        "sale", produce.associate{ it.produceName to it.saleAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                    )
             } else {
                 db.collection("quotas").document(market.id).set(
                     mapOf(
-                        "produce" to produce.associate {
-                            it.produceName to it.produceGoalAmount
-                        },
-                        "sale" to emptyMap<String, Int>(),
+                        "produce" to produce.associate{it.produceName to it.produceGoalAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                        "sale" to produce.associate{ it.produceName to it.saleAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
                     )
                 )
             }
