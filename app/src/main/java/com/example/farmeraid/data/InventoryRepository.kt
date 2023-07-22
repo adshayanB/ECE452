@@ -31,7 +31,7 @@ class InventoryRepository(
                     .get()
                     .await()
                     .data?.get("produce")?.let {
-                        FAResponseWithData.Success(it as MutableMap<String, Int>)
+                        FAResponseWithData.Success((it as MutableMap<String, Int>).toSortedMap(String.CASE_INSENSITIVE_ORDER))
                     } ?: FAResponseWithData.Error("Error fetching produce")
             } catch (e : Exception) {
                 Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
