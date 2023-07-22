@@ -2,7 +2,6 @@ import firebase_admin
 import uuid
 import datetime
 
-
 from firebase_admin import credentials
 from firebase_admin import firestore
 
@@ -146,51 +145,42 @@ def create_specfic_quota():
     )
 
 def create_transactions():
-    date = datetime.datetime.now().strftime("%m/%d/%Y")
     time = datetime.datetime.now(tz=datetime.timezone.utc)
 
-    doc_ref = db.collection("transactions")
-    doc_ref.add({
-        #date/time/action/produce/market/count/price
-            #   "date":date,
-            #   "timestamp": time,
-            #    "type": "SELL",
-            #    "produce": "apple",
-            #    "destination": "Rishan Market",
-            #    "count": 2,
-            #    "price": 12
-
-
-            #   "date":date,
-            #   "timestamp": time,
-            #    "type": "HARVEST",
-            #    "produce": "oranges",
-            #    "destination": "Rishan Farm",
-            #    "count": 3,
-            #    "price": 15
-
-            #  "date": date,
-            #  "timestamp": time,
-            #  "type":"DONATE",
-            #  "produce": "bananas",
-            #  "destination":"Sath Charity",
-            #  "count":8,
-            #  "price": 15
-
-             "date": date,
-             "timestamp": time,
-             "type":"HARVEST",
-             "produce": "mangos",
-             "destination":"Rishan Farm",
-             "count":18,
-             "price": 15,
-             "message": "Harvested 18 mangos"
+    doc_ref = db.collection("transactions").document("Kycf6h9tSfRjckshgQSz")
+    doc_ref.set({
+        "type": "HARVEST",
+        "produce": "Mango",
+        "count": 12,
+        "pricePerProduce": 0,
+        "location": "",
+        "timestamp": firestore.firestore.SERVER_TIMESTAMP,
     })
 
-# create_transactions()
+    doc_ref = db.collection("transactions").document("o2e2xYKbyfassUSlNbhz")
+    doc_ref.set({
+        "type": "SELL",
+        "produce": "Banana",
+        "count": 5,
+        "pricePerProduce": 2.57,
+        "location": "Rishan Market",
+        "timestamp": firestore.firestore.SERVER_TIMESTAMP,
+    })
+
+    doc_ref = db.collection("transactions").document("9JqJJEhwc0TezSoFZXZA")
+    doc_ref.set({
+        "type": "DONATE",
+        "produce": "Apple",
+        "count": 15,
+        "pricePerProduce": 0,
+        "location": "Rishan Charity",
+        "timestamp": firestore.firestore.SERVER_TIMESTAMP,
+    })
+
+create_transactions()
 # rando()
 # create_farm()
 # create_market()
 # create_user()
 # create_inventory()
-create_charity()
+# create_charity()
