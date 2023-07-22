@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.ui.theme.LightGrayColour
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun MarketItem(
@@ -34,6 +36,7 @@ fun MarketItem(
     onClick : () -> Unit = {},
 ) {
     val maxNumOfProduceShown : Int = 4
+    val numberFormat = NumberFormat.getCurrencyInstance(Locale.CANADA)
 
     Column (
         modifier = modifier
@@ -72,7 +75,7 @@ fun MarketItem(
                     )
 
                     Text(
-                        text = "$${producePrice.second}",
+                        text = "${numberFormat.format(producePrice.second)}/produce",
                         modifier = Modifier.width(125.dp),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,

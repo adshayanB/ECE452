@@ -19,12 +19,17 @@ import androidx.compose.ui.unit.sp
 import com.example.farmeraid.ui.theme.BlackColour
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.uicomponents.models.UiComponentModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun IncrementListItemView(
     produceItem : UiComponentModel.IncrementListItemUiState,
     modifier: Modifier = Modifier,
 ) {
+
+    val numberFormat = NumberFormat.getCurrencyInstance(Locale.CANADA)
+
     Column(modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
@@ -57,7 +62,7 @@ fun IncrementListItemView(
                     modifier = Modifier
                         //.weight(1f)
                         .align(Alignment.CenterVertically),
-                    text = "$${produceItem.price}",
+                    text = numberFormat.format(produceItem.price),
                     fontWeight = FontWeight.Medium,
                     color = Color.DarkGray,
                     fontSize = 14.sp,

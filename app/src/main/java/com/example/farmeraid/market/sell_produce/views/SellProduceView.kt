@@ -43,6 +43,8 @@ import com.example.farmeraid.ui.theme.WhiteContentColour
 import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.IncrementListItemView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +53,8 @@ fun SellProduceView() {
 
     val viewModel = hiltViewModel<SellProduceViewModel>()
     val state by viewModel.state.collectAsState()
+
+    val numberFormat = NumberFormat.getCurrencyInstance(Locale.CANADA)
 
     Scaffold(
         topBar = {
@@ -123,7 +127,7 @@ fun SellProduceView() {
                         IncrementListItemView(
                             produceItem = UiComponentModel.IncrementListItemUiState(
                                 title = produceSell.produceName,
-                                price = produceSell.produceTotalPrice.toDouble(),
+                                price = produceSell.produceTotalPrice,
                                 showPrice = true,
                                 quantityPickerState = UiComponentModel.QuantityPickerUiState(
                                     count = produceSell.produceCount,
@@ -151,7 +155,7 @@ fun SellProduceView() {
                             ),
                             modifier = Modifier.fillMaxWidth(),
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
                         Divider(modifier = Modifier.height(1.dp), color = LightGrayColour)
                     }
                 }
@@ -175,7 +179,7 @@ fun SellProduceView() {
                     Text(
                         modifier = Modifier
                             .align(Alignment.CenterVertically),
-                        text = "$${viewModel.getTotalEarnings()}",
+                        text = numberFormat.format(viewModel.getTotalEarnings()),
                         fontWeight = FontWeight.Medium,
                         color = Color.DarkGray,
                         fontSize = 14.sp,

@@ -51,6 +51,8 @@ import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
 import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -59,6 +61,9 @@ fun AddEditMarketScreenView() {
     val state by viewModel.state.collectAsState()
 
     val dropdownSearchMinSize = 4
+    val numberFormat = NumberFormat.getNumberInstance(Locale.CANADA)
+    numberFormat.maximumFractionDigits = 2
+    numberFormat.minimumFractionDigits = 2
 
     Scaffold(
         topBar = {
@@ -166,7 +171,7 @@ fun AddEditMarketScreenView() {
 
                             TextField(
                                 label = { Text(text = "Price of Produce") },
-                                value = "${row.producePrice}",
+                                value = numberFormat.format(row.producePrice),
                                 onValueChange = { viewModel.setProducePrice(row.id, it.toDoubleOrNull())},
                                 colors = TextFieldDefaults.textFieldColors(
                                     cursorColor = PrimaryColour,
