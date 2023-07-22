@@ -93,4 +93,11 @@
 | 07/21/2023 | 0     | 0      | 0        | 3.5 | 0     | 0        | Change main market page to display all markets rather than just markets with quotas. It now displays a card with the produce prices. Fixed an issue regarding the sell produce page assuming that the market has a valid quota wherein it would display nothing if the market didn't have a quota; it now correctly displays everything even if the market doesn't have an associated quota.
 | 07/21/2023 | 0     | 0      | 0        | 3  | 0     | 0        | Change Add/Edit Market Page to use a TextField rather than a QuantityPicker for the produce price, as the datatype is a double rather than an int. Now, decimal prices can be entered without any issues, and it will be reflected successfully in the database
 | 07/21/2023 | 0     | 0      | 0        | 0.75 | 0     | 0        | Fix bug where I wasn't checking the response from getting quota for an error correctly (causing all produces to appear to have no quota). Also add functionality to update the quota sale amount when submit button is pressed on the sell produce page.
+| 07/18/2023 | 0        | 0   | 0        | 0   | 6     | 0         | Added filters to transactions page
+| 07/19/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed the join farm feature, valdiated functionality via Firestore, updated users who joined with a farmID and role
+| 07/19/2023 | 0.75     |  0  | 0        | 0   | 0     | 0        | Returned values in alphabetical order for Markets and Produce
+| 07/21/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Created Charity Repository Model with add or get charities using FireStore, designed Fridge Object to store charity information from firestore
+| 07/21/2023 | 1        |  0  | 0        | 0   | 0     | 0        | Refactored database schema to support new charity schema, updated seeding script to seed database
+| 07/22/2023 | 0.5      |  0  | 0        | 0   | 0     | 0        | Addressed changes from charity repo model
+
 
