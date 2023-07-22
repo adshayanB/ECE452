@@ -3,6 +3,7 @@ package com.example.farmeraid.data
 import android.util.Log
 import com.example.farmeraid.data.model.CharityModel
 import com.example.farmeraid.data.model.FridgeModel
+import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
@@ -15,7 +16,7 @@ class CharityRepository (
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    suspend fun createCharity(charityName: String, location:String, produce: List<QuotasRepository.ProduceQuota>): ResponseModel.FAResponse{
+    suspend fun createCharity(charityName: String, location:String, produce: List<QuotaModel.ProduceQuota>): ResponseModel.FAResponse{
         return try {
 
             userRepository.getFarmId()?.let{

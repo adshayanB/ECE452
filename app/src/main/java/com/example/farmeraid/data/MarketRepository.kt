@@ -76,7 +76,7 @@ class MarketRepository(
             MarketModel.Market(
                 id = market.id,
                 name = market.get("name") as String,
-                prices = market.get("prices") as MutableMap<String, Double>
+                prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
             )
                 .let { marketModelList.add(it) }
         }
@@ -110,7 +110,7 @@ class MarketRepository(
                             id = market.id,
                             name = market.get("name") as String,
                             quota = it,
-                            prices = market.get("prices") as MutableMap<String, Double>
+                            prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
                         )
                     )
                 } ?: run {
@@ -157,7 +157,7 @@ class MarketRepository(
                         id = marketModel.id,
                         name = marketModel.get("name") as String,
                         quota = it,
-                        prices = marketModel.get("prices") as MutableMap<String, Double>
+                        prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
                     )
                 } ?: run {
                     return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while fetching market's quota")
@@ -183,7 +183,7 @@ class MarketRepository(
             MarketModel.Market(
                 id = marketModel.id,
                 name = marketModel.get("name") as String,
-                prices = marketModel.get("prices") as MutableMap<String, Double>,
+                prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
             )
         }
 

@@ -157,7 +157,7 @@ class SellProduceViewModel @Inject constructor(
             else null
 
             if (quota != null) {
-                quotasRepository.addQuota(market, quota.produceQuotaList.map {produceQuota ->
+                quotasRepository.addOrUpdateQuota(market, quota.produceQuotaList.map {produceQuota ->
                     QuotaModel.ProduceQuota(
                         produceName = produceQuota.produceName,
                         produceGoalAmount = produceQuota.produceGoalAmount,
