@@ -75,7 +75,6 @@
 | 07/18/2023 | 1        |  0  | 1        | 0   | 0     | 0        | Investigated user creation to joining/creating farm flow
 | 07/18/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed user creation and farm creation flow to allow the creation of a new farm for a new user linking the firestore db
 | 07/18/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Generated code for newly created farm, stored in firestore, updated view to support new dynamic code creation
+| 07/18/2023 | 0        | 0   | 0        | 0   | 6     | 0         | Added filters to transactions page
 | 07/19/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed the join farm feature, valdiated functionality via Firestore, updated users who joined with a farmID and role
 | 07/19/2023 | 0.75     |  0  | 0        | 0   | 0     | 0        | Returned values in alphabetical order for Markets and Produce
-
-
