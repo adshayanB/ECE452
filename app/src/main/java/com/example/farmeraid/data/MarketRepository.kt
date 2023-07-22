@@ -1,6 +1,5 @@
 package com.example.farmeraid.data
 
-import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.google.firebase.firestore.DocumentSnapshot
@@ -43,6 +42,7 @@ class MarketRepository(
                 .let { marketModelList.add(it) }
         }
 
+        marketModelList.sortBy { it.name.lowercase() }
         return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 
@@ -81,7 +81,7 @@ class MarketRepository(
 
             }
         }
-        marketModelList.sortBy { it.name }
+        marketModelList.sortBy { it.name.lowercase() }
         return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 

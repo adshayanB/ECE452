@@ -64,7 +64,7 @@ class HomeViewModel @Inject constructor(
                     } ?: run {
                         snackbarDelegate.showSnackbar(quotas.error ?: "Unknown error")
                     }
-                    inventory.data?.toSortedMap()?.let {
+                    inventory.data?.let {
                         inventoryList.value = it
                     } ?: run {
                         snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
