@@ -114,7 +114,7 @@ class FarmRepository(
                     } ?: ResponseModel.FAResponseWithData.Error("Error fetching charities")
             } catch (e : Exception) {
                 Log.e("FarmRepository", e.message ?: e.stackTraceToString())
-                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting charitie")
+                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting charities")
             }
         } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
