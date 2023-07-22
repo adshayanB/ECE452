@@ -13,6 +13,10 @@ class CharityRepository (
     private val userRepository: UserRepository
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    data class ProduceFridge(
+        val produceName: String,
+        val produceDonateAmount: Int,
+    )
 
     suspend fun createCharity(charityName: String, location:String, produce: List<QuotasRepository.ProduceQuota>): ResponseModel.FAResponse{
         return try {
@@ -48,7 +52,7 @@ class CharityRepository (
             docRead = db.collection("charity").document(id).get().await()
         } catch (e : Exception) {
             Log.e("Charity Repository",e.message ?: e.stackTraceToString())
-            return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching quota")
+            return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting charities")
         }
 
         if (!docRead.exists()) {
@@ -68,10 +72,10 @@ class CharityRepository (
                     fridgeName = fridgeName,
                     location = charityLocation,
                     items = itemsMap.map { (produceName, goal) ->
-                        QuotasRepository.ProduceQuota(
+                        ProduceFridge(
                             produceName = produceName,
-                            produceGoalAmount = goal,
-                            saleAmount = 0,
+                            produceDonateAmount = goal,
+
                         )
                     }
                 )

@@ -113,8 +113,8 @@ class FarmRepository(
                         ResponseModel.FAResponseWithData.Success(it as MutableList<String>)
                     } ?: ResponseModel.FAResponseWithData.Error("Error fetching charities")
             } catch (e : Exception) {
-                Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
-                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting inventory")
+                Log.e("FarmRepository", e.message ?: e.stackTraceToString())
+                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting charitie")
             }
         } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
