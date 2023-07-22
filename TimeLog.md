@@ -88,6 +88,7 @@
 | 07/18/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed user creation and farm creation flow to allow the creation of a new farm for a new user linking the firestore db
 | 07/18/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Generated code for newly created farm, stored in firestore, updated view to support new dynamic code creation
 | 07/18/2023 | 0     | 0      | 0        | 7  | 0     | 0        | Refactor to allow for both add and edit market functionality. Lots of MVVM as well as Market Repository was refined.
+| 07/18/2023 | 0        | 0   | 0        | 0   | 6     | 0         | Added filters to transactions page
 | 07/19/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed the join farm feature, valdiated functionality via Firestore, updated users who joined with a farmID and role
 | 07/19/2023 | 0.75     |  0  | 0        | 0   | 0     | 0        | Returned values in alphabetical order for Markets and Produce
 | 07/21/2023 | 0     | 0      | 0        | 3.5 | 0     | 0        | Change main market page to display all markets rather than just markets with quotas. It now displays a card with the produce prices. Fixed an issue regarding the sell produce page assuming that the market has a valid quota wherein it would display nothing if the market didn't have a quota; it now correctly displays everything even if the market doesn't have an associated quota.
