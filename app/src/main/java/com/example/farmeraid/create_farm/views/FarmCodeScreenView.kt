@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -65,8 +67,7 @@ fun FarmCodeScreenView() {
 
                  Spacer(modifier = Modifier.height(10.dp))
 
-                 // TODO: need to get the RNG Farm Code
-                 Text(text = "Farm Code: 12345", style = TextStyle(fontSize = 18.sp))
+                Text(text = state.code, style = TextStyle(fontSize = 18.sp ))
 
                  Spacer(modifier = Modifier.height(20.dp))
 

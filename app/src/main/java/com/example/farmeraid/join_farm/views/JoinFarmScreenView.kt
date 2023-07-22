@@ -33,7 +33,7 @@ import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
-//REsource used for design : https://medium.com/@manojbhadane/android-login-screen-using-jetpack-compose-part-2-a262ad87c6d
+//Resource used for design : https://medium.com/@manojbhadane/android-login-screen-using-jetpack-compose-part-2-a262ad87c6d
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
