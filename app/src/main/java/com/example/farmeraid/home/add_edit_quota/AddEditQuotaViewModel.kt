@@ -189,6 +189,7 @@ class AddEditQuotaViewModel @Inject constructor(
             }
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
+            navigateBack()
         }
     }
 
