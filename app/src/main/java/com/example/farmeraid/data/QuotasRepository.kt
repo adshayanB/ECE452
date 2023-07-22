@@ -2,18 +2,31 @@ package com.example.farmeraid.data
 
 import android.util.Log
 import com.example.farmeraid.data.model.MarketModel
-import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
+// TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
 // TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
 
 class QuotasRepository {
+    data class ProduceQuota(
+        val produceName: String,
+        val produceGoalAmount: Int,
+        val saleAmount: Int
+    )
+
+    data class Quota(
+        val id: String,
+        val produceQuotaList: List<ProduceQuota>
+    )
 
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    suspend fun getQuota(id: String): ResponseModel.FAResponseWithData<QuotaModel.Quota?> {
+
+
+    suspend fun getQuota(id: String): ResponseModel.FAResponseWithData<Quota?> {
         val docRead : DocumentSnapshot
         try {
             docRead = db.collection("quotas").document(id).get().await()
@@ -33,10 +46,10 @@ class QuotasRepository {
             val quotasMap = quotas as MutableMap<String, Int>
             val sale = saleCount as MutableMap<String, Int>
             ResponseModel.FAResponseWithData.Success(
-                QuotaModel.Quota(
+                Quota(
                     id = id,
-                    produceQuotaList = quotasMap.map { (produceName, goal) ->
-                        QuotaModel.ProduceQuota(
+                    produceQuotaList = quotasMap.map{ (produceName, goal) ->
+                        ProduceQuota(
                             produceName = produceName,
                             produceGoalAmount = goal,
                             saleAmount = sale.getOrDefault(produceName, 0),
@@ -49,7 +62,7 @@ class QuotasRepository {
             ResponseModel.FAResponseWithData.Error("Quota object does not have produce or sale information")
         }
     }
-    suspend fun addQuota(market: MarketModel.Market, produce: List<QuotaModel.ProduceQuota>) : ResponseModel.FAResponse {
+    suspend fun addOrUpdateQuota(market: MarketModel.Market, produce: List<ProduceQuota>) : ResponseModel.FAResponse {
         val doc : DocumentSnapshot = try {
             db.collection("quotas").document(market.id).get().await()
         } catch (e : Exception) {
@@ -60,16 +73,15 @@ class QuotasRepository {
         return try {
             if (doc.exists()) {
                 db.collection("quotas").document(market.id)
-                    .update("produce", produce.associate {
-                        it.produceName to it.produceGoalAmount
-                    })
+                    .update(
+                        "produce", produce.associate{ it.produceName to it.produceGoalAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                        "sale", produce.associate{ it.produceName to it.saleAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                    )
             } else {
                 db.collection("quotas").document(market.id).set(
                     mapOf(
-                        "produce" to produce.associate {
-                            it.produceName to it.produceGoalAmount
-                        },
-                        "sale" to emptyMap<String, Int>(),
+                        "produce" to produce.associate{it.produceName to it.produceGoalAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                        "sale" to produce.associate{ it.produceName to it.saleAmount }.toSortedMap(String.CASE_INSENSITIVE_ORDER),
                     )
                 )
             }

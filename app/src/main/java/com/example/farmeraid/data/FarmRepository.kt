@@ -101,6 +101,24 @@ class FarmRepository(
         } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
     }
 
+    //Get list of charities
+    suspend fun getCharityIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
+        Log.d("getCharityIds", "called")
+        return (userRepository.getFarmId()?.let { id ->
+            try {
+                db.collection("farm").document(id)
+                    .get()
+                    .await()
+                    .data?.get("charities")?.let {
+                        ResponseModel.FAResponseWithData.Success(it as MutableList<String>)
+                    } ?: ResponseModel.FAResponseWithData.Error("Error fetching charities")
+            } catch (e : Exception) {
+                Log.e("FarmRepository", e.message ?: e.stackTraceToString())
+                ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting charities")
+            }
+        } ?: ResponseModel.FAResponseWithData.Error("User is not part of a farm"))
+    }
+
     //Taken from: https://www.techiedelight.com/generate-a-random-alphanumeric-string-in-kotlin/
     fun generateFarmCode(length: Int) : String {
         val charset = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz0123456789"

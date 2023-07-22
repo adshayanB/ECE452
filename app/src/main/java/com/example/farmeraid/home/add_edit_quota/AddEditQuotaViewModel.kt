@@ -169,7 +169,7 @@ class AddEditQuotaViewModel @Inject constructor(
             } else if (produceList.any { it.quantityPickerUiState.count == null }) {
                 snackbarDelegate.showSnackbar("There are one or more invalid values")
             } else {
-                val addResult = quotasRepository.addQuota(market, produceList.mapNotNull { row ->
+                val addResult = quotasRepository.addOrUpdateQuota(market, produceList.mapNotNull { row ->
                     row.produce?.let {
                         row.quantityPickerUiState.count?.let{
                             QuotaModel.ProduceQuota(
@@ -190,6 +190,7 @@ class AddEditQuotaViewModel @Inject constructor(
             }
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
+            navigateBack()
         }
     }
 

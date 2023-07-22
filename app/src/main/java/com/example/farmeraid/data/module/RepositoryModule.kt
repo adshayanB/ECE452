@@ -1,5 +1,6 @@
 package com.example.farmeraid.data.module
 
+import com.example.farmeraid.data.CharityRepository
 import com.example.farmeraid.data.FarmRepository
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.MarketRepository
@@ -60,6 +61,15 @@ object RepositoryModule {
     fun provideFarmRepository(userRepository: UserRepository): FarmRepository {
         return FarmRepository(
             userRepository = userRepository
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideCharityRepository(userRepository: UserRepository, farmRepository: FarmRepository): CharityRepository {
+        return CharityRepository(
+            userRepository = userRepository,
+            farmRepository = farmRepository
         )
     }
 }

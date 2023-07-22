@@ -81,6 +81,7 @@ class MarketRepository(
                 .let { marketModelList.add(it) }
         }
 
+        marketModelList.sortBy { it.name.lowercase() }
         return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 
@@ -120,7 +121,7 @@ class MarketRepository(
 
             }
         }
-        marketModelList.sortBy { it.name }
+        marketModelList.sortBy { it.name.lowercase() }
         return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 
