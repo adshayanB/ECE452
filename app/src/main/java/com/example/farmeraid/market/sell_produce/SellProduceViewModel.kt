@@ -67,15 +67,14 @@ class SellProduceViewModel @Inject constructor(
         }
     }
 
-    init{
+    fun fetchData() {
         viewModelScope.launch {
             isLoading.value = true
             val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
             val inventory: MutableMap<String, Int> = inventoryRepository.getInventory().single().data!!
             val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId!!)
 
-            val quota: QuotaModel.Quota? = if (quotaRes.error != null) quotaRes.data
-            else null
+            val quota: QuotaModel.Quota? = quotaRes.data
 
             marketName.value = market.name
             marketIdFlow.value = market.id
@@ -95,6 +94,8 @@ class SellProduceViewModel @Inject constructor(
             isLoading.value = false
         }
     }
+
+    init{ fetchData() }
 
     fun incrementProduceCount(produceName : String) {
         produceSellList.value = produceSellList.value.map { produceSell ->
@@ -141,23 +142,31 @@ class SellProduceViewModel @Inject constructor(
     fun submitSell() {
         viewModelScope.launch {
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = true)
+
             val produceSellMap: MutableMap<String, Int> = produceSellList.value.associate {
                 Pair(it.produceName, it.produceCount)
             }.toMutableMap()
 
             inventoryRepository.sell(produceSellMap)
 
-            produceSellList.value = produceSellList.value.map {produceSell ->
-                SellProduceModel.ProduceSell(
-                    produceName = produceSell.produceName,
-                    produceCount = 0,
-                    produceInventory = produceSell.produceInventory - produceSell.produceCount,
-                    producePrice = produceSell.producePrice,
-                    produceTotalPrice = 0.0,
-                    produceQuotaCurrentProgress = produceSell.produceQuotaCurrentProgress + produceSell.produceCount,
-                    produceQuotaTotalGoal = produceSell.produceQuotaTotalGoal
-                )
+            val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
+
+            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId!!)
+
+            val quota: QuotaModel.Quota? = if (quotaRes.error != null) quotaRes.data
+            else null
+
+            if (quota != null) {
+                quotasRepository.addQuota(market, quota.produceQuotaList.map {produceQuota ->
+                    QuotaModel.ProduceQuota(
+                        produceName = produceQuota.produceName,
+                        produceGoalAmount = produceQuota.produceGoalAmount,
+                        saleAmount = produceQuota.saleAmount + produceSellList.value.find{it.produceName == produceQuota.produceName}!!.produceCount,
+                    )
+                })
             }
+
+            fetchData()
 
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
         }
