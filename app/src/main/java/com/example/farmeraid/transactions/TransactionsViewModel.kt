@@ -15,12 +15,14 @@ import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.transactions.model.TransactionsModel
+import com.example.farmeraid.transactions.model.exposeFilters
 import com.example.farmeraid.transactions.model.getFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +53,10 @@ class TransactionsViewModel @Inject constructor(
         mutableListOf()
     )
 
+    private val filterList: MutableStateFlow<List<TransactionsModel.Filter>> = MutableStateFlow(
+        mutableListOf()
+    )
+
     init{
         viewModelScope.launch {
             transactionRepository.getRecentTransactions(TransactionRepository.TransactionType.ALL, 5).collect{ produce ->
@@ -71,19 +77,21 @@ class TransactionsViewModel @Inject constructor(
                 } ?: run {
                     snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
                 }
+                filterList.value = getFilters(marketItemsList.value, produceItemsList.value)
             }
         }
     }
 
     init {
         viewModelScope.launch {
-            combine(transactionList, marketItemsList, produceItemsList) {
+            combine(transactionList, filterList) {
                     transactions: List<TransactionRepository.Transaction>,
-                    marketItems: List<MarketModel.Market>,
-                    produceItems: MutableMap<String, Int> ->
+//                    marketItems: List<MarketModel.Market>,
+//                    produceItems: MutableMap<String, Int>,
+                    filterList: List<TransactionsModel.Filter>->
                 TransactionsModel.TransactionViewState(
                     transactionList = transactions,
-                    filterList = getFilters(marketItems, produceItems),
+                    filterList = filterList.exposeFilters(),
                 )
             }.collect {
                 _state.value = it
@@ -91,12 +99,8 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
-    var isPopupVisible by mutableStateOf(false)
-        private set
-
     fun showDeleteConfirmation(id: String) {
         viewModelScope.launch{
-            isPopupVisible = true
             snackbarDelegate.showSnackbar(
                 message = "Are you sure?",
                 actionLabel = "Yes",
@@ -110,10 +114,24 @@ class TransactionsViewModel @Inject constructor(
                 }
             )
         }
-
     }
 
     fun navigateBack() {
         appNavigator.navigateBack()
+    }
+
+    fun updateSelectedFilterItem(id: UUID, selectedItem: String) {
+
+        filterList.value = filterList.value.map{
+            if (it.id == id){
+                TransactionsModel.Filter(
+                    id = it.id,
+                    name = it.name,
+                    itemsList = it.itemsList,
+                    selectedItem = selectedItem
+                )
+            } else it
+        }
+
     }
 }
