@@ -147,31 +147,34 @@ def create_specfic_quota():
 def create_transactions():
     doc_ref = db.collection("transactions").document("Kycf6h9tSfRjckshgQSz")
     doc_ref.set({
-        "type": "HARVEST",
+        "type": "Harvest",
         "produce": "Mango",
         "count": 12,
-        "pricePerProduce": 0,
-        "location": "",
+        "pricePerProduce": 0.0,
+        "destination": "",
+        "farmID": FARM_ID,
         "timestamp": firestore.firestore.SERVER_TIMESTAMP,
     })
 
     doc_ref = db.collection("transactions").document("o2e2xYKbyfassUSlNbhz")
     doc_ref.set({
-        "type": "SELL",
+        "type": "Sell",
         "produce": "Banana",
         "count": 5,
         "pricePerProduce": 2.57,
-        "location": "Rishan Market",
+        "destination": "Rishan Market",
+        "farmID": FARM_ID,
         "timestamp": firestore.firestore.SERVER_TIMESTAMP,
     })
 
     doc_ref = db.collection("transactions").document("9JqJJEhwc0TezSoFZXZA")
     doc_ref.set({
-        "type": "DONATE",
+        "type": "Donate",
         "produce": "Apple",
         "count": 15,
-        "pricePerProduce": 0,
-        "location": "Rishan Charity",
+        "pricePerProduce": 0.0,
+        "destination": "Rishan Charity",
+        "farmID": FARM_ID,
         "timestamp": firestore.firestore.SERVER_TIMESTAMP,
     })
 

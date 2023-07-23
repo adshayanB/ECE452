@@ -13,6 +13,8 @@ import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.TransactionRepository
 import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.ResponseModel
+import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.transactions.model.TransactionsModel
 import com.example.farmeraid.transactions.model.exposeFilters
@@ -41,7 +43,7 @@ class TransactionsViewModel @Inject constructor(
     val state: StateFlow<TransactionsModel.TransactionViewState>
         get() = _state
 
-    private val transactionList: MutableStateFlow<List<TransactionRepository.Transaction>> = MutableStateFlow(
+    private val transactionList: MutableStateFlow<List<TransactionModel.Transaction>> = MutableStateFlow(
         mutableListOf()
     )
 
@@ -59,8 +61,12 @@ class TransactionsViewModel @Inject constructor(
 
     init{
         viewModelScope.launch {
-            transactionRepository.getRecentTransactions(TransactionRepository.TransactionType.ALL, 5).collect{ produce ->
-                transactionList.value = produce
+            transactionRepository.getRecentTransactions(TransactionModel.TransactionType.ALL, 5).let { transactions ->
+                transactions.data?.let {
+                    transactionList.value = it
+                } ?: run {
+                    snackbarDelegate.showSnackbar(transactions.error ?: "Unknown error")
+                }
             }
 
             combine(marketRepository.getMarkets(), inventoryRepository.getInventory()) {
@@ -85,7 +91,7 @@ class TransactionsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(transactionList, filterList) {
-                    transactions: List<TransactionRepository.Transaction>,
+                    transactions: List<TransactionModel.Transaction>,
 //                    marketItems: List<MarketModel.Market>,
 //                    produceItems: MutableMap<String, Int>,
                     filterList: List<TransactionsModel.Filter>->
@@ -106,9 +112,11 @@ class TransactionsViewModel @Inject constructor(
                 actionLabel = "Yes",
                 onAction = {
                     viewModelScope.launch {
-                        transactionRepository.deleteTransaction(id)
-                        transactionRepository.getRecentTransactions(TransactionRepository.TransactionType.ALL, 5).collect{ produce ->
-                            transactionList.value = produce
+                        when(val delResult = transactionRepository.deleteTransaction(id)) {
+                            is ResponseModel.FAResponse.Error -> snackbarDelegate.showSnackbar(delResult.error ?: "Unknown error")
+                            is ResponseModel.FAResponse.Success -> {
+                                transactionList.value = transactionList.value.filter { it.transactionId != id }
+                            }
                         }
                     }
                 }

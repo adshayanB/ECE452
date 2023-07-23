@@ -2,12 +2,13 @@ package com.example.farmeraid.transactions.model
 
 import com.example.farmeraid.data.TransactionRepository
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.TransactionModel
 import java.util.UUID
 
 class TransactionsModel {
 
     data class TransactionViewState(
-        val transactionList: List<TransactionRepository.Transaction> = emptyList(),
+        val transactionList: List<TransactionModel.Transaction> = emptyList(),
         val filterList: List<Filter> = emptyList()
     )
 

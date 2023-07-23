@@ -41,7 +41,6 @@ object RepositoryModule {
     @Provides
     fun provideTransactionRepository(farmRepository: FarmRepository, userRepository: UserRepository): TransactionRepository {
         return TransactionRepository(
-            farmRepository = farmRepository,
             userRepository = userRepository
         )
     }

@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.farmeraid.data.model.toMessage
 import com.example.farmeraid.transactions.TransactionsViewModel
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
@@ -139,7 +140,7 @@ fun TransactionsView() {
                         ){
                             Text(modifier = Modifier
                                 .padding(10.dp, 0.dp, 0.dp, 10.dp),
-                                text = trans.transactionMessage, color = Color.Black,
+                                text = trans.toMessage(), color = Color.Black,
                                 fontSize = 18.sp
                             )
                         }
