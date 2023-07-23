@@ -6,7 +6,12 @@ import com.example.farmeraid.data.model.TransactionModel
 import java.util.UUID
 
 class TransactionsModel {
-
+    enum class FilterName(val uiName : String, val dbFieldName : String) {
+        Type("Type", "type"),
+        Produce("Produce", "produce"),
+        Market("Market", "destination"),
+        Charity("Charity", "destination"),
+    }
     data class TransactionViewState(
         val transactionList: List<TransactionModel.Transaction> = emptyList(),
         val filterList: List<Filter> = emptyList()
@@ -14,7 +19,7 @@ class TransactionsModel {
 
     data class Filter(
         val id: UUID = UUID.randomUUID(),
-        val name: String,
+        val name: FilterName,
         val itemsList: List<String>,
         val selectedItem: String?
     )
@@ -26,25 +31,29 @@ fun getFilters(
     produceItems: MutableMap<String, Int>
 ): List<TransactionsModel.Filter> {
     val transactionsFilter: TransactionsModel.Filter = TransactionsModel.Filter(
-        name = "Type",
-        itemsList = listOf("Harvest", "Sell", "Donate", "All"),
+        name = TransactionsModel.FilterName.Type,
+        itemsList = listOf(
+            TransactionModel.TransactionType.HARVEST.stringValue,
+            TransactionModel.TransactionType.SELL.stringValue,
+            TransactionModel.TransactionType.DONATE.stringValue
+        ),
         selectedItem = "All"
     )
 
     val marketFilter: TransactionsModel.Filter = TransactionsModel.Filter(
-        name = "Market",
+        name = TransactionsModel.FilterName.Market,
         itemsList = marketItems.map { it.name },
         selectedItem = null
     )
 
     val produceFilter: TransactionsModel.Filter = TransactionsModel.Filter(
-        name = "Produce",
+        name = TransactionsModel.FilterName.Produce,
         itemsList = produceItems.map { it.key },
         selectedItem = null
     )
 
     val charityFilter: TransactionsModel.Filter = TransactionsModel.Filter(
-        name = "Charity",
+        name = TransactionsModel.FilterName.Charity,
         itemsList = listOf("St. James", "Southvale", "Manchester"),
         selectedItem = null
     )
@@ -56,12 +65,12 @@ fun List<TransactionsModel.Filter>.exposeFilters(): List<TransactionsModel.Filte
     // If SELL or ALL are selected in TransactionType filter -> Market filter pops up
     // If DONATE or ALL are selected in TransactionType filter -> Charity filter pops up
 
-    val type: TransactionsModel.Filter? = this.firstOrNull{ it.name == "Type" }
+    val type: TransactionsModel.Filter? = this.firstOrNull{ it.name == TransactionsModel.FilterName.Type }
     return type?.let {
         when( type.selectedItem){
-            "Harvest"-> this.filter { it.name != "Market" && it.name != "Charity" }
-            "Sell"-> this.filter { it.name != "Charity" }
-            "Donate"-> this.filter { it.name != "Market" }
+            "Harvest"-> this.filter { it.name != TransactionsModel.FilterName.Market && it.name != TransactionsModel.FilterName.Charity }
+            "Sell"-> this.filter { it.name != TransactionsModel.FilterName.Charity }
+            "Donate"-> this.filter { it.name != TransactionsModel.FilterName.Market }
             else-> this
         }
     }?:this
