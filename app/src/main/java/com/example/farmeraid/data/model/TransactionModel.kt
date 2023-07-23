@@ -6,9 +6,9 @@ import java.util.Locale
 
 class TransactionModel {
     enum class TransactionType(val stringValue: String) {
-        HARVEST("HARVEST"),
-        SELL("SELL"),
-        DONATE("DONATE"),
+        HARVEST("Harvest"),
+        SELL("Sell"),
+        DONATE("Donate"),
         ALL("All");
     }
     data class Transaction(
