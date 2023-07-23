@@ -4,7 +4,7 @@ import com.cesarferreira.pluralize.pluralize
 import java.text.NumberFormat
 import java.util.Locale
 
-class TransactionsModel {
+class TransactionModel {
     enum class TransactionType(val stringValue: String) {
         HARVEST("HARVEST"),
         SELL("SELL"),
@@ -20,17 +20,17 @@ class TransactionsModel {
     )
 }
 
-fun TransactionsModel.Transaction.toMessage() : String{
+fun TransactionModel.Transaction.toMessage() : String{
     return when (transactionType) {
-        TransactionsModel.TransactionType.HARVEST.stringValue -> {
+        TransactionModel.TransactionType.HARVEST.stringValue -> {
             "Harvested ${this.produce.produceAmount} ${this.produce.produceName.pluralize(this.produce.produceAmount)}"
         }
-        TransactionsModel.TransactionType.SELL.stringValue -> {
+        TransactionModel.TransactionType.SELL.stringValue -> {
             "Sold ${this.produce.produceAmount} ${this.produce.produceName.pluralize(this.produce.produceAmount)}" +
                     " for ${NumberFormat.getCurrencyInstance(Locale("en", "US")).format(this.pricePerProduce*this.produce.produceAmount)}" +
                     " to ${this.location}"
         }
-        TransactionsModel.TransactionType.DONATE.stringValue -> {
+        TransactionModel.TransactionType.DONATE.stringValue -> {
             "Donated ${this.produce.produceAmount} ${this.produce.produceName.pluralize(this.produce.produceAmount)}" +
                     " to ${this.location}"
         }

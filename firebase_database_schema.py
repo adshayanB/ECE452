@@ -150,8 +150,9 @@ def create_transactions():
         "type": "HARVEST",
         "produce": "Mango",
         "count": 12,
-        "pricePerProduce": 0,
-        "location": "",
+        "pricePerProduce": 0.0,
+        "destination": "",
+        "farmID": FARM_ID,
         "timestamp": firestore.firestore.SERVER_TIMESTAMP,
     })
 
@@ -161,7 +162,8 @@ def create_transactions():
         "produce": "Banana",
         "count": 5,
         "pricePerProduce": 2.57,
-        "location": "Rishan Market",
+        "destination": "Rishan Market",
+        "farmID": FARM_ID,
         "timestamp": firestore.firestore.SERVER_TIMESTAMP,
     })
 
@@ -170,8 +172,9 @@ def create_transactions():
         "type": "DONATE",
         "produce": "Apple",
         "count": 15,
-        "pricePerProduce": 0,
-        "location": "Rishan Charity",
+        "pricePerProduce": 0.0,
+        "destination": "Rishan Charity",
+        "farmID": FARM_ID,
         "timestamp": firestore.firestore.SERVER_TIMESTAMP,
     })
 
