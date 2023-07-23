@@ -44,7 +44,7 @@ fun TransactionsFilterChip(
             label = {
                 Text(
                     modifier = modifier,
-                    text = filter.selectedItem ?: filter.name, // if left is null, do right, else do left
+                    text = filter.selectedItem ?: filter.name.uiName, // if left is null, do right, else do left
                     maxLines=1,
                     overflow = TextOverflow.Ellipsis,
                 )
