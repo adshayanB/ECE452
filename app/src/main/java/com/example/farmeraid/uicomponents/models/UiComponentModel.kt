@@ -43,27 +43,30 @@ class UiComponentModel {
         val title: String,
         val onIncrement: () -> Unit,
         val onDecrement: () -> Unit,
-        val setQuantity: (count : Int?) -> Unit,
+        val setQuantity: (count : Int) -> Unit,
         val quantityPickerState : QuantityPickerUiState,
         val price: Double? = null,
         val showPrice: Boolean = false,
+        val progressBarUiState: ProgressBarUiState = ProgressBarUiState(),
+        val showProgressBar: Boolean = false,
     )
 
     // Quantity Picker Models
     data class QuantityPickerUiState(
-        val count : Int? = 0,
+        val count : Int = 0,
+        val limit : Int? = null,
         val enabled : Boolean = true,
     )
 
     data class QuantityPickerUiEvent(
-        val setQuantity: (Int?) -> Unit = {},
+        val setQuantity: (Int) -> Unit = {},
         val onIncrement: () -> Unit = {},
         val onDecrement: () -> Unit = {},
     )
 
     // Progress Bar Models
     data class ProgressBarUiState(
-        val text : String,
+        val text : String = "",
         val containerColor : Color = Color.White,
         val progressColor : Color = Color.Black,
         val expectedProgressColor : Color = Color.Gray,

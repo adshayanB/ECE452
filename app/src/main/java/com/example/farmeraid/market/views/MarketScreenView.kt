@@ -2,64 +2,64 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.farmeraid.farm.FarmViewModel
-import com.example.farmeraid.ui.theme.LightGrayColour
+import com.example.farmeraid.home.model.HomeModel.Tab
+import com.example.farmeraid.market.MarketViewModel
+import com.example.farmeraid.market.views.MarketItem
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
-import com.example.farmeraid.uicomponents.ButtonView
 import com.example.farmeraid.uicomponents.FloatingActionButtonView
-import com.example.farmeraid.uicomponents.IncrementListItemView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FarmScreenView() {
-    val viewModel = hiltViewModel<FarmViewModel>()
+fun MarketScreenView() {
+    val viewModel = hiltViewModel<MarketViewModel>()
     val state by viewModel.state.collectAsState()
 
-    Scaffold (
+    Scaffold(
         floatingActionButton = {
             FloatingActionButtonView(
-                fabUiState = state.micFabUiState,
-                fabUiEvent = state.micFabUiEvent
+                fabUiState = UiComponentModel.FabUiState(
+                    icon = Icons.Filled.Add,
+                    contentDescription = "Add Market",
+                ),
+                fabUiEvent = UiComponentModel.FabUiEvent(
+                    onClick = {
+                        viewModel.navigateToAddMarket()
+                    }
+                )
             )
         },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Harvest",
+                        text = Tab.Market.name,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -78,43 +78,37 @@ fun FarmScreenView() {
                     actionIconContentColor = WhiteContentColour,
                 )
             )
-        },
-    ) { innerPadding ->
-        Column (
+        }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .padding(20.dp, 0.dp, 20.dp, 20.dp),
+                .padding(paddingValues)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
         ) {
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(0.dp, 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-            ) {
-                items(state.produceHarvestList) { produce ->
-                    IncrementListItemView(
-                        produceItem = UiComponentModel.IncrementListItemUiState(
-                            title = produce.produceName,
-                            quantityPickerState = UiComponentModel.QuantityPickerUiState(produce.produceCount ?: 0),
-                            onIncrement = { viewModel.incrementProduceCount(produce.produceName) },
-                            onDecrement = { viewModel.decrementProduceCount(produce.produceName) },
-                            setQuantity = { count -> viewModel.setProduceCount(produce.produceName, count) },
-                        ),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Divider(modifier = Modifier.height(1.dp), color = LightGrayColour)
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    color = PrimaryColour,
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .size(25.0.dp),
+                    strokeWidth = 3.0.dp,
+                )
+            }
+            else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(30.dp),
+                    contentPadding = PaddingValues(20.dp),
+                ) {
+                    items(state.marketList) { market ->
+                        MarketItem(
+                            market = market,
+                            onClick = { viewModel.navigateToSellProduce(market.id) }
+                        )
+                    }
                 }
             }
-
-            ButtonView(
-                buttonUiState = state.submitButtonUiState,
-                buttonUiEvent = UiComponentModel.ButtonUiEvent(
-                    onClick = { viewModel.submitHarvest() }),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-            )
         }
-
     }
 }

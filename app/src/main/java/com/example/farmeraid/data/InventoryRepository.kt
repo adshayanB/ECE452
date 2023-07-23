@@ -102,4 +102,20 @@ class InventoryRepository(
                 } }
             ?: FAResponse.Error("User is not part of a farm")
     }
+
+    suspend fun sell(sellChanges: Map<String, Int>) : FAResponse {
+        return userRepository.getFarmId()
+            ?.let {
+                try {
+                    db.collection("inventory").document(it).update(sellChanges.entries.associate{
+                            (produceName, produceAmount) ->
+                        "produce.${produceName}" to FieldValue.increment(-1 * produceAmount.toLong())
+                    }).await()
+                    FAResponse.Success
+                } catch (e : Exception) {
+                    Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
+                    FAResponse.Error(e.message ?: "Unknown error while while updating sell")
+                } }
+            ?: FAResponse.Error("User is not part of a farm")
+    }
 }

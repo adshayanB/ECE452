@@ -50,20 +50,31 @@
 | 07/03/2023 | 3        | 3     | 3        | 3   | 3     | 3        | Database design review + sync for next steps  
 | 07/04/2023 | 3        | 0     | 0        | 0   | 0     | 0        | Script to seed and design firebase database using proposed schema design
 | 07/04/2023 | 0        | 4     | 0        | 0   | 0     | 0        | Create view quota page and refactor quota/market classes
+| 07/04/2023 | 0     | 0      | 0        | 1  | 0     | 0         | Add navigation logic for market pages
 | 07/05/2023 | 0        | 0     | 5        | 0   | 0     | 0        | Built the create farm and farm code screens and added navigation from signin page
 | 07/05/2023 | 6        | 0     | 0        | 0   | 0     | 0        | Refactored QuotaRepo to support firebase schema and pull/update quotas via firebase
 | 07/05/2023 | 6        | 0     | 0        | 0   | 0     | 0        | Refactored Farmer/Market repo to support firebase schema and pull/update market and quotas for a farm via firebase, re-seeded db to support new quota design
 | 07/05/2023 | 0        | 0     | 0        | 0   | 0     | 5        | Created the FarmRepository module and functions to create and join a farm via Firebase
 | 07/05/2023 | 0        | 1     | 0        | 0   | 0     | 0        | Add response class for repository results
 | 07/05/2023 | 0        | 3     | 0        | 0   | 0     | 0        | Migrate inventory repository to firestore
+| 07/05/2023 | 0     | 0      | 0        | 2  | 0     | 0         | Add prices attribute to Market and MarketWithQuota data classes to match what we have in firestore, also add sell method to InventoryRepository as it will be used for market functionality
 | 07/06/2023 | 0        | 0     | 0        | 0   | 0     | 3        | Polished speech recognizer parser to handle more natural phrases and adjusted result to fit command criteria
+| 07/06/2023 | 0     | 0      | 0        | 3  | 0     | 0         | Add models for main market page and the sell produce page according to requirements
+| 07/07/2023 | 0     | 0      | 0        | 5  | 0     | 0         | Add view models for main market page and the sell produce page according to requirements
 | 07/08/2023 | 0        | 1     | 0        | 0   | 0     | 0        | Add expected progress indicator to progress bar
+| 07/08/2023 | 0     | 0      | 0        | 1  | 0     | 0        | Refactor IncrementListItem to display QuantityPickerView before the price, also add an optional ProgressBarView to it on a separate row
+| 07/08/2023 | 0     | 0      | 0        | 1  | 0     | 0        | Refactor QuantityPickerView to accept an upper limit for the count, which will determine whether the + button is enabled or not
 | 07/09/2023 | 2        | 0     | 0        | 0   | 0     | 0        | Mocked Transaction db on firestore, updated seeding script and improved databse design
 | 07/09/2023 | 0        | 0     | 2        | 0   | 0     | 0        | Built the join farm added navigation from signin page
 | 07/09/2023 | 0        | 0     | 0        | 0   | 0     | 4        | Improved speech recognizer to now handle removal of produces, with edge case checks
 | 07/09/2023 | 0        | 5     | 0        | 0   | 0     | 0        | Create add/edit produce page
+| 07/09/2023 | 0     | 0      | 0        | 4  | 0     | 0        | Add views for the main market page and the sell produce page according to requirements
 | 07/10/2023 | 0        | 0.5   | 0        | 0   | 0     | 0        | Hide keyboard and unfocus on button press
 | 07/10/2023 | 0        | 2     | 0        | 0   | 0     | 0        | Add ability to delete quota
+| 07/10/2023 | 0     | 0      | 0        | 1.5 | 0     | 0        | Refactor Quota-related data classes to its own QuotaModel file in line with our current structure. Also change data type of prices from int to double for Market-related data classes as it is more appropriate
+| 07/11/2023 | 0     | 0      | 0        | 1  | 0     | 0        | Add setProduceCount logic for Market -> Sell Produce page's quantity pickers
+| 07/11/2023 | 0     | 0      | 0        | 1  | 0     | 0        | Address PR comment to make the UI for Sell Produce page consistent and easily readable by adding progress bars for produce that don't have quotas as well, with the text as "No Quota Available"
+| 07/11/2023 | 0     | 0      | 0        | 0.5 | 0     | 0        | Address PR comment to make it clearer to the user what the "X/Y" text in the quota progress bars of the Sell Produce page mean by changing the text to "Quota Progress: X/Y"
 | 07/12/2023 | 3        | 3     | 3        | 3   | 3     | 3        | Synced and worked on D4 deliverable report
 | 07/12/2023 | 0        | 0     | 0        | 0   | 0     | 2        | Researched and integrated a pluralizer library to better scale the speech recognizer's produce recognition abilities
 | 07/12/2023 | 0        | 2     | 0        | 0   | 0     | 0        | Refactor Quotas Repository to use FAResponse
@@ -71,16 +82,23 @@
 | 07/13/2023 | 4        | 0     | 0        | 0   | 0     | 0        | Refactored Tranaction Repo to support firebase schema to add, delete and get recent transaction data
 | 07/14/2023 | 0        | 0.5   | 0        | 0   | 0     | 0        | Add empty inventory and empty quotas message
 | 07/14/2023 | 0        | 0   | 3        | 0   | 0     | 0        | Added keyboard input feature for the quantity picker component to improve UX
+| 07/14/2023 | 0     | 0      | 0        | 7  | 0     | 0        | Add functionality for adding a new market: the navigation logic, the model, the viewModel, as well as the actual view. Also add a method to the MarketRepository to allow for addition of a new market, given the market name and a map of producePrices
 | 07/18/2023 | 3        | 3   | 3        | 3   | 3     | 3        | Synced and worked on D5 report
 | 07/18/2023 | 1        |  0  | 1        | 0   | 0     | 0        | Investigated user creation to joining/creating farm flow
 | 07/18/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed user creation and farm creation flow to allow the creation of a new farm for a new user linking the firestore db
 | 07/18/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Generated code for newly created farm, stored in firestore, updated view to support new dynamic code creation
+| 07/18/2023 | 0     | 0      | 0        | 7  | 0     | 0        | Refactor to allow for both add and edit market functionality. Lots of MVVM as well as Market Repository was refined.
 | 07/18/2023 | 0        | 0   | 0        | 0   | 6     | 0         | Added filters to transactions page
 | 07/19/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed the join farm feature, valdiated functionality via Firestore, updated users who joined with a farmID and role
 | 07/19/2023 | 0.75     |  0  | 0        | 0   | 0     | 0        | Returned values in alphabetical order for Markets and Produce
+| 07/21/2023 | 0     | 0      | 0        | 3.5 | 0     | 0        | Change main market page to display all markets rather than just markets with quotas. It now displays a card with the produce prices. Fixed an issue regarding the sell produce page assuming that the market has a valid quota wherein it would display nothing if the market didn't have a quota; it now correctly displays everything even if the market doesn't have an associated quota.
+| 07/21/2023 | 0     | 0      | 0        | 3  | 0     | 0        | Change Add/Edit Market Page to use a TextField rather than a QuantityPicker for the produce price, as the datatype is a double rather than an int. Now, decimal prices can be entered without any issues, and it will be reflected successfully in the database
+| 07/21/2023 | 0     | 0      | 0        | 0.75 | 0     | 0        | Fix bug where I wasn't checking the response from getting quota for an error correctly (causing all produces to appear to have no quota). Also add functionality to update the quota sale amount when submit button is pressed on the sell produce page.
 | 07/21/2023 | 0     |  0  | 0        | 0.5  | 0     | 0        | Fix alphabetical ordering for markets, inventory, and quotas directly from the repos
 | 07/21/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Created Charity Repository Model with add or get charities using FireStore, designed Fridge Object to store charity information from firestore
 | 07/21/2023 | 1        |  0  | 0        | 0   | 0     | 0        | Refactored database schema to support new charity schema, updated seeding script to seed database
 | 07/22/2023 | 0.5      |  0  | 0        | 0   | 0     | 0        | Addressed changes from charity repo model
+| 07/22/2023 | 0      |  0  | 0        | 0.75 | 0     | 0        | Fix inconsistencies for alphabetical ordering regarding prices map of market, and produce quotas list of quota
+| 07/22/2023 | 0      |  0  | 0        | 0.75 | 0     | 0        | Address PR comment fixing for specific nitpicks: clarifying price per produce on main market page, adding spacing on sell produce page, and making prices have 2 decimal places
 
 

@@ -3,6 +3,7 @@ package com.example.farmeraid.data
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -12,9 +13,46 @@ import kotlinx.coroutines.tasks.await
 
 class MarketRepository(
     private val quotasRepository: QuotasRepository,
-    private val farmRepository: FarmRepository
+    private val farmRepository: FarmRepository,
+    private val userRepository: UserRepository,
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    suspend fun addOrUpdateMarket(marketName: String, producePrices: Map<String, Double>) : ResponseModel.FAResponse {
+
+        val querySnapshot = db.collection("market").whereEqualTo("name", marketName).get().await()
+
+        if (querySnapshot.isEmpty) {
+            return try {
+                val docRef = db.collection("market").add(
+                    mapOf (
+                        "name" to marketName,
+                        "prices" to producePrices,
+                    )
+                ).await()
+
+                userRepository.getUserId()?.let{
+                    db.collection("farm").document(userRepository.getFarmId()!!).update(
+                        "markets", FieldValue.arrayUnion(docRef.id)
+                    )
+                }
+
+                ResponseModel.FAResponse.Success
+            } catch(e: Exception) {
+                return ResponseModel.FAResponse.Error(e.message?:"Error creating a market. Please try again.")
+            }
+        } else {
+            return try {
+                db.collection("market").document(querySnapshot.documents[0].id).update(
+                    "prices", producePrices
+                )
+
+                ResponseModel.FAResponse.Success
+            } catch(e: Exception) {
+                return ResponseModel.FAResponse.Error(e.message?:"Error updating the market. Please try again.")
+            }
+        }
+    }
     private suspend fun readMarketData(): ResponseModel.FAResponseWithData<List<MarketModel.Market>> {
         val marketIds = farmRepository.getMarketIds()
         if (marketIds.error != null) {
@@ -38,6 +76,7 @@ class MarketRepository(
             MarketModel.Market(
                 id = market.id,
                 name = market.get("name") as String,
+                prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
             )
                 .let { marketModelList.add(it) }
         }
@@ -70,7 +109,8 @@ class MarketRepository(
                         MarketModel.MarketWithQuota(
                             id = market.id,
                             name = market.get("name") as String,
-                            quota = it
+                            quota = it,
+                            prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
                         )
                     )
                 } ?: run {
@@ -116,7 +156,8 @@ class MarketRepository(
                     MarketModel.MarketWithQuota(
                         id = marketModel.id,
                         name = marketModel.get("name") as String,
-                        quota = it
+                        quota = it,
+                        prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
                     )
                 } ?: run {
                     return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while fetching market's quota")
@@ -124,5 +165,28 @@ class MarketRepository(
             }
 
         return ResponseModel.FAResponseWithData.Success(marketWithQuota)
+    }
+
+    suspend fun getMarket(id : String) : ResponseModel.FAResponseWithData<MarketModel.Market> {
+
+        val marketModel: DocumentSnapshot = try {
+            db.collection("market").document(id).get().await()
+        } catch (e : Exception) {
+            return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
+        }
+
+        if (!marketModel.exists()) {
+            return ResponseModel.FAResponseWithData.Error("Market does not exist")
+        }
+
+        val market: MarketModel.Market = marketModel.let { marketModel ->
+            MarketModel.Market(
+                id = marketModel.id,
+                name = marketModel.get("name") as String,
+                prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
+            )
+        }
+
+        return ResponseModel.FAResponseWithData.Success(market)
     }
 }

@@ -5,9 +5,10 @@ import AddEditQuotaScreenView
 import BottomNavigationBar
 import FarmScreenView
 import HomeScreenView
+import MarketScreenView
+import SellProduceView
 import TransactionsView
 import ViewQuotaScreenView
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -17,7 +18,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,9 +26,9 @@ import com.example.farmeraid.join_farm.views.JoinFarmScreenView
 import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
 import com.example.farmeraid.farm_selection.views.FarmSelectionScreenView
+import com.example.farmeraid.market.add_edit_market.views.AddEditMarketScreenView
 import com.example.farmeraid.sign_in.views.SignInScreenView
 import com.example.farmeraid.sign_up.views.SignUpScreenView
-import com.example.farmeraid.ui.theme.LightGrayColour
 import com.example.farmeraid.ui.theme.PrimaryColour
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,6 +80,9 @@ fun RootNavigationHost(
                 composable(NavRoute.Home.route) {
                     HomeScreenView()
                 }
+                composable(NavRoute.Market.route) {
+                    MarketScreenView()
+                }
                 composable(
                     route = NavRoute.AddEditQuota.route + "?marketId={marketId}",
                     arguments = listOf(navArgument("marketId") {
@@ -115,6 +118,21 @@ fun RootNavigationHost(
                 }
                 composable(NavRoute.FarmSelection.route){
                     FarmSelectionScreenView()
+                }
+                composable(
+                    route = NavRoute.SellProduce.route + "/{marketId}",
+                    arguments = listOf(navArgument("marketId") { type = NavType.StringType})
+                ) {
+                    SellProduceView()
+                }
+                composable(
+                    route = NavRoute.AddEditMarket.route + "?marketId={marketId}",
+                    arguments = listOf(navArgument("marketId") {
+                        type = NavType.StringType
+                        nullable = true
+                    })
+                ) {
+                    AddEditMarketScreenView()
                 }
             }
         }

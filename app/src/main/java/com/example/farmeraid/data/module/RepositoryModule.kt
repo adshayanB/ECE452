@@ -48,10 +48,11 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideMarketRepository(quotasRepository: QuotasRepository, farmRepository: FarmRepository): MarketRepository {
+    fun provideMarketRepository(quotasRepository: QuotasRepository, farmRepository: FarmRepository, userRepository: UserRepository): MarketRepository {
         return MarketRepository(
             quotasRepository = quotasRepository,
-            farmRepository = farmRepository
+            farmRepository = farmRepository,
+            userRepository = userRepository,
         )
     }
 

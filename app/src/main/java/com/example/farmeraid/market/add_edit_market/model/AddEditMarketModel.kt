@@ -1,22 +1,25 @@
-package com.example.farmeraid.home.add_edit_quota.model
+package com.example.farmeraid.market.add_edit_market.model
 
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 import java.util.UUID
 
-class AddEditQuotaModel {
+class AddEditMarketModel {
+
     data class ProduceRow(
         val id: UUID = UUID.randomUUID(),
         val produce : String?,
-        val quantityPickerUiState: UiComponentModel.QuantityPickerUiState,
+        val producePrice: Double,
     )
 
-    data class AddEditQuotaViewState(
+    data class AddEditMarketViewState(
+        val marketName: String = "",
+        val selectedMarket : MarketModel.Market? = null,
         val markets : List<MarketModel.Market> = listOf(),
         val produce : Map<String, Int> = mapOf(),
         val produceRows : List<ProduceRow> = listOf(initializeProduceRow()),
-        val selectedMarket : MarketModel.Market? = null,
         val submitButtonUiState: UiComponentModel.ButtonUiState,
+        val isLoading: Boolean = false,
     )
 }
 
@@ -26,10 +29,10 @@ fun getSubmitButton() : UiComponentModel.ButtonUiState {
     )
 }
 
-fun initializeProduceRow() : AddEditQuotaModel.ProduceRow {
-    return AddEditQuotaModel.ProduceRow(
-            id = UUID.randomUUID(),
-            produce = null,
-            quantityPickerUiState = UiComponentModel.QuantityPickerUiState(0, null,false)
-        )
+fun initializeProduceRow() : AddEditMarketModel.ProduceRow {
+    return AddEditMarketModel.ProduceRow(
+        id = UUID.randomUUID(),
+        produce = null,
+        producePrice = 0.0,
+    )
 }

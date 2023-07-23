@@ -3,7 +3,6 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.farmeraid.ui.theme.PrimaryColour
@@ -81,6 +81,7 @@ fun <T> SearchableExpandedDropDownMenuView(
     dropdownItem: @Composable (T) -> Unit,
     selectedOption: T? = null,
     isError: Boolean = false,
+    fontSize: TextUnit = 16.sp,
 ) {
     var searchedOption by rememberSaveable { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
@@ -123,7 +124,7 @@ fun <T> SearchableExpandedDropDownMenuView(
                 focusedLeadingIconColor = color,
             ),
             textStyle = TextStyle(
-                fontSize = 16.sp,
+                fontSize = fontSize,
             ),
             value = selectedOption?.toString() ?: "",
             readOnly = readOnly,
@@ -176,7 +177,7 @@ fun <T> SearchableExpandedDropDownMenuView(
                                 .fillMaxWidth()
                                 .padding(16.dp),
                             textStyle = TextStyle(
-                                fontSize = 16.sp,
+                                fontSize = fontSize,
                             ),
                             value = searchedOption,
                             onValueChange = { selectedSport ->
