@@ -58,6 +58,7 @@ import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
 import com.example.farmeraid.uicomponents.TransactionsFilterChip
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import java.util.UUID
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,6 +97,7 @@ fun TransactionsView() {
                 items(state.filterList) {filterChip ->
                     TransactionsFilterChip(
                         modifier = Modifier.width(75.dp),
+                        onItemSelected = {id: UUID, item: String->viewModel.updateSelectedFilterItem(id, item)},
                         filter = filterChip
                     )
                 }
