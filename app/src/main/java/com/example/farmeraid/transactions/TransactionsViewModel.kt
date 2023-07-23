@@ -61,14 +61,6 @@ class TransactionsViewModel @Inject constructor(
 
     init{
         viewModelScope.launch {
-            transactionRepository.getRecentTransactions(TransactionModel.TransactionType.ALL, 5).let { transactions ->
-                transactions.data?.let {
-                    transactionList.value = it
-                } ?: run {
-                    snackbarDelegate.showSnackbar(transactions.error ?: "Unknown error")
-                }
-            }
-
             combine(marketRepository.getMarkets(), inventoryRepository.getInventory()) {
                     markets, inventory -> Pair(markets, inventory)
             }.collect { (markets, inventory) ->
@@ -101,6 +93,20 @@ class TransactionsViewModel @Inject constructor(
                 )
             }.collect {
                 _state.value = it
+            }
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            filterList.collect { filterList ->
+                transactionRepository.getRecentTransactions(filterList.exposeFilters(), 25).let { transactions ->
+                    transactions.data?.let {
+                        transactionList.value = it
+                    } ?: run {
+                        snackbarDelegate.showSnackbar(transactions.error ?: "Unknown error")
+                    }
+                }
             }
         }
     }

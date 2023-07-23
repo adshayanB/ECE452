@@ -1,8 +1,10 @@
 package com.example.farmeraid.data
 
+import android.util.Log
 import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
+import com.example.farmeraid.transactions.model.TransactionsModel
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -36,15 +38,20 @@ class TransactionRepository(
         } ?: ResponseModel.FAResponse.Error("User does not exist")
     }
 
-    suspend fun getRecentTransactions(transactionType: TransactionModel.TransactionType, limit: Int): ResponseModel.FAResponseWithData<List<TransactionModel.Transaction>> {
-        val items: QuerySnapshot = userRepository.getFarmId()?.let {
-            try {
-                if (transactionType == TransactionModel.TransactionType.ALL){
-                    db.collection("transactions").whereEqualTo("farmID", it).orderBy("timestamp", Query.Direction.DESCENDING).limit(limit.toLong()).get().await()
-                } else {
-                    db.collection("transactions").whereEqualTo("farmID", it).whereEqualTo("type", transactionType.stringValue).orderBy("timestamp", Query.Direction.DESCENDING).limit(limit.toLong()).get().await()
+    suspend fun getRecentTransactions(filterList: List<TransactionsModel.Filter>, limit: Int): ResponseModel.FAResponseWithData<List<TransactionModel.Transaction>> {
+        val items: QuerySnapshot = userRepository.getFarmId()?.let { id ->
+            // Setup the where clauses based on the given filters
+            var query = db.collection("transactions").whereEqualTo("farmID", id)
+            filterList.forEach {
+                if (!(it.name == TransactionsModel.FilterName.Type && it.selectedItem == TransactionModel.TransactionType.ALL.stringValue) && it.selectedItem != null) {
+                    query = query.whereEqualTo(it.name.dbFieldName, it.selectedItem)
                 }
+            }
+
+            try {
+                query.orderBy("timestamp", Query.Direction.DESCENDING).limit(limit.toLong()).get().await()
             } catch (e: Exception) {
+                Log.e("TransactionsRepository", e.message  ?: "Unknown error while fetching transactions")
                 return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching transactions")
             }
         } ?: run {
