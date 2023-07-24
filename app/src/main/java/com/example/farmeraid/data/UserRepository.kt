@@ -58,10 +58,10 @@ class UserRepository {
 
         }
         else{
-            return SignInModel.AuthResponse.Error("User is not logged in")
+            return SignInModel.AuthResponse.Success
         }
     }
-    suspend fun signOut(): SignInModel.AuthResponse {
+    fun signOut(): SignInModel.AuthResponse {
         val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
         return try {
             firebaseAuth.signOut()

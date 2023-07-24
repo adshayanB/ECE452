@@ -23,11 +23,11 @@ class LoadingViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
-//    private val _state = MutableStateFlow(SignInModel.SignInViewState(
-//        buttonUiState = getSignInButton()
-//    ))
-//    val state: StateFlow<SignInModel.SignInViewState>
-//        get() = _state
+    private val _state = MutableStateFlow(SignInModel.SignInViewState(
+        buttonUiState = getSignInButton()
+    ))
+    val state: StateFlow<SignInModel.SignInViewState>
+        get() = _state
 
     init {
         viewModelScope.launch {
@@ -42,17 +42,21 @@ class LoadingViewModel @Inject constructor(
             is SignInModel.AuthResponse.Success -> {
                 Log.d("MESSAGE", "LOGGED IN")
                 val id = userRepository.getUserId()?.let { Log.d("UserID", it) }
-                if (id == null){
+                Log.d("Current user", id.toString())
+                if (userRepository.getUserId()!= null){
+                    val farmId = userRepository.getFarmId().toString()
+                    Log.d("FARM ID", farmId)
+
+                    if (farmId == "none") {
+                        appNavigator.navigateToFarmSelection()
+                    } else {
+                        appNavigator.navigateToMode(NavRoute.Home)
+                    }
+
+                }else{
                     appNavigator.navigateToSignIn()
                 }
-                val farmId = userRepository.getFarmId().toString()
-                Log.d("FARM ID", farmId)
 
-                if (farmId == "none") {
-                    appNavigator.navigateToFarmSelection()
-                } else {
-                    appNavigator.navigateToMode(NavRoute.Home)
-                }
             }
 
             is SignInModel.AuthResponse.Error -> {
