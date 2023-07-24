@@ -70,4 +70,8 @@ class AppNavigator {
     fun navigateToEditMarket(marketId : String) {
         _navController?.navigate(NavRoute.AddEditMarket.route + "?marketId=${marketId}")
     }
+
+    fun navigateToSignIn(){
+        _navController?.navigate(NavRoute.SignIn.route)
+    }
 }

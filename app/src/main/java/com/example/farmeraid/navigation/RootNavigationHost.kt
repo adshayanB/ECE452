@@ -25,9 +25,12 @@ import androidx.navigation.navArgument
 import com.example.farmeraid.join_farm.views.JoinFarmScreenView
 import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.farm_selection.views.FarmSelectionScreenView
 import com.example.farmeraid.market.add_edit_market.views.AddEditMarketScreenView
+import com.example.farmeraid.sign_in.views.LoadingScreenView
 import com.example.farmeraid.sign_in.views.SignInScreenView
+import com.example.farmeraid.sign_in.views.SignOutScreenView
 import com.example.farmeraid.sign_up.views.SignUpScreenView
 import com.example.farmeraid.ui.theme.PrimaryColour
 
@@ -56,11 +59,17 @@ fun RootNavigationHost(
         ) { padding ->
             NavHost(
                 navController = appNavigator.navController!!,
-                startDestination = NavRoute.SignIn.route,
+                startDestination = NavRoute.LoadingScreen.route,
                 modifier = Modifier.padding(padding)
             ) {
                 composable(NavRoute.SignUp.route){
                     SignUpScreenView()
+                }
+                composable(NavRoute.SignOut.route){
+                    SignOutScreenView()
+                }
+                composable(NavRoute.LoadingScreen.route){
+                    LoadingScreenView()
                 }
                 composable(NavRoute.SignIn.route) {
                     SignInScreenView()
