@@ -81,9 +81,7 @@ class SignInViewModel @Inject constructor(
 
             is SignInModel.AuthResponse.Error -> {
                 Log.d("MESSAGE", result.error)
-                snackbarDelegate.showSnackbar(
-                    message = result.error
-                )
+
             }
         }
     }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.UserRepository
+import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.NavRoute
 import com.example.farmeraid.sign_in.model.SignInModel
@@ -19,18 +20,17 @@ class SignOutViewModel @Inject constructor(
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
     fun logout() = viewModelScope.launch {
-        val result: SignInModel.AuthResponse = userRepository.signOut()
+                val result: SignInModel.AuthResponse = userRepository.signOut()
 
-        when (result) {
-            is SignInModel.AuthResponse.Success -> {
-                appNavigator.navigateToSignIn()
-            }
-            is SignInModel.AuthResponse.Error -> {
-                Log.d("MESSAGE", result.error)
-            }
+                when (result) {
+                    is SignInModel.AuthResponse.Success -> {
+                        appNavigator.navigateToSignIn()
+                    }
+
+                    is SignInModel.AuthResponse.Error -> {
+                        Log.d("MESSAGE", result.error)
+                    }
+                }
         }
-
-    }
-
 
 }

@@ -1,6 +1,7 @@
 package com.example.farmeraid.navigation.module
 
 import com.example.farmeraid.navigation.AppNavigator
+import com.example.farmeraid.snackbar.SnackbarDelegate
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +13,9 @@ import javax.inject.Singleton
 object NavigatorModule {
     @Singleton
     @Provides
-    fun provideAppNavigator() : AppNavigator {
-        return AppNavigator()
+    fun provideAppNavigator(snackbarDelegate : SnackbarDelegate) : AppNavigator {
+        return AppNavigator(
+            snackbarDelegate = snackbarDelegate
+        )
     }
 }
