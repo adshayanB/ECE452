@@ -102,5 +102,6 @@
 | 07/22/2023 | 0        |  0  | 0        | 0.75 | 0     | 0        | Address PR comment fixing for specific nitpicks: clarifying price per produce on main market page, adding spacing on sell produce page, and making prices have 2 decimal places
 | 07/23/2023 | 5        |  0  | 0        | 0    | 0     | 0        | Created splash page to detect if user is already signed in and do not ask for sign in again, added sign out functionality via firebase
 | 07/24/2023 | 1.5      |  0  | 0        | 0    | 0     | 0        | Addressed PR comments for cleaning up loading ui animations, added snack bar to confirm signout
+| 07/24/2023 | 4        |  0  | 0        | 0    | 0     | 0        | Wrote Architecture section for Project Architecture & Design deliverable  
 
 
