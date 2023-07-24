@@ -23,18 +23,6 @@ class LoadingViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(SignInModel.SignInViewState(
-        buttonUiState = getSignInButton()
-    ))
-    val state: StateFlow<SignInModel.SignInViewState>
-        get() = _state
-
-    init {
-        viewModelScope.launch {
-        }
-    }
-
-
     fun login() = viewModelScope.launch {
         val result: SignInModel.AuthResponse = userRepository.checkLoggedIn()
 

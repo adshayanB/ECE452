@@ -63,6 +63,7 @@ fun LoadingScreenView() {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             CircularProgressIndicator(
+                color = PrimaryColour,
                 modifier = Modifier.size(48.dp)
             )
         }

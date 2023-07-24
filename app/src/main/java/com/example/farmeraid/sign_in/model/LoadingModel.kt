@@ -5,9 +5,4 @@ class LoadingModel {
         object Success : AuthResponse()
         data class Error(val error: String) : AuthResponse()
     }
-    data class LoadingViewState(
-        val userName: String = "",
-        val passWord: String = "",
-        val isLoading: Boolean = false,
-        )
 }
