@@ -14,7 +14,8 @@ class TransactionsModel {
     }
     data class TransactionViewState(
         val transactionList: List<TransactionModel.Transaction> = emptyList(),
-        val filterList: List<Filter> = emptyList()
+        val filterList: List<Filter> = emptyList(),
+        val isLoading: Boolean = false
     )
 
     data class Filter(
