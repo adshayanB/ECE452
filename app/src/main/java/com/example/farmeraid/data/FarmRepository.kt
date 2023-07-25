@@ -2,6 +2,7 @@ package com.example.farmeraid.data
 
 import android.util.Log
 import com.example.farmeraid.data.model.ResponseModel
+import com.example.farmeraid.data.source.NetworkMonitor
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,7 +10,8 @@ import kotlinx.coroutines.tasks.await
 
 class FarmRepository(
     val farmCode: MutableStateFlow<String> = MutableStateFlow(""),
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val networkMonitor: NetworkMonitor,
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -36,7 +38,7 @@ class FarmRepository(
 
                 //TODO create new transaction document for the farm
 
-                 db.collection("users").document(userRepository.getUserId()!!).update(mapOf("farmID" to docRef.id, "admin" to true)).await()
+                 db.collection("users").document(userRepository.getUserId()!!).update(mapOf("farmID" to docRef.id, "admin" to true))
 
                 ResponseModel.FAResponse.Success
             } ?: ResponseModel.FAResponse.Error("User does not exist")
@@ -51,12 +53,12 @@ class FarmRepository(
         return try {
             userRepository.getUserId()?.let{id ->
                 db.collection("farm").let{ ref ->
-                    ref.whereEqualTo("farmCode", farmCode).get().await().let{ snap ->
+                    ref.whereEqualTo("farmCode", farmCode).get(networkMonitor.getSource()).await().let{ snap ->
                         db.collection("farm").document(snap.documents[0].id).update(
                             "users", FieldValue.arrayUnion(id)
                         )
                         //Update user with farmID
-                        db.collection("users").document(userRepository.getUserId()!!).update(mapOf("farmID" to snap.documents[0].id, "admin" to false)).await()
+                        db.collection("users").document(userRepository.getUserId()!!).update(mapOf("farmID" to snap.documents[0].id, "admin" to false))
                     }
                 }
             }
@@ -73,7 +75,7 @@ class FarmRepository(
         return (userRepository.getFarmId()?.let { id ->
             try {
                 db.collection("farm").document(id)
-                    .get()
+                    .get(networkMonitor.getSource())
                     .await()
                     .data?.get("markets")?.let {
                         ResponseModel.FAResponseWithData.Success(it as MutableList<String>)
@@ -91,7 +93,7 @@ class FarmRepository(
         return (userRepository.getFarmId()?.let { id ->
             try {
                 db.collection("farm").document(id)
-                    .get()
+                    .get(networkMonitor.getSource())
                     .await()
                     .data?.get("charities")?.let {
                         ResponseModel.FAResponseWithData.Success(it as MutableList<String>)

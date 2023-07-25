@@ -5,6 +5,7 @@ import com.example.farmeraid.data.model.CharityModel
 import com.example.farmeraid.data.model.FridgeModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
+import com.example.farmeraid.data.source.NetworkMonitor
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,7 +13,8 @@ import kotlinx.coroutines.tasks.await
 
 class CharityRepository (
     private val farmRepository: FarmRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val networkMonitor: NetworkMonitor,
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -27,13 +29,12 @@ class CharityRepository (
                         "produce" to produce.associate {
                             it.produceName to it.produceGoalAmount
                         }
-
                     )
                 ).await()
 
                 //Update charity id to farm list
                 userRepository.getFarmId()
-                    ?.let { db.collection("farm").document(it).update("charities", FieldValue.arrayUnion(docRef.id)).await() }
+                    ?.let { db.collection("farm").document(it).update("charities", FieldValue.arrayUnion(docRef.id)) }
 
                 //TODO create new transaction document for the farm
                 ResponseModel.FAResponse.Success
@@ -47,7 +48,7 @@ class CharityRepository (
     suspend fun getCharity(id: String): ResponseModel.FAResponseWithData<FridgeModel.Fridge> {
         val docRead : DocumentSnapshot
         try {
-            docRead = db.collection("charity").document(id).get().await()
+            docRead = db.collection("charity").document(id).get(networkMonitor.getSource()).await()
         } catch (e : Exception) {
             Log.e("Charity Repository",e.message ?: e.stackTraceToString())
             return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while getting charities")

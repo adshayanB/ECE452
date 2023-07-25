@@ -5,17 +5,20 @@ import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
+import com.example.farmeraid.data.source.NetworkMonitor
 import com.example.farmeraid.transactions.model.TransactionsModel
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
 import java.util.Date
 
 class TransactionRepository(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val networkMonitor: NetworkMonitor,
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -33,7 +36,7 @@ class TransactionRepository(
 
             val createTransactionRef = db.collection("transaction").document()
             try {
-                createTransactionRef.set(transactionMap).await()
+                createTransactionRef.set(transactionMap)
                 ResponseModel.FAResponse.Success
             } catch (e: Exception) {
                 ResponseModel.FAResponse.Error(e.message ?: "Unknown error while adding transaction")
@@ -52,7 +55,7 @@ class TransactionRepository(
             }
 
             try {
-                query.orderBy("timestamp", Query.Direction.DESCENDING).limit(limit.toLong()).get().await()
+                query.orderBy("timestamp", Query.Direction.DESCENDING).limit(limit.toLong()).get(networkMonitor.getSource()).await()
             } catch (e: Exception) {
                 Log.e("TransactionsRepository", e.message  ?: "Unknown error while fetching transactions")
                 return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching transactions")
@@ -82,7 +85,7 @@ class TransactionRepository(
     suspend fun deleteTransaction(transactionId: String) : ResponseModel.FAResponse {
         // TODO - Undo the actual transaction before deleting the record
         try {
-            db.collection("transactions").document(transactionId).delete().await()
+            db.collection("transactions").document(transactionId).delete()
         } catch (e: Exception) {
             return ResponseModel.FAResponse.Error(e.message ?: "Unknown error while deleting transaction")
         }
@@ -90,7 +93,7 @@ class TransactionRepository(
         return userRepository.getFarmId()
             ?.let {
                 try {
-                    db.collection("farm").document(it).update("transactions", FieldValue.arrayRemove(transactionId)).await()
+                    db.collection("farm").document(it).update("transactions", FieldValue.arrayRemove(transactionId))
                     ResponseModel.FAResponse.Success
                 } catch (e: Exception) {
                     ResponseModel.FAResponse.Error(e.message ?: "Unknown message while updating farm")
@@ -117,7 +120,7 @@ class TransactionRepository(
 
         produce.forEach { name ->
             try {
-                salesMap[name] = transactionsQuery.whereEqualTo("produce", name).get().await().documents.mapNotNull {
+                salesMap[name] = transactionsQuery.whereEqualTo("produce", name).get(networkMonitor.getSource()).await().documents.mapNotNull {
                     it.data?.get("count") as Long
                 }.sum().toInt()
             } catch (e : Exception) {

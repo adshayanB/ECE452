@@ -1,14 +1,18 @@
 package com.example.farmeraid.data
 
 import com.example.farmeraid.data.model.UserModel
+import com.example.farmeraid.data.source.NetworkMonitor
 import com.example.farmeraid.sign_in.model.SignInModel
 import com.example.farmeraid.sign_up.model.SignUpModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
 
-class UserRepository {
+class UserRepository(
+    private val networkMonitor: NetworkMonitor,
+) {
     val user: MutableStateFlow<UserModel.User?> = MutableStateFlow(null)
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     suspend fun login(userName: String, password: String) : SignInModel.AuthResponse {
@@ -16,10 +20,10 @@ class UserRepository {
 
         if  (userName.isNotEmpty() && password.isNotEmpty()) {
             return try {
-                val res = firebaseAuth.signInWithEmailAndPassword(userName, password).await()
+                val res = firebaseAuth.signInWithEmailAndPassword(userName, password)
                 //Get user from user object
                 val docRef = db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
-                val farmID = docRef.get().await().data?.get("farmID").toString()
+                val farmID = docRef.get(networkMonitor.getSource()).await().data?.get("farmID").toString()
                 user.value = UserModel.User(email = userName, id = firebaseAuth.currentUser?.uid.toString(), farm_id = farmID)
                 SignInModel.AuthResponse.Success
             }
@@ -41,7 +45,7 @@ class UserRepository {
                 //Get user from user object
                 val docRef =
                     db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
-                val farmID = docRef.get().await().data?.get("farmID").toString()
+                val farmID = docRef.get(networkMonitor.getSource()).await().data?.get("farmID").toString()
                 user.value = firebaseAuth.currentUser!!.email?.let {
                     UserModel.User(
                         email = it,
@@ -83,7 +87,7 @@ class UserRepository {
                             "admin" to false,
                             "farmID" to "none"
                         )
-                    ).await()
+                    )
                 }
                 SignUpModel.AuthResponse.Success
             } catch (e: Exception) {
@@ -109,7 +113,7 @@ class UserRepository {
         return try {
             val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
             val docRef = db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
-            val farmID = docRef.get().await().data?.get("farmID").toString()
+            val farmID = docRef.get(networkMonitor.getSource()).await().data?.get("farmID").toString()
             user.value = getUserEmail()?.let {
                 UserModel.User(
                     email = it,
