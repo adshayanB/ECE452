@@ -21,6 +21,7 @@ import com.example.farmeraid.speech_recognition.SpeechRecognizerUtility
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ActivityContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -49,22 +50,46 @@ class FarmViewModel @Inject constructor(
     private val micFabUiState: MutableStateFlow<UiComponentModel.FabUiState> = MutableStateFlow(_state.value.micFabUiState)
     private val micFabUiEvent: MutableStateFlow<UiComponentModel.FabUiEvent> = MutableStateFlow(_state.value.micFabUiEvent)
     private val speechRes: MutableStateFlow<String> = MutableStateFlow("")
+    private val isLoading : MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
 
+    inline fun <T1, T2, T3, T4, T5, T6, R> combine(
+        flow: Flow<T1>,
+        flow2: Flow<T2>,
+        flow3: Flow<T3>,
+        flow4: Flow<T4>,
+        flow5: Flow<T5>,
+        flow6: Flow<T6>,
+        crossinline transform: suspend (T1, T2, T3, T4, T5, T6) -> R
+    ): Flow<R> {
+        return kotlinx.coroutines.flow.combine(flow, flow2, flow3, flow4, flow5, flow6) { args: Array<*> ->
+            @Suppress("UNCHECKED_CAST")
+            transform(
+                args[0] as T1,
+                args[1] as T2,
+                args[2] as T3,
+                args[3] as T4,
+                args[4] as T5,
+                args[5] as T6,
+            )
+        }
+    }
     init {
         viewModelScope.launch {
-            combine(harvestList, submitButtonUiState, micFabUiState, micFabUiEvent, speechRes) {
+            combine(harvestList, submitButtonUiState, micFabUiState, micFabUiEvent, speechRes, isLoading) {
                     harvestList: List<FarmModel.ProduceHarvest>,
                     submitButtonUiState: UiComponentModel.ButtonUiState,
                     micFabUiState: UiComponentModel.FabUiState,
                     micFabUiEvent: UiComponentModel.FabUiEvent,
-                    speechRes: String->
+                    speechRes: String,
+                    isLoading:Boolean ->
                 Log.d("Result", "triggered")
                 FarmViewState(
                     micFabUiState = micFabUiState,
                     micFabUiEvent = micFabUiEvent,
                     submitButtonUiState = submitButtonUiState,
                     produceHarvestList = harvestList,
-                    speechResult = speechRes
+                    speechResult = speechRes,
+                    isLoading = isLoading
                 )
             }.collect {
                 _state.value = it
