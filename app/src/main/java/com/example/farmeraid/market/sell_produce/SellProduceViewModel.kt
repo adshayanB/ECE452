@@ -9,6 +9,7 @@ import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
+import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.market.sell_produce.model.SellProduceModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.uicomponents.models.UiComponentModel
@@ -177,7 +178,7 @@ class SellProduceViewModel @Inject constructor(
     }
 
     fun navigateToTransactions() {
-        appNavigator.navigateToTransactions()
+        appNavigator.navigateToTransactions(TransactionModel.TransactionType.SELL.stringValue)
     }
 
     fun navigateBack() {

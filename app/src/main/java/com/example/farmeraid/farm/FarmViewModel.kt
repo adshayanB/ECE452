@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.cesarferreira.pluralize.pluralize
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.UserRepository
+import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.farm.model.FarmModel
 import com.example.farmeraid.farm.model.FarmModel.FarmViewState
 import com.example.farmeraid.farm.model.getMicButton
@@ -229,6 +230,6 @@ class FarmViewModel @Inject constructor(
     }
 
     fun navigateToTransactions() {
-        appNavigator.navigateToTransactions()
+        appNavigator.navigateToTransactions(TransactionModel.TransactionType.HARVEST.stringValue)
     }
 }

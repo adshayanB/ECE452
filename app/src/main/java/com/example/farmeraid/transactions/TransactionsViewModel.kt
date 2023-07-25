@@ -4,6 +4,7 @@ import com.example.farmeraid.snackbar.SnackbarDelegate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.farmeraid.data.UserRepository
 
@@ -29,6 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val transactionRepository: TransactionRepository,
     private val inventoryRepository: InventoryRepository,
     private val marketRepository: MarketRepository,
@@ -36,6 +38,7 @@ class TransactionsViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
+    private val transactionType : String = savedStateHandle["transactionType"] ?: "All"
 
     private val _state = MutableStateFlow(
         TransactionsModel.TransactionViewState()
@@ -75,7 +78,7 @@ class TransactionsViewModel @Inject constructor(
                 } ?: run {
                     snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
                 }
-                filterList.value = getFilters(marketItemsList.value, produceItemsList.value)
+                filterList.value = getFilters(marketItemsList.value, produceItemsList.value, transactionType)
             }
         }
     }
@@ -84,8 +87,6 @@ class TransactionsViewModel @Inject constructor(
         viewModelScope.launch {
             combine(transactionList, filterList) {
                     transactions: List<TransactionModel.Transaction>,
-//                    marketItems: List<MarketModel.Market>,
-//                    produceItems: MutableMap<String, Int>,
                     filterList: List<TransactionsModel.Filter>->
                 TransactionsModel.TransactionViewState(
                     transactionList = transactions,
