@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var speechRecognizer: SpeechRecognizerUtility
 
-
     @Inject
     lateinit var kontinuousSpeechRecognizer: KontinuousSpeechRecognizer
 
@@ -58,9 +57,6 @@ class MainActivity : AppCompatActivity() {
                 RootNavigationHost(appNavigator, snackbarHostState)
             }
         }
-//        setContentView(R.layout.activity_main)
-//        val logoutButton = findViewById<Button>(R.id.logoutButton)
-//        logoutButton.setOnClickListener { logoutUser(it) }
     }
 
     override fun onDestroy(){

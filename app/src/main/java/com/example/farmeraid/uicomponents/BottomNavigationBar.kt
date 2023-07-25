@@ -8,9 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Agriculture
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Money
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Agriculture
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Money
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -50,7 +52,13 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
             unselectedIcon = Icons.Outlined.Money,
             selectedIcon = Icons.Filled.Money,
             navigateToRoute = NavRoute.Market
-        )
+        ),UiComponentModel.BottomNavItem(
+            text = "Sign Out",
+            unselectedIcon = Icons.Outlined.Person,
+            selectedIcon = Icons.Filled.Person,
+            navigateToRoute = NavRoute.SignOut
+        ),
+
     )
     val notShownScreens: List<String?> = listOf(
         null,
@@ -60,6 +68,8 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
         NavRoute.CreateFarm.route,
         NavRoute.FarmCode.route,
         NavRoute.FarmSelection.route,
+        NavRoute.LoadingScreen.route,
+        NavRoute.SignOutScreen.route
     )
 
     AnimatedVisibility(

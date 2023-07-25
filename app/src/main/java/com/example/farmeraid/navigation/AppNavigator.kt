@@ -1,9 +1,14 @@
 package com.example.farmeraid.navigation
 
 import androidx.navigation.NavHostController
+import com.example.farmeraid.data.UserRepository
+import com.example.farmeraid.snackbar.SnackbarDelegate
 
-class AppNavigator {
+class AppNavigator(
+    private val snackbarDelegate: SnackbarDelegate
+) {
     private var _navController : NavHostController? = null
+
     val navController : NavHostController?
         get() = _navController
 
@@ -12,7 +17,17 @@ class AppNavigator {
     }
 
     fun navigateToMode(navRoute: NavRoute) {
-        _navController?.navigate(navRoute.route)
+        if (navRoute.route == NavRoute.SignOut.route){
+            snackbarDelegate.showSnackbar(
+                message = "Are you sure?",
+                actionLabel = "Yes",
+                 onAction  = { _navController?.navigate(navRoute.route) }
+            )
+            //Show snackbar
+        }
+        else{
+            _navController?.navigate(navRoute.route)
+        }
     }
 
     fun navigateBack() {
@@ -69,5 +84,9 @@ class AppNavigator {
 
     fun navigateToEditMarket(marketId : String) {
         _navController?.navigate(NavRoute.AddEditMarket.route + "?marketId=${marketId}")
+    }
+
+    fun navigateToSignIn(){
+        _navController?.navigate(NavRoute.SignIn.route)
     }
 }

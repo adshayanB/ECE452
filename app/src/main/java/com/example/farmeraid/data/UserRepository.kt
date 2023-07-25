@@ -13,7 +13,8 @@ class UserRepository {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     suspend fun login(userName: String, password: String) : SignInModel.AuthResponse {
         val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-        if (userName.isNotEmpty() && password.isNotEmpty()) {
+
+        if  (userName.isNotEmpty() && password.isNotEmpty()) {
             return try {
                 val res = firebaseAuth.signInWithEmailAndPassword(userName, password).await()
                 //Get user from user object
@@ -32,6 +33,45 @@ class UserRepository {
         }
     }
 
+    suspend fun checkLoggedIn():SignInModel.AuthResponse {
+        val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
+        if (firebaseAuth.currentUser != null) {
+            return try {
+                //Get user from user object
+                val docRef =
+                    db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
+                val farmID = docRef.get().await().data?.get("farmID").toString()
+                user.value = firebaseAuth.currentUser!!.email?.let {
+                    UserModel.User(
+                        email = it,
+                        id = firebaseAuth.currentUser?.uid.toString(),
+                        farm_id = farmID
+                    )
+                }
+                SignInModel.AuthResponse.Success
+            } catch (e: Exception) {
+                return SignInModel.AuthResponse.Error(
+                    e.message ?: "Error logging in. Please try again later."
+                )
+            }
+
+        }
+        else{
+            return SignInModel.AuthResponse.Success
+        }
+    }
+    fun signOut(): SignInModel.AuthResponse {
+        val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+        return try {
+            firebaseAuth.signOut()
+            SignInModel.AuthResponse.Success
+        } catch (e: Exception) {
+            return SignInModel.AuthResponse.Error(
+                e.message ?: "Error logging in. Please try again later."
+            )
+        }
+    }
     suspend fun signup(userName: String, password: String) : SignUpModel.AuthResponse {
         val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
         if (userName.isNotEmpty() && password.isNotEmpty()) {
