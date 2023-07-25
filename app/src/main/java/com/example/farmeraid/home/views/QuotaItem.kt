@@ -74,8 +74,7 @@ fun QuotaItem(
                         overflow = TextOverflow.Ellipsis,
                         fontSize = 14.sp
                     )
-                    // TODO: need to get produce sold amount from market and replace the 1
-                    val progressFraction : Float = 1.toFloat() / produceQuota.produceGoalAmount
+                    val progressFraction : Float = produceQuota.saleAmount.toFloat() / produceQuota.produceGoalAmount
                     ProgressBarView(
                         progressBarUiState = UiComponentModel.ProgressBarUiState(
                             text = "${(progressFraction * 100).toInt()}%",

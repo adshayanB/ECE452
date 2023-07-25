@@ -103,7 +103,7 @@ class MarketRepository(
         val marketModelList = mutableListOf<MarketModel.MarketWithQuota>()
 
         for (market in marketModel) {
-            quotasRepository.getQuota(market.id).let { quotaResponse ->
+            quotasRepository.getQuota(market.id, market["name"] as String).let { quotaResponse ->
                 quotaResponse.data?.let {
                     marketModelList.add(
                         MarketModel.MarketWithQuota(
@@ -151,7 +151,7 @@ class MarketRepository(
             return ResponseModel.FAResponseWithData.Error("Market does not exist")
         }
 
-        val marketWithQuota = quotasRepository.getQuota(marketModel.id).let { quotaResponse ->
+        val marketWithQuota = quotasRepository.getQuota(marketModel.id, marketModel["name"] as String).let { quotaResponse ->
                 quotaResponse.data?.let {
                     MarketModel.MarketWithQuota(
                         id = marketModel.id,

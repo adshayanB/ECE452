@@ -114,13 +114,12 @@ fun ViewQuotaScreenView() {
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
                             )
-                            // TODO: need to get produce sold amount from market and replace the 1 and 1f
                             ProgressBarView(
                                 modifier = Modifier.weight(1f).fillMaxSize(),
                                 progressBarUiState = UiComponentModel.ProgressBarUiState(
-                                    text = "1/${produceQuota.produceGoalAmount}",
+                                    text = "${produceQuota.saleAmount}/${produceQuota.produceGoalAmount}",
                                     fontSize = 14.sp,
-                                    progress = 1f/produceQuota.produceGoalAmount,
+                                    progress = produceQuota.saleAmount.toFloat()/produceQuota.produceGoalAmount,
                                     containerColor = PrimaryColour.copy(alpha = 0.2f),
                                     progressColor = PrimaryColour,
                                 )

@@ -2,6 +2,7 @@ package com.example.farmeraid.data
 
 import android.util.Log
 import com.example.farmeraid.data.model.InventoryModel
+import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.transactions.model.TransactionsModel
@@ -10,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 
 class TransactionRepository(
     private val userRepository: UserRepository
@@ -93,5 +95,35 @@ class TransactionRepository(
                     ResponseModel.FAResponse.Error(e.message ?: "Unknown message while updating farm")
                 }
             } ?: ResponseModel.FAResponse.Error("User does not exist")
+    }
+
+    suspend fun getQuotaSaleAmounts(marketName: String, produce : MutableMap<String, Int>, startOfWeek : Date, endOfWeek : Date) : ResponseModel.FAResponseWithData<MutableMap<String, Int>> {
+        val transactionsQuery = userRepository.getFarmId()?.let {
+             db.collection("transactions")
+                .whereEqualTo("farmID", it)
+                .whereEqualTo("type", TransactionModel.TransactionType.SELL.stringValue)
+                .whereEqualTo("destination", marketName)
+                .whereGreaterThanOrEqualTo("timestamp", startOfWeek)
+                .whereLessThan("timestamp", endOfWeek)
+        } ?: run {
+            return ResponseModel.FAResponseWithData.Error("User does not exist")
+        }
+
+        val salesMap : MutableMap<String, Int> = produce.entries.associate {
+            it.key to 0
+        }.toMutableMap()
+
+        produce.entries.forEach { (name, _) ->
+            try {
+                salesMap[name] = transactionsQuery.whereEqualTo("produce", name).get().await().documents.mapNotNull {
+                    it.data?.get("count") as Long
+                }.sum().toInt()
+            } catch (e : Exception) {
+                Log.e("Index", e.message ?: "Unknown error")
+                return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while")
+            }
+        }
+
+        return ResponseModel.FAResponseWithData.Success(salesMap)
     }
 }
