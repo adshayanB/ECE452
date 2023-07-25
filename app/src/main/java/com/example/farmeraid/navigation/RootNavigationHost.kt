@@ -101,7 +101,13 @@ fun RootNavigationHost(
                 ) {
                     AddEditQuotaScreenView()
                 }
-                composable(NavRoute.Transactions.route) {
+                composable(
+                    route = NavRoute.Transactions.route + "?transactionType={transactionType}",
+                    arguments = listOf(navArgument("transactionType") {
+                        type = NavType.StringType
+                        nullable = true
+                    })
+                ) {
                     TransactionsView()
                 }
                 composable(
