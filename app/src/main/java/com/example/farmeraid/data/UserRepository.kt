@@ -125,7 +125,7 @@ class UserRepository {
         }
     }
 
-    suspend fun getFarmId(): String? {
+    fun getFarmId(): String? {
         return user.value?.farm_id
 
     }
