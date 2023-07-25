@@ -20,14 +20,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.farmeraid.snackbar.SnackbarDelegate
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 class LocationProvider() {
@@ -41,9 +44,12 @@ class LocationProvider() {
     //The main entry point for interacting with the Fused Location Provider
     lateinit var locationProvider: FusedLocationProviderClient
 
+    @Inject
+    lateinit var snackbarDelegate: SnackbarDelegate
+
     data class LatandLong(
-        val latitude: Double = 0.0,
-        val longitude: Double = 0.0
+        var latitude: Double = 0.0,
+        var longitude: Double = 0.0
     )
 
     @SuppressLint("MissingPermission")
@@ -75,18 +81,19 @@ class LocationProvider() {
                      * This option returns the most recent historical location currently available.
                      * Will return null if no historical location is available
                      * */
-                    locationProvider.lastLocation
-                        .addOnSuccessListener { location ->
-                            location?.let {
-                                val lat = location.latitude
-                                val long = location.longitude
-                                // Update data class with location data
-                                currentUserLocation = LatandLong(latitude = lat, longitude = long)
-                            }
-                        }
-                        .addOnFailureListener {
-                            Log.e("Location_error", "${it.message}")
-                        }
+
+//                    locationProvider.lastLocation
+//                        .addOnSuccessListener { location ->
+//                            location?.let {
+//                                val lat = location.latitude
+//                                val long = location.longitude
+//                                // Update data class with location data
+//                                currentUserLocation = LatandLong(latitude = lat, longitude = long)
+//                            }
+//                        }
+//                        .addOnFailureListener {
+//                            Log.e("Location_error", "${it.message}")
+//                        }
 
                 }
             }
@@ -149,11 +156,11 @@ class LocationProvider() {
             // location through FusedLocationProviderClient.
             val locationRequest: LocationRequest =
                 LocationRequest.create().apply {
-                    interval = TimeUnit.SECONDS.toMillis(60)
-                    fastestInterval = TimeUnit.SECONDS.toMillis(30)
-                    maxWaitTime = TimeUnit.MINUTES.toMillis(2)
-                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                    interval = TimeUnit.SECONDS.toMillis(10)
+                    fastestInterval = TimeUnit.SECONDS.toMillis(5)
+                    priority = Priority.PRIORITY_HIGH_ACCURACY
                 }
+
             //use FusedLocationProviderClient to request location update
             locationProvider.requestLocationUpdates(
                 locationRequest,
@@ -195,11 +202,7 @@ class LocationProvider() {
         val geocoder = Geocoder(activityContext as Context, Locale.getDefault())
 
         try {
-
             var addresses = geocoder.getFromLocationName(locationName, 1)
-            val location : Address? = addresses?.get(0)
-
-            Log.d("GetFromLocation", "Array Size: ${location}")
 
             if (addresses?.isNotEmpty() == true) {
                 val address = addresses.get(0)
@@ -209,12 +212,26 @@ class LocationProvider() {
                 Log.d("geolocation", "latitude: ${latitude},  longitude: ${longitude}")
             }
 
-        } catch (e: IOException) {
+            Log.d("geolocation", "BEFORE getFromLocationName")
+
+//            geocoder.getFromLocationName(locationName, 1) { addressList ->
+//                Log.d("Geolocation", "Address List: ${addressList}")
+//                if (addressList.isNotEmpty()) {
+//                    latitude = addressList[0].latitude
+//                    longitude = addressList[0].longitude
+//
+//                    Log.d("geolocation", "latitude: ${latitude},  longitude: ${longitude}")
+//                } else {
+//                    snackbarDelegate.showSnackbar(
+//                        message = "Location not found: $locationName"
+//                    )
+//                }
+//            }
+        } catch (e: Exception) {
             Log.d("geolocation", e.message.toString())
 
         }
 
         return doubleArrayOf(latitude, longitude)
-
     }
 }

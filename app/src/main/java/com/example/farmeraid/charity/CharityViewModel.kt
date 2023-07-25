@@ -1,6 +1,8 @@
 package com.example.farmeraid.charity
 
-import android.app.Application
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,9 +10,7 @@ import com.example.farmeraid.charity.model.CharityModel
 import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.snackbar.SnackbarDelegate
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -19,13 +19,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharityViewModel @Inject constructor(
-    private val locationProvider : LocationProvider,
+    val locationProvider : LocationProvider,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate
 ) : ViewModel() {
     private val _state = MutableStateFlow(CharityModel.CharityViewState(
         latitude = 0.0,
         longitude = 0.0,
+        userLocation = LocationProvider.LatandLong()
     ))
 
     val state: StateFlow<CharityModel.CharityViewState>
@@ -34,19 +35,22 @@ class CharityViewModel @Inject constructor(
     private val longitude : MutableStateFlow<Double> = MutableStateFlow(_state.value.longitude)
     private val latitude : MutableStateFlow<Double> = MutableStateFlow(_state.value.latitude)
     private val readableLocation: MutableStateFlow<String> = MutableStateFlow("")
+    private val userLocation : MutableStateFlow<LocationProvider.LatandLong> = MutableStateFlow(_state.value.userLocation)
 
     //private val listOfFridges : MutableStateFlow<String> = MutableStateFlow(_state.value.listOfFridges)
 
     init {
         viewModelScope.launch {
-            combine(longitude, latitude, readableLocation) {
+            combine(longitude, latitude, userLocation, readableLocation) {
                     longitude: Double,
                     latitude: Double,
+                    userLocation: LocationProvider.LatandLong,
                     readableLocation : String ->
                 CharityModel.CharityViewState(
                     longitude = longitude,
                     latitude = latitude,
                     readableLocation = readableLocation,
+                    userLocation = userLocation,
                 )
             }.collect {
                 _state.value = it
@@ -54,15 +58,21 @@ class CharityViewModel @Inject constructor(
         }
     }
 
-//    fun getLocationLiveData() = locationProvider
-
+    @SuppressLint("StateFlowValueCalledInComposition")
     @Composable
-    fun startLocationUpdates() {
-        locationProvider.getUserLocation()
+    fun setUserLocation(location : LocationProvider.LatandLong) {
+        userLocation.value = location
     }
 
     fun stopLocationUpdates() {
         locationProvider.stopLocationUpdate()
+    }
+
+    fun displayCoordinates(Lat: Double, Long: Double) {
+
+        snackbarDelegate.showSnackbar(
+            message = "Coordinates: ${Lat} ${Long}"
+        )
     }
 
     fun getReadableLocation(Lat: Double, Long: Double) {
@@ -73,12 +83,14 @@ class CharityViewModel @Inject constructor(
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun getCoordinatesFromLocation(locationName : String) {
-        //readableLocation.value = locationProvider.getReadableLocation(Lat, Long)
-
         val coordinates = locationProvider.getCoordinatesFromLocationName(locationName)
+        userLocation.value.latitude = coordinates[0]
+        userLocation.value.longitude = coordinates[1]
+
         snackbarDelegate.showSnackbar(
-            message = "Coordinates: ${coordinates[0]} ${coordinates[1]}"
+            message = "Coordinates: ${userLocation.value.latitude} ${userLocation.value.longitude}"
         )
     }
 

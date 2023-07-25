@@ -3,6 +3,8 @@ package com.example.farmeraid.charity.views
 import android.annotation.SuppressLint
 import android.location.Location
 import android.location.Location.distanceBetween
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,10 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.farmeraid.charity.CharityViewModel
+import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
 import com.example.farmeraid.uicomponents.FloatingActionButtonView
 import com.example.farmeraid.uicomponents.models.UiComponentModel
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -35,6 +39,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -52,6 +57,13 @@ fun CharityMapsScreenView() {
 
     val distanceA = FloatArray(1)
 
+    var userLocation : LocationProvider.LatandLong = viewModel.locationProvider.getUserLocation()
+
+    var user = LatLng(userLocation.latitude, userLocation.longitude)
+    var userLocationState = MarkerState(position = user)
+
+    viewModel.setUserLocation(location = userLocation)
+    
     Location.distanceBetween(
         uwaterloo.latitude,
         uwaterloo.longitude,
@@ -70,7 +82,6 @@ fun CharityMapsScreenView() {
         distanceB
     )
 
-
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(uwaterloo, 14f)
     }
@@ -83,7 +94,10 @@ fun CharityMapsScreenView() {
                     contentDescription = "Add New Fridge",
                 ),
                 fabUiEvent = UiComponentModel.FabUiEvent(
-                    onClick = { viewModel.getCoordinatesFromLocation("CN Tower") }
+                    onClick = {
+                        viewModel.getCoordinatesFromLocation("ICON 330")
+//                        viewModel.displayCoordinates(userLocation.latitude, userLocation.longitude)
+                    }
                 )
             )
         },
@@ -124,6 +138,12 @@ fun CharityMapsScreenView() {
 
                 }
             ) {
+                Marker(
+                    state = userLocationState,
+                    title = "User Location",
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
+                )
+
                 Marker(
                     state = uwaterlooState,
                     title = "Marker for E7 Building",
