@@ -151,4 +151,29 @@ class TransactionsViewModel @Inject constructor(
         }
 
     }
+
+    fun clearSelectedFilterItem(id: UUID) {
+        filterList.value = filterList.value.map{
+            if (it.id == id){
+                TransactionsModel.Filter(
+                    id = it.id,
+                    name = it.name,
+                    itemsList = it.itemsList,
+                    selectedItem = null,
+                )
+            } else it
+        }
+    }
+
+    fun clearAllFilterSelections() {
+        filterList.value = filterList.value.map{
+                TransactionsModel.Filter(
+                    id = it.id,
+                    name = it.name,
+                    itemsList = it.itemsList,
+                    selectedItem = null,
+                )
+        }
+
+    }
 }

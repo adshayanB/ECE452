@@ -57,6 +57,7 @@ import com.example.farmeraid.data.model.toMessage
 import com.example.farmeraid.transactions.TransactionsViewModel
 import com.example.farmeraid.ui.theme.PrimaryColour
 import com.example.farmeraid.ui.theme.WhiteContentColour
+import com.example.farmeraid.uicomponents.OutlinedButtonView
 import com.example.farmeraid.uicomponents.TransactionsFilterChip
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.util.UUID
@@ -93,14 +94,27 @@ fun TransactionsView() {
                 .padding(20.dp, 10.dp, 20.dp, 0.dp),
         ){
             LazyRow(
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ){
                 items(state.filterList) {filterChip ->
                     TransactionsFilterChip(
                         modifier = Modifier.width(75.dp),
                         onItemSelected = {id: UUID, item: String->viewModel.updateSelectedFilterItem(id, item)},
-                        filter = filterChip
+                        filter = filterChip,
+                        onSelectionCleared = {id: UUID ->viewModel.clearSelectedFilterItem(id)}
                     )
+                }
+                item {
+                    //Clear
+                    TextButton(onClick = {viewModel.clearAllFilterSelections()}) {
+                        Text(
+                            text = "Clear",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = PrimaryColour
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
