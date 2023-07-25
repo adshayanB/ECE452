@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.create_farm.model.CreateFarmModel
 import com.example.farmeraid.create_farm.model.getSubmitButton
 import com.example.farmeraid.data.FarmRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.NavRoute
@@ -23,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateFarmViewModel @Inject constructor(
     private val farmRepository: FarmRepository,
+    private val userRepository: UserRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
@@ -58,6 +60,7 @@ class CreateFarmViewModel @Inject constructor(
         when (result) {
             is ResponseModel.FAResponse.Success -> {
                 Log.d("MESSAGE - createFarm()", "SUCCESSFULLY CREATED A FARM")
+                userRepository.updateFarmId()
                 appNavigator.navigateToFarmCode()
             }
 
