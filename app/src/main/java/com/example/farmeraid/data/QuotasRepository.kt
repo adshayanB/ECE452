@@ -25,7 +25,7 @@ import java.util.Date
 // TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
 
 class QuotasRepository(
-    val transactionRepository: TransactionRepository,
+    private val transactionRepository: TransactionRepository,
 ) {
 
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -44,45 +44,46 @@ class QuotasRepository(
         }
 
         var endOfWeek = (docRead.data?.get("endOfWeek") as Timestamp).toLocalDateTime()
-        val quotas = docRead.data?.get("produce")
-        var saleCount = docRead.data?.get("sale")
+        val quotas : MutableMap<String, Int> = docRead.data?.get("produce") as MutableMap<String, Int>? ?: run {
+            return ResponseModel.FAResponseWithData.Error("Quota object does not have produce information")
+        }
+        var saleCount = docRead.data?.get("sale") as MutableMap<String, Int>? ?: run {
+            return ResponseModel.FAResponseWithData.Error("Quota object does not have sale information")
+        }
 
         if (LocalDateTime.now().isAfter(endOfWeek)) {
             endOfWeek = endOfWeek.plusWeeks(1)
-            saleCount = transactionRepository.getQuotaSaleAmounts(marketName, quotas as MutableMap<String, Int>, endOfWeek.minusWeeks(1).toDate(), endOfWeek.toDate()).let {
+            saleCount = transactionRepository.getQuotaSaleAmounts(marketName, quotas.map { it.key }, endOfWeek.minusWeeks(1).toDate(), endOfWeek.toDate()).let {
                 it.data ?: run {
                     return ResponseModel.FAResponseWithData.Error(it.error ?: "Unknown error while getting updated quota sale amounts")
                 }
             }
-            db.collection("quotas").document(id).update(
-                mapOf(
-                    "endOfWeek" to endOfWeek.toDate(),
-                    "sale" to saleCount,
-                )
-            ).await()
+            try {
+                db.collection("quotas").document(id).update(
+                    mapOf(
+                        "endOfWeek" to endOfWeek.toDate(),
+                        "sale" to saleCount,
+                    )
+                ).await()
+            } catch (e : Exception) {
+                return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while updating quota sale amounts")
+            }
         }
 
-        Log.d("Date", "Client: ${endOfWeek.minusWeeks(1).toDate()}, Server: ${endOfWeek.toDate()}")
-
-        return if (quotas != null && saleCount != null) {
-            val quotasMap: MutableMap<String, Int> = if ((quotas as MutableMap<String, Int>).isEmpty()) quotas else (quotas).toSortedMap(String.CASE_INSENSITIVE_ORDER)
-            val sale: MutableMap<String, Int> = if ((saleCount as MutableMap<String, Int>).isEmpty()) saleCount else (saleCount).toSortedMap(String.CASE_INSENSITIVE_ORDER)
-            ResponseModel.FAResponseWithData.Success(
-                QuotaModel.Quota(
-                    id = id,
-                    produceQuotaList = quotasMap.map { (produceName, goal) ->
-                        QuotaModel.ProduceQuota(
-                            produceName = produceName,
-                            produceGoalAmount = goal,
-                            saleAmount = sale.getOrDefault(produceName, 0),
-                        )
-                    }
-                )
+        val quotasMap: MutableMap<String, Int> = if (quotas.isEmpty()) quotas else quotas.toSortedMap(String.CASE_INSENSITIVE_ORDER)
+        val sale: MutableMap<String, Int> = if (saleCount.isEmpty()) saleCount else saleCount.toSortedMap(String.CASE_INSENSITIVE_ORDER)
+        return ResponseModel.FAResponseWithData.Success(
+            QuotaModel.Quota(
+                id = id,
+                produceQuotaList = quotasMap.map { (produceName, goal) ->
+                    QuotaModel.ProduceQuota(
+                        produceName = produceName,
+                        produceGoalAmount = goal,
+                        saleAmount = sale.getOrDefault(produceName, 0),
+                    )
+                }
             )
-        }
-        else {
-            ResponseModel.FAResponseWithData.Error("Quota object does not have produce or sale information")
-        }
+        )
     }
     suspend fun addOrUpdateQuota(market: MarketModel.Market, produce: List<QuotaModel.ProduceQuota>) : ResponseModel.FAResponse {
         val doc : DocumentSnapshot = try {

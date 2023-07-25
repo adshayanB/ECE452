@@ -6,6 +6,7 @@ import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.transactions.model.TransactionsModel
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -97,7 +98,8 @@ class TransactionRepository(
             } ?: ResponseModel.FAResponse.Error("User does not exist")
     }
 
-    suspend fun getQuotaSaleAmounts(marketName: String, produce : MutableMap<String, Int>, startOfWeek : Date, endOfWeek : Date) : ResponseModel.FAResponseWithData<MutableMap<String, Int>> {
+    suspend fun getQuotaSaleAmounts(marketName: String, produce : List<String>, startOfWeek : Date, endOfWeek : Date) : ResponseModel.FAResponseWithData<MutableMap<String, Int>> {
+        Log.d("QuotaSale","Start: ${startOfWeek}, End: ${endOfWeek}")
         val transactionsQuery = userRepository.getFarmId()?.let {
              db.collection("transactions")
                 .whereEqualTo("farmID", it)
@@ -109,11 +111,11 @@ class TransactionRepository(
             return ResponseModel.FAResponseWithData.Error("User does not exist")
         }
 
-        val salesMap : MutableMap<String, Int> = produce.entries.associate {
-            it.key to 0
+        val salesMap : MutableMap<String, Int> = produce.associate {
+            it to 0
         }.toMutableMap()
 
-        produce.entries.forEach { (name, _) ->
+        produce.forEach { name ->
             try {
                 salesMap[name] = transactionsQuery.whereEqualTo("produce", name).get().await().documents.mapNotNull {
                     it.data?.get("count") as Long
