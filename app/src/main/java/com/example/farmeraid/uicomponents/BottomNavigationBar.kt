@@ -7,8 +7,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Agriculture
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material.icons.outlined.Agriculture
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.VolunteerActivism
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -43,6 +45,12 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
             selectedIcon = Icons.Filled.Agriculture,
             navigateToRoute = NavRoute.Farm,
         ),
+        UiComponentModel.BottomNavItem(
+            text = "Charity",
+            unselectedIcon = Icons.Outlined.VolunteerActivism,
+            selectedIcon = Icons.Filled.VolunteerActivism,
+            navigateToRoute = NavRoute.Charity,
+        )
     )
     val notShownScreens: List<String?> = listOf(
         null,

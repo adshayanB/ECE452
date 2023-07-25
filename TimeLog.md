@@ -77,5 +77,8 @@
 | 07/18/2023 | 3        |  0  | 0        | 0   | 0     | 0        | Generated code for newly created farm, stored in firestore, updated view to support new dynamic code creation
 | 07/19/2023 | 2        |  0  | 0        | 0   | 0     | 0        | Completed the join farm feature, valdiated functionality via Firestore, updated users who joined with a farmID and role
 | 07/19/2023 | 0.75     |  0  | 0        | 0   | 0     | 0        | Returned values in alphabetical order for Markets and Produce
+| 07/22/2023 | 0        |  0  | 3        | 0   | 0     | 0        | Integrated Google Maps API, hide secrets API, and the Android Geocoder library
+| 07/24/2023 | 0        |  0  | 6        | 0   | 0     | 0        | Built the Location Provider, and wrote logic to calculate distance and convert addresses (Lat, Long)
+
 
 

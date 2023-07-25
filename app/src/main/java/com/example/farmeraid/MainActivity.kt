@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.RootNavigationHost
 import com.example.farmeraid.speech_recognition.KontinuousSpeechRecognizer
@@ -39,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var kontinuousSpeechRecognizer: KontinuousSpeechRecognizer
 
+    @Inject
+    lateinit var locationProvider : LocationProvider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         firebaseAuth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         //kontinuousSpeechRecognizer.initializeRecognizer()
 
         speechRecognizer.setActivtyContext(this)
+        locationProvider.setActivtyContext(this)
         setContent {
             val navController : NavHostController = rememberNavController()
             appNavigator.setNavController(navController)
@@ -53,6 +58,7 @@ class MainActivity : AppCompatActivity() {
             val snackbarHostState = remember { SnackbarHostState() }
             snackbarDelegate.snackbarHostState = snackbarHostState
             snackbarDelegate.coroutineScope = rememberCoroutineScope()
+
 
             FarmerAidTheme(darkTheme = false) {
                 RootNavigationHost(appNavigator, snackbarHostState)

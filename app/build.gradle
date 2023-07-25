@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -112,6 +113,13 @@ dependencies {
 
     implementation "com.github.StephenVinouze:KontinuousSpeechRecognizer:1.1.0"
     implementation 'com.github.cesarferreira:kotlin-pluralizer:1.0.0'
+
+    //Google Maps Services
+    implementation 'com.google.maps.android:maps-compose:2.11.4'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
+    // Location Services
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
 }
 
 kapt {
