@@ -107,3 +107,4 @@
 | 07/25/2023 | 0.75     |  0  | 0        | 0    | 0     | 0        | Added new app icon and splash page
 | 07/25/2023 | 0.50     |  0  | 0        | 0    | 0     | 0        | Fixed flow to save updated farmId
 | 07/25/2023 | 0        | 0      | 0        | 0    | 6      | 0         | Added functionality to change transaction type filter based on previous page                
+| 07/25/2023 | 0        | 0      | 0        | 0    | 1      | 0         | Added functionality to make charity and market filters force the other to disppear if one of their options are selected                         

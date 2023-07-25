@@ -68,12 +68,20 @@ fun List<TransactionsModel.Filter>.exposeFilters(): List<TransactionsModel.Filte
     // If DONATE or ALL are selected in TransactionType filter -> Charity filter pops up
 
     val type: TransactionsModel.Filter? = this.firstOrNull{ it.name == TransactionsModel.FilterName.Type }
+    val market: TransactionsModel.Filter? = this.firstOrNull { it.name == TransactionsModel.FilterName.Market }
+    val charity: TransactionsModel.Filter? = this.firstOrNull { it.name == TransactionsModel.FilterName.Charity }
     return type?.let {
         when( type.selectedItem){
             "Harvest"-> this.filter { it.name != TransactionsModel.FilterName.Market && it.name != TransactionsModel.FilterName.Charity }
             "Sell"-> this.filter { it.name != TransactionsModel.FilterName.Charity }
             "Donate"-> this.filter { it.name != TransactionsModel.FilterName.Market }
-            else-> this
+            else -> {
+                if (market?.selectedItem != null) {
+                    this.filter { it.name != TransactionsModel.FilterName.Charity }
+                } else if (charity?.selectedItem != null) {
+                    this.filter { it.name != TransactionsModel.FilterName.Market }
+                } else this
+            }
         }
     }?:this
 }
