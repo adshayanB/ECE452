@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.model.MarketModel
+import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.market.model.MarketPageModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.snackbar.SnackbarDelegate
@@ -63,7 +64,7 @@ class MarketViewModel @Inject constructor(
     }
 
     fun navigateToTransactions() {
-        appNavigator.navigateToTransactions()
+        appNavigator.navigateToTransactions(TransactionModel.TransactionType.SELL.stringValue)
     }
 
     fun navigateToAddMarket() {

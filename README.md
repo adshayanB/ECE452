@@ -7,3 +7,5 @@ Figma Mockups: https://www.figma.com/file/N1ON9qJHUMHJ1hgjFtWODI/ECE-452---Mocku
 Proposal Document: https://docs.google.com/document/d/1bSG-8dyd-MX0zS0gFhcs6sSiuO2MEouWPS-z4SHngNQ/edit?usp=sharing
 
 Databse Design: https://docs.google.com/document/d/1vtX4CminLuPaswvdT-l7-YxLMe0so-HyqK3XT2xzNVQ/edit?usp=sharing
+
+Project Architecture & Design: https://docs.google.com/document/d/1Yyibv0jHdLcFrloSlRClGAuyaIz5bz3u4cizk0z_INQ/edit

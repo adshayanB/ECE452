@@ -28,16 +28,18 @@ class TransactionsModel {
 
 fun getFilters(
     marketItems: List<MarketModel.Market>,
-    produceItems: MutableMap<String, Int>
+    produceItems: MutableMap<String, Int>,
+    transactionType: String,
 ): List<TransactionsModel.Filter> {
     val transactionsFilter: TransactionsModel.Filter = TransactionsModel.Filter(
         name = TransactionsModel.FilterName.Type,
         itemsList = listOf(
+            TransactionModel.TransactionType.ALL.stringValue,
             TransactionModel.TransactionType.HARVEST.stringValue,
             TransactionModel.TransactionType.SELL.stringValue,
-            TransactionModel.TransactionType.DONATE.stringValue
+            TransactionModel.TransactionType.DONATE.stringValue,
         ),
-        selectedItem = "All"
+        selectedItem = transactionType,
     )
 
     val marketFilter: TransactionsModel.Filter = TransactionsModel.Filter(

@@ -34,8 +34,8 @@ class AppNavigator(
         _navController?.navigateUp()
     }
 
-    fun navigateToTransactions() {
-        _navController?.navigate(NavRoute.Transactions.route)
+    fun navigateToTransactions(transactionType: String) {
+        _navController?.navigate(NavRoute.Transactions.route + "?transactionType=${transactionType}")
     }
 
     fun navigateToAddQuota() {
