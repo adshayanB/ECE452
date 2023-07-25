@@ -101,11 +101,13 @@ class TransactionsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             filterList.collect { filterList ->
-                transactionRepository.getRecentTransactions(filterList.exposeFilters(), 25).let { transactions ->
-                    transactions.data?.let {
-                        transactionList.value = it
-                    } ?: run {
-                        snackbarDelegate.showSnackbar(transactions.error ?: "Unknown error")
+                if (!filterList.isEmpty()) {
+                    transactionRepository.getRecentTransactions(filterList.exposeFilters(), 25).let { transactions ->
+                        transactions.data?.let {
+                            transactionList.value = it
+                        } ?: run {
+                            snackbarDelegate.showSnackbar(transactions.error ?: "Unknown error")
+                        }
                     }
                 }
             }
