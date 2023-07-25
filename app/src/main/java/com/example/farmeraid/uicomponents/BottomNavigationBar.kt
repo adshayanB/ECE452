@@ -13,6 +13,8 @@ import androidx.compose.material.icons.outlined.Agriculture
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Money
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.filled.VolunteerActivism
+import androidx.compose.material.icons.outlined.VolunteerActivism
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -52,13 +54,19 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
             unselectedIcon = Icons.Outlined.Money,
             selectedIcon = Icons.Filled.Money,
             navigateToRoute = NavRoute.Market
-        ),UiComponentModel.BottomNavItem(
+        ),
+        UiComponentModel.BottomNavItem(
+                    text = "Charity",
+            unselectedIcon = Icons.Outlined.VolunteerActivism,
+            selectedIcon = Icons.Filled.VolunteerActivism,
+            navigateToRoute = NavRoute.Charity,
+        ),
+        UiComponentModel.BottomNavItem(
             text = "Sign Out",
             unselectedIcon = Icons.Outlined.Person,
             selectedIcon = Icons.Filled.Person,
             navigateToRoute = NavRoute.SignOut
         ),
-
     )
     val notShownScreens: List<String?> = listOf(
         null,

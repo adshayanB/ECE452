@@ -22,6 +22,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.farmeraid.charity.views.CharityMapsScreenView
 import com.example.farmeraid.join_farm.views.JoinFarmScreenView
 import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
@@ -148,6 +149,9 @@ fun RootNavigationHost(
                     })
                 ) {
                     AddEditMarketScreenView()
+                }
+                composable(NavRoute.Charity.route){
+                    CharityMapsScreenView()
                 }
             }
         }
