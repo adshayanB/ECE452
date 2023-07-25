@@ -73,7 +73,7 @@ class SellProduceViewModel @Inject constructor(
             isLoading.value = true
             val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
             val inventory: MutableMap<String, Int> = inventoryRepository.getInventory().single().data!!
-            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId!!)
+            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId, market.name)
 
             val quota: QuotaModel.Quota? = quotaRes.data
 
@@ -152,7 +152,7 @@ class SellProduceViewModel @Inject constructor(
 
             val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
 
-            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId!!)
+            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId, market.name)
 
             val quota: QuotaModel.Quota? = if (quotaRes.error != null) quotaRes.data
             else null

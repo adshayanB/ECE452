@@ -1,7 +1,11 @@
 package com.example.farmeraid.data.model
 
 import com.cesarferreira.pluralize.pluralize
+import com.google.firebase.Timestamp
 import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Date
 import java.util.Locale
 
 class TransactionModel {
@@ -38,4 +42,14 @@ fun TransactionModel.Transaction.toMessage() : String{
             throw Exception("Cannot build a message from this transaction")
         }
     }
+}
+
+fun LocalDateTime.toDate() : Date {
+    return Date.from(this.atZone(ZoneId.systemDefault()).toInstant())
+}
+fun Date.toLocalDateTime() : LocalDateTime {
+    return LocalDateTime.ofInstant(this.toInstant(), ZoneId.systemDefault())
+}
+fun Timestamp.toLocalDateTime() : LocalDateTime {
+    return this.toDate().toLocalDateTime()
 }

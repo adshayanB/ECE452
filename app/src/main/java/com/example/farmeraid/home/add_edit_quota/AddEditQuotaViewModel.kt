@@ -100,7 +100,7 @@ class AddEditQuotaViewModel @Inject constructor(
     private suspend fun internalSelectMarket(market: MarketModel.Market) {
         selectedMarket.value = market
         produceRows.value =
-            quotasRepository.getQuota(market.id).let { quotaResponse ->
+            quotasRepository.getQuota(market.id, market.name).let { quotaResponse ->
                 quotaResponse.data?.let {
                     it.produceQuotaList.map { produceQuota ->
                         AddEditQuotaModel.ProduceRow(

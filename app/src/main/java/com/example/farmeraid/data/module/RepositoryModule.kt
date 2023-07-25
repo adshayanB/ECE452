@@ -19,8 +19,8 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Singleton
     @Provides
-    fun provideQuotasRepository() : QuotasRepository {
-        return QuotasRepository()
+    fun provideQuotasRepository(transactionRepository: TransactionRepository) : QuotasRepository {
+        return QuotasRepository(transactionRepository)
     }
 
     @Singleton
@@ -39,9 +39,9 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideTransactionRepository(farmRepository: FarmRepository, userRepository: UserRepository): TransactionRepository {
+    fun provideTransactionRepository(userRepository: UserRepository): TransactionRepository {
         return TransactionRepository(
-            userRepository = userRepository
+            userRepository = userRepository,
         )
     }
 
