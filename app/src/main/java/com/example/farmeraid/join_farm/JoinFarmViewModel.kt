@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.join_farm.model.JoinFarmModel
 import com.example.farmeraid.join_farm.model.getSubmitButton
 import com.example.farmeraid.data.FarmRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.NavRoute
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class JoinFarmViewModel @Inject constructor(
     private val farmRepository: FarmRepository,
+    private val userRepository: UserRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
@@ -60,6 +62,7 @@ class JoinFarmViewModel @Inject constructor(
         when (result) {
             is ResponseModel.FAResponse.Success -> {
                 Log.d("MESSAGE - joinFarm()", "SUCCESSFULLY JOINED A FARM")
+                userRepository.updateFarmId()
                 appNavigator.navigateToMode(NavRoute.Home)
             }
 

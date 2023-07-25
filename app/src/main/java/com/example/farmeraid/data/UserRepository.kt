@@ -105,7 +105,28 @@ class UserRepository {
         return user.value?.email
     }
 
-    fun getFarmId(): String? {
+    suspend fun updateFarmId(): SignInModel.AuthResponse {
+        return try {
+            val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+            val docRef = db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
+            val farmID = docRef.get().await().data?.get("farmID").toString()
+            user.value = getUserEmail()?.let {
+                UserModel.User(
+                    email = it,
+                    id = firebaseAuth.currentUser?.uid.toString(),
+                    farm_id = farmID
+                )
+            }
+            SignInModel.AuthResponse.Success
+        } catch (e: Exception) {
+            return SignInModel.AuthResponse.Error(
+                e.message ?: "Error updating"
+            )
+        }
+    }
+
+    suspend fun getFarmId(): String? {
         return user.value?.farm_id
+
     }
 }
