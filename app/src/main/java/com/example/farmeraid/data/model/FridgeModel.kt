@@ -7,7 +7,8 @@ class FridgeModel {
         val id: String,
         val fridgeName: String,
         val location: String,
-        val items: List<CharityModel.ProduceFridge>,
+        val imageUri: String,
+        val handle:String,
         val coordinates: LocationProvider.LatandLong
     )
 }

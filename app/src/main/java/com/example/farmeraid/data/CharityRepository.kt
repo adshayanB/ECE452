@@ -1,7 +1,6 @@
 package com.example.farmeraid.data
 
 import android.util.Log
-import com.example.farmeraid.data.model.CharityModel
 import com.example.farmeraid.data.model.FridgeModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
@@ -20,7 +19,7 @@ class CharityRepository (
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    suspend fun createCharity(charityName: String, location:String, coordinates: GeoPoint, produce: List<QuotaModel.ProduceQuota>): ResponseModel.FAResponse{
+    suspend fun createCharity(charityName: String, location:String, coordinates: GeoPoint, produce: List<QuotaModel.ProduceQuota>, imageUri: String, handle: String): ResponseModel.FAResponse{
         return try {
 
             userRepository.getFarmId()?.let{
@@ -29,9 +28,9 @@ class CharityRepository (
                         "charityName" to charityName,
                         "location" to location,
                         "coordinates" to coordinates,
-                        "produce" to produce.associate {
-                            it.produceName to it.produceGoalAmount
-                        }
+                        "imageUri" to imageUri,
+                        "handle" to handle,
+
                     )
                 ).await()
 
@@ -60,29 +59,25 @@ class CharityRepository (
         if (!docRead.exists()) {
             return ResponseModel.FAResponseWithData.Error("Charity does not exist")
         }
-        
-        val items = docRead.data?.get("produce") as MutableMap<String, Int>?
+
+        val imageLink = docRead.data?.get("imageUri") as String?
+        val handle = docRead.data?.get("handle") as String?
         val name  = docRead.data?.get("charityName") as String?
         val location = docRead.data?.get("location") as String?
         val coordinates = docRead.data?.get("coordinates") as GeoPoint?
 
-        return if (items != null && name !=null && location!=null && coordinates != null) {
-            val itemsMap = items
-            val fridgeName = name
-            val charityLocation = location
+        return if (imageLink != null && handle != null &&name !=null && location!=null && coordinates != null) {
             ResponseModel.FAResponseWithData.Success(
                 FridgeModel.Fridge(
                     id = id,
-                    fridgeName = fridgeName,
-                    location = charityLocation,
-                    items = itemsMap.map { (produceName, goal) ->
-                        CharityModel.ProduceFridge(
-                            produceName = produceName,
-                            produceDonateAmount = goal,
-
-                            )
-                    },
-                    coordinates = LocationProvider.LatandLong(coordinates.latitude, coordinates.longitude),
+                    fridgeName = name,
+                    location = location,
+                    handle = handle,
+                    imageUri = imageLink,
+                    coordinates = LocationProvider.LatandLong(
+                        coordinates.latitude,
+                        coordinates.longitude
+                    ),
                 )
             )
         }
