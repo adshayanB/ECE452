@@ -16,7 +16,8 @@ class FarmModel {
         val micFabUiEvent: UiComponentModel.FabUiEvent,
         val submitButtonUiState: UiComponentModel.ButtonUiState,
         val produceHarvestList: List<ProduceHarvest> = emptyList(),
-        val speechResult: String
+        val speechResult: String,
+        val isLoading: Boolean = false
     )
 
     data class ProduceHarvest(

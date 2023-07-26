@@ -3,6 +3,7 @@ package com.example.farmeraid.data
 import android.util.Log
 import com.example.farmeraid.data.model.ResponseModel.FAResponse
 import com.example.farmeraid.data.model.ResponseModel.FAResponseWithData
+import com.example.farmeraid.data.source.NetworkMonitor
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -10,13 +11,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
-
-// TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
-// TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
 
 class InventoryRepository(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val networkMonitor: NetworkMonitor,
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     suspend fun getInventory(): Flow<FAResponseWithData<MutableMap<String,Int>>> {
@@ -28,7 +26,7 @@ class InventoryRepository(
         return userRepository.getFarmId()?.let { id ->
             try {
                 db.collection("inventory").document(id)
-                    .get()
+                    .get(networkMonitor.getSource())
                     .await()
                     .data?.get("produce")?.let {
                         FAResponseWithData.Success((it as MutableMap<String, Int>).toSortedMap(String.CASE_INSENSITIVE_ORDER))
@@ -44,9 +42,9 @@ class InventoryRepository(
         return userRepository.getFarmId()
             ?.let {
                 try {
-                    val produceMap : MutableMap<String, Int> = db.collection("inventory").document(it).get().await().get("produce") as MutableMap<String,Int>
+                    val produceMap : MutableMap<String, Int> = db.collection("inventory").document(it).get(networkMonitor.getSource()).await().get("produce") as MutableMap<String,Int>
                     if (!produceMap.containsKey(produceName)) {
-                        db.collection("inventory").document(it).update("produce.${produceName}", produceAmount).await()
+                        db.collection("inventory").document(it).update("produce.${produceName}", produceAmount)
                         FAResponse.Success
                     } else {
                         FAResponse.Error("This produce already exists")
@@ -64,7 +62,7 @@ class InventoryRepository(
                 ?.let {
                     try {
                         db.collection("inventory").document(it)
-                            .update("produce.${produceName}", produceAmount).await()
+                            .update("produce.${produceName}", produceAmount)
                         FAResponse.Success
                     } catch (e: Exception) {
                         Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
@@ -78,7 +76,7 @@ class InventoryRepository(
             ?.let {
                 try {
                     db.collection("inventory").document(it)
-                        .update("produce.${produceName}", FieldValue.delete()).await()
+                        .update("produce.${produceName}", FieldValue.delete())
                     FAResponse.Success
                 } catch (e: Exception) {
                     Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
@@ -94,7 +92,7 @@ class InventoryRepository(
                     db.collection("inventory").document(it).update(harvestChanges.entries.associate{
                             (produceName, produceAmount) ->
                         "produce.${produceName}" to FieldValue.increment(produceAmount.toLong())
-                    }).await()
+                    })
                     FAResponse.Success
                 } catch (e : Exception) {
                     Log.e("InventoryRepository", e.message ?: e.stackTraceToString())
@@ -110,7 +108,7 @@ class InventoryRepository(
                     db.collection("inventory").document(it).update(sellChanges.entries.associate{
                             (produceName, produceAmount) ->
                         "produce.${produceName}" to FieldValue.increment(-1 * produceAmount.toLong())
-                    }).await()
+                    })
                     FAResponse.Success
                 } catch (e : Exception) {
                     Log.e("InventoryRepository", e.message ?: e.stackTraceToString())

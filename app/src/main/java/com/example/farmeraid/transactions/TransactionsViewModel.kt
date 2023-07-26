@@ -62,8 +62,11 @@ class TransactionsViewModel @Inject constructor(
         mutableListOf()
     )
 
+    private val isLoading : MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
+
     init{
         viewModelScope.launch {
+            isLoading.value = true
             combine(marketRepository.getMarkets(), inventoryRepository.getInventory()) {
                     markets, inventory -> Pair(markets, inventory)
             }.collect { (markets, inventory) ->
@@ -79,18 +82,21 @@ class TransactionsViewModel @Inject constructor(
                     snackbarDelegate.showSnackbar(inventory.error ?: "Unknown error")
                 }
                 filterList.value = getFilters(marketItemsList.value, produceItemsList.value, transactionType)
+                isLoading.value = false
             }
         }
     }
 
     init {
         viewModelScope.launch {
-            combine(transactionList, filterList) {
+            combine(transactionList, filterList, isLoading) {
                     transactions: List<TransactionModel.Transaction>,
-                    filterList: List<TransactionsModel.Filter>->
+                    filterList: List<TransactionsModel.Filter>,
+                    isLoading: Boolean->
                 TransactionsModel.TransactionViewState(
                     transactionList = transactions,
                     filterList = filterList.exposeFilters(),
+                    isLoading = isLoading
                 )
             }.collect {
                 _state.value = it
@@ -102,12 +108,14 @@ class TransactionsViewModel @Inject constructor(
         viewModelScope.launch {
             filterList.collect { filterList ->
                 if (!filterList.isEmpty()) {
+                    isLoading.value = true
                     transactionRepository.getRecentTransactions(filterList.exposeFilters(), 25).let { transactions ->
                         transactions.data?.let {
                             transactionList.value = it
                         } ?: run {
                             snackbarDelegate.showSnackbar(transactions.error ?: "Unknown error")
                         }
+                        isLoading.value = false
                     }
                 }
             }
@@ -148,6 +156,31 @@ class TransactionsViewModel @Inject constructor(
                     selectedItem = selectedItem
                 )
             } else it
+        }
+
+    }
+
+    fun clearSelectedFilterItem(id: UUID) {
+        filterList.value = filterList.value.map{
+            if (it.id == id){
+                TransactionsModel.Filter(
+                    id = it.id,
+                    name = it.name,
+                    itemsList = it.itemsList,
+                    selectedItem = null,
+                )
+            } else it
+        }
+    }
+
+    fun clearAllFilterSelections() {
+        filterList.value = filterList.value.map{
+                TransactionsModel.Filter(
+                    id = it.id,
+                    name = it.name,
+                    itemsList = it.itemsList,
+                    selectedItem = null,
+                )
         }
 
     }

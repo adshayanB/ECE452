@@ -1,12 +1,15 @@
 package com.example.farmeraid.uicomponents
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
@@ -30,6 +33,7 @@ import java.util.UUID
 fun TransactionsFilterChip(
     filter: TransactionsModel.Filter,
     onItemSelected: (id: UUID, selectedItem: String) -> Unit,
+    onSelectionCleared: (id: UUID) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -51,28 +55,43 @@ fun TransactionsFilterChip(
             },
             selected = expanded,
             onClick = { expanded = !expanded },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            trailingIcon = {
+                if (filter.selectedItem != null){
+                    Icon(
+                        modifier = Modifier.clickable { onSelectionCleared(filter.id) },
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear Selection",
+                        tint = Color.Black
+                    )
+                } else {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                }
+                           },
             modifier = Modifier.menuAnchor(),
+            colors = InputChipDefaults.inputChipColors(
+                containerColor = filter.selectedItem?.let { PrimaryColour.copy(alpha = 0.1f) } ?: Color.White
+            ),
             border = InputChipDefaults.inputChipBorder(
-                borderColor = filter.selectedItem?.let { PrimaryColour }?: LightGrayColour
+                borderColor = filter.selectedItem?.let { PrimaryColour }?: Color.Black
             )
         )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
-        ) {
-            filter.itemsList.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text(text = item) },
-                    onClick = {
-                        expanded = false
-                        Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
-                        onItemSelected(filter.id, item)
-                    }
-                )
+        if (expanded){
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                filter.itemsList.forEach { item ->
+                    DropdownMenuItem(
+                        text = { Text(text = item) },
+                        onClick = {
+                            expanded = false
+                            Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                            onItemSelected(filter.id, item)
+                        }
+                    )
+                }
             }
         }
     }
