@@ -3,6 +3,7 @@ package com.example.farmeraid.market.sell_produce
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cesarferreira.pluralize.pluralize
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
@@ -13,11 +14,15 @@ import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
+import com.example.farmeraid.farm.model.getMicButton
+import com.example.farmeraid.farm.model.getStopButton
 import com.example.farmeraid.market.sell_produce.model.SellProduceModel
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.snackbar.SnackbarDelegate
+import com.example.farmeraid.speech_recognition.SpeechRecognizerUtility
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -31,6 +36,7 @@ class SellProduceViewModel @Inject constructor(
     private val marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
     private val transactionRepository: TransactionRepository,
+    private val speechRecognizerUtility: SpeechRecognizerUtility,
     private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle,
     private val appNavigator: AppNavigator,
@@ -41,7 +47,9 @@ class SellProduceViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(
         SellProduceModel.SellProduceViewState(
-            submitButtonUiState = UiComponentModel.ButtonUiState(text = "Submit")
+            submitButtonUiState = UiComponentModel.ButtonUiState(text = "Submit"),
+            micFabUiState = getMicButton(),
+            micFabUiEvent = getMicButtonEvent()
         )
     )
 
@@ -52,15 +60,44 @@ class SellProduceViewModel @Inject constructor(
     private val marketIdFlow : MutableStateFlow<String> = MutableStateFlow("")
     private val produceSellList : MutableStateFlow<List<SellProduceModel.ProduceSell>> = MutableStateFlow(listOf())
     private val submitButtonUiState: MutableStateFlow<UiComponentModel.ButtonUiState> = MutableStateFlow(_state.value.submitButtonUiState)
+    private val micFabUiState: MutableStateFlow<UiComponentModel.FabUiState> = MutableStateFlow(_state.value.micFabUiState)
+    private val micFabUiEvent: MutableStateFlow<UiComponentModel.FabUiEvent> = MutableStateFlow(_state.value.micFabUiEvent)
     private val isLoading : MutableStateFlow<Boolean> = MutableStateFlow(_state.value.isLoading)
+    private val speechRes: MutableStateFlow<String> = MutableStateFlow("")
+
+    inline fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
+        flow: Flow<T1>,
+        flow2: Flow<T2>,
+        flow3: Flow<T3>,
+        flow4: Flow<T4>,
+        flow5: Flow<T5>,
+        flow6: Flow<T6>,
+        flow7: Flow<T7>,
+        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7) -> R
+    ): Flow<R> {
+        return kotlinx.coroutines.flow.combine(flow, flow2, flow3, flow4, flow5, flow6, flow7) { args: Array<*> ->
+            @Suppress("UNCHECKED_CAST")
+            transform(
+                args[0] as T1,
+                args[1] as T2,
+                args[2] as T3,
+                args[3] as T4,
+                args[4] as T5,
+                args[5] as T6,
+                args[6] as T7,
+            )
+        }
+    }
 
     init {
         viewModelScope.launch {
-            combine(marketName, marketIdFlow, produceSellList, submitButtonUiState, isLoading) {
+            combine(marketName, marketIdFlow, produceSellList, submitButtonUiState, micFabUiState, micFabUiEvent, isLoading) {
                     marketName: String,
                     marketIdFlow: String,
                     produceSellList: List<SellProduceModel.ProduceSell>,
                     submitButtonUiState: UiComponentModel.ButtonUiState,
+                    micFabUiState: UiComponentModel.FabUiState,
+                    micFabUiEvent: UiComponentModel.FabUiEvent,
                     isLoading: Boolean ->
                 SellProduceModel.SellProduceViewState(
                     marketName = marketName,
@@ -68,6 +105,8 @@ class SellProduceViewModel @Inject constructor(
                     produceSellList = produceSellList,
                     submitButtonUiState = submitButtonUiState,
                     isLoading = isLoading,
+                    micFabUiEvent = micFabUiEvent,
+                    micFabUiState = micFabUiState,
                 )
             }.collect {
                 _state.value = it
@@ -104,6 +143,88 @@ class SellProduceViewModel @Inject constructor(
     }
 
     init{ fetchData() }
+
+    init{
+        viewModelScope.launch {
+            speechRecognizerUtility.speechRecognizerResult.collect {speechText ->
+                produceSellList.value = updateCount(speechText)
+            }
+        }
+    }
+    private fun updateCount(speechResult: String): List<SellProduceModel.ProduceSell>{
+
+        speechRes.value = speechResult
+
+
+        return produceSellList.value.map { produce ->
+            val soldCount = parseSpeech(speechResult,"(sold|sell)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*", produce)
+
+            val removeCount = parseSpeech(speechResult,"(removed|take away|returned)( )*([0-9]+)( )*([a-z]+)(( )*([0-9]+)( )*([a-z]+))*(( )?(and)( )*([0-9]+)( )*([a-z]+)( )*)*", produce)
+
+            var total = 0
+            if((produce.produceCount?:0) == 0 && (soldCount-removeCount) < 0){
+                snackbarDelegate.showSnackbar(message = "Do not have sell any ${produce.produceName} to remove!")
+            } else if((produce.produceCount?:0) + (soldCount-removeCount) < 0){
+                snackbarDelegate.showSnackbar(message = "Do not sell that many ${produce.produceName} to remove!")
+            } else{
+                total = soldCount-removeCount
+            }
+            SellProduceModel.ProduceSell(
+                produceName = produce.produceName,
+                produceCount = total,
+                produceInventory = produce.produceInventory,
+                producePrice = produce.producePrice,
+                produceTotalPrice =  total * produce.producePrice,
+                produceQuotaCurrentProgress = produce.produceQuotaCurrentProgress,
+                produceQuotaTotalGoal = produce.produceQuotaTotalGoal
+            )
+
+        }
+
+    }
+    private fun parseSpeech(speechResult:String, regexPattern: String, produce: SellProduceModel.ProduceSell): Int{
+        var reAdd = Regex(regexPattern)
+        var addMatches = reAdd.findAll(speechResult.lowercase())
+        var count = 0
+        //Get every add phrase in our speech Result
+        addMatches.forEach { addM ->
+            val addCommand:String = addM.value
+            val prod = produce.produceName.lowercase()
+            var reAddAmount = Regex("([0-9]+)( )*(${prod}|${prod.pluralize()})")
+            var amountMatches = reAddAmount.findAll(addCommand)
+            //Get every instance of the current produce being incremented in the add phrase
+            amountMatches.forEach { amountM ->
+                val quantity = amountM.groupValues[1].toIntOrNull()
+                if (quantity != null){
+                    count += quantity
+                }
+            }
+
+        }
+        return count
+    }
+
+    private fun getMicButtonEvent(): UiComponentModel.FabUiEvent {
+        return UiComponentModel.FabUiEvent(onClick = {startListening()})
+    }
+
+    private fun getStopButtonEvent(): UiComponentModel.FabUiEvent {
+        return UiComponentModel.FabUiEvent(onClick = {stopListening()})
+    }
+
+    fun startListening(){
+        if(speechRecognizerUtility.isPermissionGranted()){
+            micFabUiState.value = getStopButton()
+            micFabUiEvent.value = getStopButtonEvent()
+        }
+        speechRecognizerUtility.startSpeechRecognition()
+    }
+
+    fun stopListening(){
+        micFabUiState.value = getMicButton()
+        micFabUiEvent.value = getMicButtonEvent()
+        speechRecognizerUtility.stopSpeechRecognition()
+    }
 
     fun incrementProduceCount(produceName : String) {
         produceSellList.value = produceSellList.value.map { produceSell ->
