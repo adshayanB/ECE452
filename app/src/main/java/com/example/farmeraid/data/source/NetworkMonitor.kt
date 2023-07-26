@@ -41,5 +41,6 @@ class NetworkMonitor (
     init {
         val connectivityManager = getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+        source.value = if (connectivityManager.activeNetwork != null) Source.DEFAULT else Source.CACHE
     }
 }

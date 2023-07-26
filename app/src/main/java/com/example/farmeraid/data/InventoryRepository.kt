@@ -1,6 +1,7 @@
 package com.example.farmeraid.data
 
 import android.util.Log
+import com.cesarferreira.pluralize.pluralize
 import com.example.farmeraid.data.model.ResponseModel.FAResponse
 import com.example.farmeraid.data.model.ResponseModel.FAResponseWithData
 import com.example.farmeraid.data.source.NetworkMonitor
@@ -105,6 +106,18 @@ class InventoryRepository(
         return userRepository.getFarmId()
             ?.let {
                 try {
+                    val inventory = db.collection("inventory").document(it).get(networkMonitor.getSource()).await().let { res ->
+                        res.data ?: run {
+                            return FAResponse.Error("Error while getting inventory")
+                        }
+                    }
+                    val produceMap = inventory["produce"] as MutableMap<String, Int>
+                    val errorEntry = sellChanges.entries.firstOrNull { (name, count) ->
+                        count > (produceMap[name] as Long)
+                    }
+
+                    if (errorEntry != null) return FAResponse.Error("You do not have enough ${errorEntry.key.pluralize()} to perform this operation")
+
                     db.collection("inventory").document(it).update(sellChanges.entries.associate{
                             (produceName, produceAmount) ->
                         "produce.${produceName}" to FieldValue.increment(-1 * produceAmount.toLong())

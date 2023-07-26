@@ -8,6 +8,7 @@ import com.example.farmeraid.data.source.NetworkMonitor
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -191,6 +192,28 @@ class MarketRepository(
                 id = marketModel.id,
                 name = marketModel.get("name") as String,
                 prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
+            )
+        }
+
+        return ResponseModel.FAResponseWithData.Success(market)
+    }
+
+    suspend fun getMarketFromName(name : String) : ResponseModel.FAResponseWithData<MarketModel.Market> {
+        val marketModel: QuerySnapshot = try {
+            db.collection("market").whereEqualTo("name", name).get(networkMonitor.getSource()).await()
+        } catch (e : Exception) {
+            return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
+        }
+
+        if (!marketModel.documents[0].exists()) {
+            return ResponseModel.FAResponseWithData.Error("Market does not exist")
+        }
+
+        val market: MarketModel.Market = marketModel.let { marketModel ->
+            MarketModel.Market(
+                id = marketModel.documents[0].id,
+                name = marketModel.documents[0].get("name") as String,
+                prices = (marketModel.documents[0].get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
             )
         }
 
