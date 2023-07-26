@@ -1,8 +1,6 @@
 package com.example.farmeraid.data
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
@@ -11,9 +9,13 @@ import com.example.farmeraid.data.model.toLocalDateTime
 import com.example.farmeraid.data.source.NetworkMonitor
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.time.DayOfWeek
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.temporal.TemporalAdjusters
 
 class QuotasRepository(
     private val transactionRepository: TransactionRepository,
@@ -22,7 +24,6 @@ class QuotasRepository(
 
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getQuota(id: String, marketName: String): ResponseModel.FAResponseWithData<QuotaModel.Quota?> {
         val docRead : DocumentSnapshot
         try {
@@ -125,6 +126,21 @@ class QuotasRepository(
             ResponseModel.FAResponse.Success
         } catch (e : Exception) {
             ResponseModel.FAResponse.Error(e.message ?: e.stackTraceToString())
+        }
+    }
+
+    suspend fun updateSaleCounts(id : String, sellChanges: Map<String, Int>) : ResponseModel.FAResponse {
+        return try {
+            if (sellChanges.isNotEmpty()) {
+                db.collection("quotas").document(id).update(
+                    sellChanges.entries.associate { (produceName, incrementValue) ->
+                        "sale.${produceName}" to FieldValue.increment(incrementValue.toLong())
+                    }
+                )
+            }
+            ResponseModel.FAResponse.Success
+        } catch (e : Exception) {
+            ResponseModel.FAResponse.Error(e.message ?: "Unknown error while updating sale counts")
         }
     }
 

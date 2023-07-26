@@ -12,6 +12,7 @@ import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.market.sell_produce.model.SellProduceModel
 import com.example.farmeraid.navigation.AppNavigator
+import com.example.farmeraid.snackbar.SnackbarDelegate
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ class SellProduceViewModel @Inject constructor(
     private val quotasRepository: QuotasRepository,
     savedStateHandle: SavedStateHandle,
     private val appNavigator: AppNavigator,
+    private val snackbarDelegate: SnackbarDelegate,
 ): ViewModel() {
 
     private val marketId : String? = savedStateHandle["marketId"]
@@ -152,6 +154,23 @@ class SellProduceViewModel @Inject constructor(
 
             val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
 
+            quotasRepository.getQuota(market.id, market.name).let { quota ->
+                quota.data?.let { quotaData ->
+                    quotasRepository.updateSaleCounts(
+                        market.id,
+                        produceSellMap.filter { sell -> sell.key in quotaData.produceQuotaList.map { prod -> prod.produceName } }
+                    ).let { res ->
+                        when (res) {
+                            is ResponseModel.FAResponse.Error -> snackbarDelegate.showSnackbar(res.error ?: "Unknown error")
+                            else -> {}
+                        }
+                    }
+                } ?: run {
+                    if (quota.error != "Quota does not exist") {
+                        snackbarDelegate.showSnackbar(quota.error ?: "Unknown error")
+                    }
+                }
+            }
             val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId, market.name)
 
             val quota: QuotaModel.Quota? = if (quotaRes.error != null) quotaRes.data
