@@ -46,44 +46,13 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun CharityMapsScreenView() {
     val viewModel = hiltViewModel<CharityViewModel>()
     val state by viewModel.state.collectAsState()
-    val uwaterloo = LatLng(43.47290, -80.53953)
-    val uwaterlooState = MarkerState(position = uwaterloo)
-
-    val sunview = LatLng(43.47315626315881, -80.5323375029304)
-    val sunviewState = MarkerState(position = sunview)
-
-    val icon = LatLng(43.4759646231284, -80.53894807959635)
-    val iconState = MarkerState(position = icon)
-
-    val distanceA = FloatArray(1)
-
     var userLocation : LocationProvider.LatandLong = viewModel.locationProvider.getUserLocation()
-
-    var user = LatLng(userLocation.latitude, userLocation.longitude)
-    var userLocationState = MarkerState(position = user)
-
+    var userLocationState = MarkerState(position = LatLng(userLocation.latitude, userLocation.longitude))
+    val startLocation = LatLng(43.47310961858659, -80.53947418586205)
     viewModel.setUserLocation(location = userLocation)
-    
-    Location.distanceBetween(
-        uwaterloo.latitude,
-        uwaterloo.longitude,
-        sunview.latitude,
-        sunview.longitude,
-        distanceA
-    )
-
-    val distanceB = FloatArray(1)
-
-    Location.distanceBetween(
-        uwaterloo.latitude,
-        uwaterloo.longitude,
-        icon.latitude,
-        icon.longitude,
-        distanceB
-    )
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(uwaterloo, 14f)
+        position = CameraPosition.fromLatLngZoom(startLocation, 15f)
     }
 
     Scaffold(
@@ -94,10 +63,7 @@ fun CharityMapsScreenView() {
                     contentDescription = "Add New Fridge",
                 ),
                 fabUiEvent = UiComponentModel.FabUiEvent(
-                    onClick = {
-                        viewModel.getCoordinatesFromLocation("ICON 330")
-//                        viewModel.displayCoordinates(userLocation.latitude, userLocation.longitude)
-                    }
+                    onClick = { viewModel.navigateToAddFridge() }
                 )
             )
         },
@@ -134,30 +100,20 @@ fun CharityMapsScreenView() {
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
                 uiSettings = MapUiSettings(zoomControlsEnabled = false),
-                onMapLongClick = {
-
-                }
             ) {
                 Marker(
                     state = userLocationState,
-                    title = "User Location",
+                    title = "My Location",
                     icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
                 )
 
-                Marker(
-                    state = uwaterlooState,
-                    title = "Marker for E7 Building",
-                )
-
-                Marker(
-                    state = sunviewState,
-                    title = "Marker for 208 Sunview",
-                )
-
-                Marker(
-                    state = iconState,
-                    title = "Marker for ICON",
-                )
+                state.fridgeList.map { fridge ->
+                    Marker(
+                        state = MarkerState(position = LatLng(fridge.coordinates.latitude, fridge.coordinates.longitude)),
+                        title = fridge.fridgeName,
+                        snippet = fridge.location,
+                    )
+                }
             }
         }
 

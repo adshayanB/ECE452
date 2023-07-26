@@ -3,17 +3,20 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Agriculture
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.outlined.Agriculture
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Money
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.filled.VolunteerActivism
+import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material.icons.outlined.VolunteerActivism
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -51,8 +54,8 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
         ),
         UiComponentModel.BottomNavItem(
             text = "Market",
-            unselectedIcon = Icons.Outlined.Money,
-            selectedIcon = Icons.Filled.Money,
+            unselectedIcon = Icons.Outlined.Storefront,
+            selectedIcon = Icons.Filled.Storefront,
             navigateToRoute = NavRoute.Market
         ),
         UiComponentModel.BottomNavItem(
@@ -86,8 +89,7 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
         exit = slideOutVertically { height -> height } + fadeOut()
     ) {
         NavigationBar(
-            containerColor = TertiaryColour,
-            modifier = Modifier.clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp)),
+            containerColor = TertiaryColour
         ) {
             bottomNavItems.forEach { item ->
                 val selected =

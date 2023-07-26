@@ -32,7 +32,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
+//Refer to Source Code: https://proandroiddev.com/getting-user-location-in-android-the-jetpack-compose-way-ebd35dabab46
 class LocationProvider() {
     private var activityContext: Context?= null
     //private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activityContext as Context)
@@ -69,11 +69,11 @@ class LocationProvider() {
                      * Option 1
                      * This option returns the locations computed, ordered from oldest to newest.
                      * */
-                    for (location in result.locations) {
-                        // Update data class with location data
-                        currentUserLocation = LatandLong(location.latitude, location.longitude)
-                        Log.d("LOCATION_TAG", "${location.latitude},${location.longitude}")
-                    }
+//                    for (location in result.locations) {
+//                        // Update data class with location data
+//                        currentUserLocation = LatandLong(location.latitude, location.longitude)
+//                        Log.d("LOCATION_TAG", "${location.latitude},${location.longitude}")
+//                    }
 
 
                     /**
@@ -82,18 +82,18 @@ class LocationProvider() {
                      * Will return null if no historical location is available
                      * */
 
-//                    locationProvider.lastLocation
-//                        .addOnSuccessListener { location ->
-//                            location?.let {
-//                                val lat = location.latitude
-//                                val long = location.longitude
-//                                // Update data class with location data
-//                                currentUserLocation = LatandLong(latitude = lat, longitude = long)
-//                            }
-//                        }
-//                        .addOnFailureListener {
-//                            Log.e("Location_error", "${it.message}")
-//                        }
+                    locationProvider.lastLocation
+                        .addOnSuccessListener { location ->
+                            location?.let {
+                                val lat = location.latitude
+                                val long = location.longitude
+                                // Update data class with location data
+                                currentUserLocation = LatandLong(latitude = lat, longitude = long)
+                            }
+                        }
+                        .addOnFailureListener {
+                            Log.e("Location_error", "${it.message}")
+                        }
 
                 }
             }
@@ -119,7 +119,7 @@ class LocationProvider() {
                 stopLocationUpdate()
             }
         }
-        //
+
         return currentUserLocation
 
     }
@@ -158,6 +158,7 @@ class LocationProvider() {
                 LocationRequest.create().apply {
                     interval = TimeUnit.SECONDS.toMillis(10)
                     fastestInterval = TimeUnit.SECONDS.toMillis(5)
+                    maxWaitTime = TimeUnit.SECONDS.toMillis(15)
                     priority = Priority.PRIORITY_HIGH_ACCURACY
                 }
 
@@ -168,30 +169,6 @@ class LocationProvider() {
                 Looper.getMainLooper()
             )
         }
-
-    }
-
-    fun getReadableLocation(latitude: Double, longitude: Double): String {
-        var addressText = ""
-        val geocoder = Geocoder(activityContext as Context, Locale.getDefault())
-
-        try {
-
-            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-
-            if (addresses?.isNotEmpty() == true) {
-                val address = addresses[0]
-                addressText = "${address.getAddressLine(0)}, ${address.locality}"
-                // Use the addressText in your app
-                Log.d("geolocation", addressText)
-            }
-
-        } catch (e: IOException) {
-            Log.d("geolocation", e.message.toString())
-
-        }
-
-        return addressText
 
     }
 
@@ -211,22 +188,6 @@ class LocationProvider() {
 
                 Log.d("geolocation", "latitude: ${latitude},  longitude: ${longitude}")
             }
-
-            Log.d("geolocation", "BEFORE getFromLocationName")
-
-//            geocoder.getFromLocationName(locationName, 1) { addressList ->
-//                Log.d("Geolocation", "Address List: ${addressList}")
-//                if (addressList.isNotEmpty()) {
-//                    latitude = addressList[0].latitude
-//                    longitude = addressList[0].longitude
-//
-//                    Log.d("geolocation", "latitude: ${latitude},  longitude: ${longitude}")
-//                } else {
-//                    snackbarDelegate.showSnackbar(
-//                        message = "Location not found: $locationName"
-//                    )
-//                }
-//            }
         } catch (e: Exception) {
             Log.d("geolocation", e.message.toString())
 

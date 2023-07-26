@@ -7,6 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.charity.model.CharityModel
+import com.example.farmeraid.data.CharityRepository
+import com.example.farmeraid.data.FarmRepository
+import com.example.farmeraid.data.model.FridgeModel
+import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.snackbar.SnackbarDelegate
@@ -19,6 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharityViewModel @Inject constructor(
+    private val farmRepository: FarmRepository,
+    private val charityRepository: CharityRepository,
     val locationProvider : LocationProvider,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate
@@ -36,24 +42,40 @@ class CharityViewModel @Inject constructor(
     private val latitude : MutableStateFlow<Double> = MutableStateFlow(_state.value.latitude)
     private val readableLocation: MutableStateFlow<String> = MutableStateFlow("")
     private val userLocation : MutableStateFlow<LocationProvider.LatandLong> = MutableStateFlow(_state.value.userLocation)
-
-    //private val listOfFridges : MutableStateFlow<String> = MutableStateFlow(_state.value.listOfFridges)
+    private val fridgeList : MutableStateFlow<List<FridgeModel.Fridge>> = MutableStateFlow(_state.value.fridgeList)
 
     init {
         viewModelScope.launch {
-            combine(longitude, latitude, userLocation, readableLocation) {
+            combine(longitude, latitude, userLocation, fridgeList, readableLocation) {
                     longitude: Double,
                     latitude: Double,
                     userLocation: LocationProvider.LatandLong,
-                    readableLocation : String ->
+                    fridgeList : List<FridgeModel.Fridge>,
+                    readableLocation : String, ->
                 CharityModel.CharityViewState(
                     longitude = longitude,
                     latitude = latitude,
                     readableLocation = readableLocation,
+                    fridgeList = fridgeList,
                     userLocation = userLocation,
                 )
             }.collect {
                 _state.value = it
+            }
+        }
+    }
+
+    init {
+        viewModelScope.launch{
+            fridgeList.value = farmRepository.getCharityIds().let { charities ->
+                charities.data?.mapNotNull { id ->
+                    charityRepository.getCharity(id).data?.let{ fridge ->
+                        fridge
+                    }
+                } ?: run {
+                    snackbarDelegate.showSnackbar(charities.error ?: "Unknown error")
+                    fridgeList.value
+                }
             }
         }
     }
@@ -72,14 +94,6 @@ class CharityViewModel @Inject constructor(
 
         snackbarDelegate.showSnackbar(
             message = "Coordinates: ${Lat} ${Long}"
-        )
-    }
-
-    fun getReadableLocation(Lat: Double, Long: Double) {
-        //readableLocation.value = locationProvider.getReadableLocation(Lat, Long)
-
-        snackbarDelegate.showSnackbar(
-            message = "readable address: ${locationProvider.getReadableLocation(Lat, Long)}"
         )
     }
 
@@ -111,6 +125,6 @@ class CharityViewModel @Inject constructor(
     }
 
     fun navigateToTransactions() {
-        appNavigator.navigateToTransactions()
+        appNavigator.navigateToTransactions(TransactionModel.TransactionType.DONATE.stringValue)
     }
 }
