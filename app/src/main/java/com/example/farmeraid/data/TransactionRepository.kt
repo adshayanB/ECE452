@@ -30,7 +30,7 @@ class TransactionRepository(
                 "pricePerProduce" to transaction.pricePerProduce, //To do: determine if u want to have a price for transactions, or not
                 "produce" to transaction.produce.produceName,
                 "timestamp" to FieldValue.serverTimestamp(),
-                "type" to transaction.transactionType,
+                "type" to transaction.transactionType.stringValue,
                 "farmID" to farmID,
             )
 
@@ -93,9 +93,9 @@ class TransactionRepository(
         }
 
         return userRepository.getFarmId()
-            ?.let {
+            ?.let { farmID ->
                 try {
-                    db.collection("farm").document(it).update("transactions", FieldValue.arrayRemove(transactionId))
+                    db.collection("farm").document(farmID).update("transactions", FieldValue.arrayRemove(transactionId))
                     ResponseModel.FAResponse.Success
                 } catch (e: Exception) {
                     ResponseModel.FAResponse.Error(e.message ?: "Unknown message while updating farm")

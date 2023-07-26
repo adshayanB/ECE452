@@ -11,6 +11,7 @@ import com.example.farmeraid.data.UserRepository
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.MarketRepository
+import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.TransactionRepository
 import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
@@ -33,6 +34,7 @@ class TransactionsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val transactionRepository: TransactionRepository,
     private val inventoryRepository: InventoryRepository,
+    private val quotasRepository: QuotasRepository,
     private val marketRepository: MarketRepository,
     private val userRepository: UserRepository,
     private val appNavigator: AppNavigator,
@@ -122,18 +124,36 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
-    fun showDeleteConfirmation(id: String) {
+    fun showDeleteConfirmation(transaction : TransactionModel.Transaction) {
         viewModelScope.launch{
             snackbarDelegate.showSnackbar(
-                message = "Are you sure?",
+                message = "Are you sure you want to undo this transaction?",
                 actionLabel = "Yes",
                 onAction = {
                     viewModelScope.launch {
-                        when(val delResult = transactionRepository.deleteTransaction(id)) {
+                        when(val delResult = transactionRepository.deleteTransaction(transaction.transactionId)) {
                             is ResponseModel.FAResponse.Error -> snackbarDelegate.showSnackbar(delResult.error ?: "Unknown error")
                             is ResponseModel.FAResponse.Success -> {
-                                transactionList.value = transactionList.value.filter { it.transactionId != id }
+                                transactionList.value = transactionList.value.filter { it.transactionId != transaction.transactionId }
                             }
+                        }
+                        val changeMap = mapOf(
+                            transaction.produce.produceName to transaction.produce.produceAmount
+                        )
+                        when(transaction.transactionType) {
+                            TransactionModel.TransactionType.HARVEST -> inventoryRepository.sell(changeMap)
+                            TransactionModel.TransactionType.SELL -> {
+                                inventoryRepository.harvest(changeMap)
+                                val market = marketRepository.getMarketFromName(transaction.location).data!!
+                                val quota = quotasRepository.getQuota(market.id, market.name).data
+                                quota?.let {
+                                    quotasRepository.updateSaleCounts(it.id, changeMap.entries.associate {entry -> entry.key to -1*entry.value })
+                                }
+                            }
+                            TransactionModel.TransactionType.DONATE -> {
+                                inventoryRepository.harvest(changeMap)
+                            }
+                            else -> {}
                         }
                     }
                 }
@@ -146,7 +166,6 @@ class TransactionsViewModel @Inject constructor(
     }
 
     fun updateSelectedFilterItem(id: UUID, selectedItem: String) {
-
         filterList.value = filterList.value.map{
             if (it.id == id){
                 TransactionsModel.Filter(
