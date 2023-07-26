@@ -16,7 +16,7 @@ class TransactionModel {
         ALL("All");
     }
     data class Transaction(
-        val transactionId: String,
+        val transactionId: String = "",
         val transactionType: String,
         val produce: InventoryModel.Produce,
         val pricePerProduce: Double,
