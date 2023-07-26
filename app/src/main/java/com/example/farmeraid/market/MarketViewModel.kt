@@ -3,6 +3,7 @@ package com.example.farmeraid.market
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.MarketRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.market.model.MarketPageModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MarketViewModel @Inject constructor(
     private val marketRepository: MarketRepository,
+    private val userRepository: UserRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
@@ -57,6 +59,10 @@ class MarketViewModel @Inject constructor(
 
             isLoading.value = false
         }
+    }
+
+    fun userIsAdmin() : Boolean {
+        return userRepository.isAdmin()
     }
 
     fun navigateToSellProduce(marketId: String) {

@@ -25,6 +25,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val marketRepository: MarketRepository,
     private val inventoryRepository: InventoryRepository,
+    private val userRepository: UserRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
@@ -78,6 +79,10 @@ class HomeViewModel @Inject constructor(
         selectedTab.value = tab;
     }
 
+    fun userIsAdmin() : Boolean {
+        return userRepository.isAdmin()
+    }
+
     fun navigateToAddQuota() {
         appNavigator.navigateToAddQuota()
     }
@@ -90,6 +95,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToEditProduce(produceName : String, produceAmount : Int) {
-        appNavigator.navigateToEditProduce(produceName, produceAmount)
+        if (userIsAdmin()) {
+            appNavigator.navigateToEditProduce(produceName, produceAmount)
+        }
     }
 }

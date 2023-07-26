@@ -55,21 +55,23 @@ fun HomeScreenView() {
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButtonView(
-                fabUiState = UiComponentModel.FabUiState(
-                    icon = Icons.Filled.Add,
-                    contentDescription = if (state.selectedTab == Tab.Quotas)  "Add Quota" else "Add Produce",
-                ),
-                fabUiEvent = UiComponentModel.FabUiEvent(
-                    onClick = {
-                        if (state.selectedTab == Tab.Quotas) {
-                            viewModel.navigateToAddQuota()
-                        } else {
-                            viewModel.navigateToAddProduce()
+            if (viewModel.userIsAdmin()) {
+                FloatingActionButtonView(
+                    fabUiState = UiComponentModel.FabUiState(
+                        icon = Icons.Filled.Add,
+                        contentDescription = if (state.selectedTab == Tab.Quotas)  "Add Quota" else "Add Produce",
+                    ),
+                    fabUiEvent = UiComponentModel.FabUiEvent(
+                        onClick = {
+                            if (state.selectedTab == Tab.Quotas) {
+                                viewModel.navigateToAddQuota()
+                            } else {
+                                viewModel.navigateToAddProduce()
+                            }
                         }
-                    }
+                    )
                 )
-            )
+            }
         },
         topBar = {
             TabRow(

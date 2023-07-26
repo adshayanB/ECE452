@@ -20,11 +20,18 @@ class UserRepository(
 
         if  (userName.isNotEmpty() && password.isNotEmpty()) {
             return try {
-                val res = firebaseAuth.signInWithEmailAndPassword(userName, password)
+                val res = firebaseAuth.signInWithEmailAndPassword(userName, password).await()
                 //Get user from user object
                 val docRef = db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
-                val farmID = docRef.get(networkMonitor.getSource()).await().data?.get("farmID").toString()
-                user.value = UserModel.User(email = userName, id = firebaseAuth.currentUser?.uid.toString(), farm_id = farmID)
+                val data = docRef.get(networkMonitor.getSource()).await().data
+                val farmID = data?.get("farmID").toString()
+                val admin = data?.get("admin") as Boolean
+                user.value = UserModel.User(
+                    email = userName,
+                    id = firebaseAuth.currentUser?.uid.toString(),
+                    farm_id = farmID,
+                    admin = admin,
+                )
                 SignInModel.AuthResponse.Success
             }
             catch (e:Exception){
@@ -45,12 +52,15 @@ class UserRepository(
                 //Get user from user object
                 val docRef =
                     db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
-                val farmID = docRef.get(networkMonitor.getSource()).await().data?.get("farmID").toString()
+                val data = docRef.get(networkMonitor.getSource()).await().data
+                val farmID = data?.get("farmID").toString()
+                val admin = data?.get("admin") as Boolean
                 user.value = firebaseAuth.currentUser!!.email?.let {
                     UserModel.User(
                         email = it,
                         id = firebaseAuth.currentUser?.uid.toString(),
-                        farm_id = farmID
+                        farm_id = farmID,
+                        admin = admin,
                     )
                 }
                 SignInModel.AuthResponse.Success
@@ -113,12 +123,15 @@ class UserRepository(
         return try {
             val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
             val docRef = db.collection("users").document(firebaseAuth.currentUser?.uid.toString())
-            val farmID = docRef.get(networkMonitor.getSource()).await().data?.get("farmID").toString()
+            val data = docRef.get(networkMonitor.getSource()).await().data
+            val farmID = data?.get("farmID").toString()
+            val admin = data?.get("admin") as Boolean
             user.value = getUserEmail()?.let {
                 UserModel.User(
                     email = it,
                     id = firebaseAuth.currentUser?.uid.toString(),
-                    farm_id = farmID
+                    farm_id = farmID,
+                    admin = admin,
                 )
             }
             SignInModel.AuthResponse.Success
@@ -132,5 +145,9 @@ class UserRepository(
     fun getFarmId(): String? {
         return user.value?.farm_id
 
+    }
+
+    fun isAdmin(): Boolean {
+        return user.value?.admin ?: false
     }
 }

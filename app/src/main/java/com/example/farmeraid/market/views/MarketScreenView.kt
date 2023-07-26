@@ -43,17 +43,19 @@ fun MarketScreenView() {
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButtonView(
-                fabUiState = UiComponentModel.FabUiState(
-                    icon = Icons.Filled.Add,
-                    contentDescription = "Add Market",
-                ),
-                fabUiEvent = UiComponentModel.FabUiEvent(
-                    onClick = {
-                        viewModel.navigateToAddMarket()
-                    }
+            if (viewModel.userIsAdmin()) {
+                FloatingActionButtonView(
+                    fabUiState = UiComponentModel.FabUiState(
+                        icon = Icons.Filled.Add,
+                        contentDescription = "Add Market",
+                    ),
+                    fabUiEvent = UiComponentModel.FabUiEvent(
+                        onClick = {
+                            viewModel.navigateToAddMarket()
+                        }
+                    )
                 )
-            )
+            }
         },
         topBar = {
             CenterAlignedTopAppBar(

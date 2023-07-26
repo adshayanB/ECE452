@@ -87,7 +87,6 @@ fun TransactionsFilterChip(
                         text = { Text(text = item) },
                         onClick = {
                             expanded = false
-                            Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
                             onItemSelected(filter.id, item)
                         }
                     )

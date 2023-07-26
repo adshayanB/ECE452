@@ -161,6 +161,10 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
+    fun userIsAdmin() : Boolean {
+        return userRepository.isAdmin()
+    }
+
     fun navigateBack() {
         appNavigator.navigateBack()
     }
