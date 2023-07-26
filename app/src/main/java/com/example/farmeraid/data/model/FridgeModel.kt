@@ -4,6 +4,7 @@ class FridgeModel {
     data class Fridge(
         val fridgeName: String,
         val location: String,
-        val items: List<CharityModel.ProduceFridge>
+        val imageUri: String,
+        val handle:String
     )
 }

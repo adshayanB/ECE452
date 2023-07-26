@@ -18,7 +18,7 @@ class CharityRepository (
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    suspend fun createCharity(charityName: String, location:String, produce: List<QuotaModel.ProduceQuota>): ResponseModel.FAResponse{
+    suspend fun createCharity(charityName: String, location:String, imageUri: String, handle: String): ResponseModel.FAResponse{
         return try {
 
             userRepository.getFarmId()?.let{
@@ -26,9 +26,8 @@ class CharityRepository (
                     mapOf (
                         "charityName" to charityName,
                         "location" to location,
-                        "produce" to produce.associate {
-                            it.produceName to it.produceGoalAmount
-                        }
+                        "imageUri" to imageUri,
+                        "handle" to handle,
                     )
                 ).await()
 
@@ -58,25 +57,22 @@ class CharityRepository (
             return ResponseModel.FAResponseWithData.Error("Charity does not exist")
         }
 
-        val items = docRead.data?.get("produce")
+        val imageLink = docRead.data?.get("imageUri")
         val name  = docRead.data?.get("charityName")
         val location = docRead.data?.get("location")
+        val handle = docRead.data?.get("handle")
 
-        return if (items != null && name !=null && location!=null) {
-            val itemsMap = items as MutableMap<String, Int>
+        return if (imageLink != null && name !=null && location!=null && handle !=null) {
+            val imageUri = imageLink as String
             val fridgeName = name as String
             val charityLocation = location as String
+            val igHandle = handle as String
             ResponseModel.FAResponseWithData.Success(
                 FridgeModel.Fridge(
                     fridgeName = fridgeName,
                     location = charityLocation,
-                    items = itemsMap.map { (produceName, goal) ->
-                        CharityModel.ProduceFridge(
-                            produceName = produceName,
-                            produceDonateAmount = goal,
-
-                            )
-                    }
+                    imageUri = imageUri,
+                    handle = igHandle
                 )
             )
         }
