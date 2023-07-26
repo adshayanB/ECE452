@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
 
 class FarmRepository(
-    val farmCode: MutableStateFlow<String> = MutableStateFlow(""),
     private val userRepository: UserRepository,
     private val networkMonitor: NetworkMonitor,
 ) {
@@ -28,9 +27,6 @@ class FarmRepository(
                         "farmCode" to code
                     )
                 ).await()
-
-                //Set code state
-                farmCode.value = code
 
                 db.collection("inventory").document(docRef.id).set(
                     mapOf("produce" to emptyMap<String,Int>())
@@ -113,7 +109,19 @@ class FarmRepository(
             .joinToString("")
     }
 
-    fun getFarmCode(): String? {
-        return farmCode.value
+    suspend fun getFarmCode(): String? {
+        return try {
+            userRepository.getFarmId()?.let {
+                db.collection("farm").document(it).get(networkMonitor.getSource()).await().data?.let{ farm ->
+                    farm["farmCode"] as String
+                }
+            } ?: run {
+                Log.e("FarmRepository", "User does ot exist")
+                null
+            }
+        } catch (e:Exception) {
+            Log.e("FarmRepository", e.message ?: "Unknown error while getting farm code")
+            null
+        }
     }
 }
