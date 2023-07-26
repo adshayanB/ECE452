@@ -1,7 +1,10 @@
 package com.example.farmeraid.data
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
+import com.example.farmeraid.data.source.NetworkMonitor
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,15 +15,16 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 
 class MarketRepository(
-    private val quotasRepository: QuotasRepository,
     private val farmRepository: FarmRepository,
     private val userRepository: UserRepository,
+    private val quotasRepository: QuotasRepository,
+    private val networkMonitor: NetworkMonitor,
 ) {
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     suspend fun addOrUpdateMarket(marketName: String, producePrices: Map<String, Double>) : ResponseModel.FAResponse {
 
-        val querySnapshot = db.collection("market").whereEqualTo("name", marketName).get().await()
+        val querySnapshot = db.collection("market").whereEqualTo("name", marketName).get(networkMonitor.getSource()).await()
 
         if (querySnapshot.isEmpty) {
             return try {
@@ -62,7 +66,7 @@ class MarketRepository(
         val marketModel: MutableList<DocumentSnapshot> = mutableListOf()
         marketIds.data?.forEach {
             try {
-                marketModel.add(db.collection("market").document(it).get().await())
+                marketModel.add(db.collection("market").document(it).get(networkMonitor.getSource()).await())
             } catch (e: Exception) {
                 return ResponseModel.FAResponseWithData.Error(
                     e.message ?: "Unknown error while fetching market"
@@ -85,6 +89,7 @@ class MarketRepository(
         return ResponseModel.FAResponseWithData.Success(marketModelList)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun readMarketDataWithQuotas(): ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>> {
         val marketIds = farmRepository.getMarketIds()
         if (marketIds.error != null) {
@@ -94,7 +99,7 @@ class MarketRepository(
         val marketModel : MutableList<DocumentSnapshot> = mutableListOf()
         marketIds.data?.forEach {
             try {
-                marketModel.add(db.collection("market").document(it).get().await())
+                marketModel.add(db.collection("market").document(it).get(networkMonitor.getSource()).await())
             } catch (e : Exception) {
                 return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
             }
@@ -131,6 +136,7 @@ class MarketRepository(
         }.flowOn(Dispatchers.IO)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getMarketsWithQuota() : Flow<ResponseModel.FAResponseWithData<List<MarketModel.MarketWithQuota>>> {
         return flow {
             emit(
@@ -139,10 +145,11 @@ class MarketRepository(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getMarketWithQuota(id : String) : ResponseModel.FAResponseWithData<MarketModel.MarketWithQuota> {
 
         val marketModel : DocumentSnapshot = try {
-                db.collection("market").document(id).get().await()
+                db.collection("market").document(id).get(networkMonitor.getSource()).await()
             } catch (e : Exception) {
                 return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
             }
@@ -170,7 +177,7 @@ class MarketRepository(
     suspend fun getMarket(id : String) : ResponseModel.FAResponseWithData<MarketModel.Market> {
 
         val marketModel: DocumentSnapshot = try {
-            db.collection("market").document(id).get().await()
+            db.collection("market").document(id).get(networkMonitor.getSource()).await()
         } catch (e : Exception) {
             return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching market")
         }

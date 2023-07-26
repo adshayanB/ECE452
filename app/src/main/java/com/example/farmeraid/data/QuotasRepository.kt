@@ -1,39 +1,32 @@
 package com.example.farmeraid.data
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.toDate
 import com.example.farmeraid.data.model.toLocalDateTime
-import com.google.firebase.firestore.DocumentReference
+import com.example.farmeraid.data.source.NetworkMonitor
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import com.google.firebase.Timestamp
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.temporal.TemporalAdjuster
-import java.time.temporal.TemporalAdjusters
-import java.util.Date
-
-// TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
-// TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
 
 class QuotasRepository(
     private val transactionRepository: TransactionRepository,
+    private val networkMonitor: NetworkMonitor,
 ) {
 
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getQuota(id: String, marketName: String): ResponseModel.FAResponseWithData<QuotaModel.Quota?> {
         val docRead : DocumentSnapshot
         try {
-            docRead = db.collection("quotas").document(id).get().await()
+            docRead = db.collection("quotas").document(id).get(networkMonitor.getSource()).await()
         } catch (e : Exception) {
             Log.e("QuotasRepository",e.message ?: e.stackTraceToString())
             return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while fetching quota")
@@ -64,7 +57,7 @@ class QuotasRepository(
                         "endOfWeek" to endOfWeek.toDate(),
                         "sale" to saleCount,
                     )
-                ).await()
+                )
             } catch (e : Exception) {
                 return ResponseModel.FAResponseWithData.Error(e.message ?: "Unknown error while updating quota sale amounts")
             }
@@ -87,7 +80,7 @@ class QuotasRepository(
     }
     suspend fun addOrUpdateQuota(market: MarketModel.Market, produce: List<QuotaModel.ProduceQuota>) : ResponseModel.FAResponse {
         val doc : DocumentSnapshot = try {
-            db.collection("quotas").document(market.id).get().await()
+            db.collection("quotas").document(market.id).get(networkMonitor.getSource()).await()
         } catch (e : Exception) {
             Log.e("QuotasRepository", e.message ?: e.stackTraceToString())
             return ResponseModel.FAResponse.Error(e.message ?: "Unknown error fetching for quota")
@@ -137,7 +130,7 @@ class QuotasRepository(
 
     suspend fun deleteQuota(id : String) : ResponseModel.FAResponse {
         return try {
-                    db.collection("quotas").document(id).delete().await()
+                    db.collection("quotas").document(id).delete()
                     ResponseModel.FAResponse.Success
                 } catch (e: Exception) {
                     Log.e("QuotasRepository", e.message ?: e.stackTraceToString())
