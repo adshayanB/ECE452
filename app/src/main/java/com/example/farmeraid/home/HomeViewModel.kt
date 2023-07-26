@@ -99,4 +99,8 @@ class HomeViewModel @Inject constructor(
             appNavigator.navigateToEditProduce(produceName, produceAmount)
         }
     }
+
+    fun navigateToFridgeDetails(fridgeId :String){
+        appNavigator.navigateToFridgeDetails(fridgeId)
+    }
 }

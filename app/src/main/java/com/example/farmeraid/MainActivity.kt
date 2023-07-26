@@ -3,9 +3,11 @@ package com.example.farmeraid
 import FarmScreenView
 import com.example.farmeraid.snackbar.SnackbarDelegate
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
@@ -15,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.navigation.AppNavigator
 import com.example.farmeraid.navigation.RootNavigationHost
+import com.example.farmeraid.object_detection.ObjectDetectionUtility
 import com.example.farmeraid.speech_recognition.KontinuousSpeechRecognizer
 import com.example.farmeraid.speech_recognition.SpeechRecognizerUtility
 import com.example.farmeraid.ui.theme.FarmerAidTheme
@@ -37,11 +40,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var speechRecognizer: SpeechRecognizerUtility
 
     @Inject
+    lateinit var objectDetection: ObjectDetectionUtility
+
+    @Inject
     lateinit var kontinuousSpeechRecognizer: KontinuousSpeechRecognizer
 
     @Inject
     lateinit var locationProvider : LocationProvider
 
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         firebaseAuth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
@@ -50,6 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         speechRecognizer.setActivtyContext(this)
         locationProvider.setActivtyContext(this)
+        objectDetection.setActivtyContext(this)
         setContent {
             val navController : NavHostController = rememberNavController()
             appNavigator.setNavController(navController)
@@ -57,7 +66,6 @@ class MainActivity : AppCompatActivity() {
             val snackbarHostState = remember { SnackbarHostState() }
             snackbarDelegate.snackbarHostState = snackbarHostState
             snackbarDelegate.coroutineScope = rememberCoroutineScope()
-
 
             FarmerAidTheme(darkTheme = false) {
                 RootNavigationHost(appNavigator, snackbarHostState)
