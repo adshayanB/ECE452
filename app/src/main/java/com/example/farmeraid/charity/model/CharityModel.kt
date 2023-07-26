@@ -1,8 +1,7 @@
 package com.example.farmeraid.charity.model
 
-import com.example.farmeraid.data.model.FridgeModel
+import com.example.farmeraid.fridge.model.FridgeModel
 import com.example.farmeraid.location_provider.LocationProvider
-import com.google.maps.android.compose.MapProperties
 
 class CharityModel {
     data class CharityViewState(

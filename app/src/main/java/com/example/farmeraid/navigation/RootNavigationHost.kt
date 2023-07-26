@@ -30,6 +30,7 @@ import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.farm_selection.views.FarmSelectionScreenView
+import com.example.farmeraid.fridge.views.AddEditFridgeScreenView
 import com.example.farmeraid.market.add_edit_market.views.AddEditMarketScreenView
 import com.example.farmeraid.settings.views.SettingsScreenView
 import com.example.farmeraid.sign_in.views.LoadingScreenView
@@ -156,6 +157,10 @@ fun RootNavigationHost(
                 }
                 composable(NavRoute.Charity.route){
                     CharityMapsScreenView()
+                }
+
+                composable(NavRoute.AddEditFridge.route){
+                    AddEditFridgeScreenView()
                 }
                 composable(NavRoute.SettingsScreen.route){
                     SettingsScreenView()
