@@ -149,6 +149,7 @@ class TransactionsViewModel @Inject constructor(
                                 quota?.let {
                                     quotasRepository.updateSaleCounts(it.id, changeMap.entries.associate {entry -> entry.key to -1*entry.value })
                                 }
+                                marketRepository.updateSaleCount(market.id, -1 * transaction.produce.produceAmount * transaction.pricePerProduce)
                             }
                             TransactionModel.TransactionType.DONATE -> {
                                 inventoryRepository.harvest(changeMap)

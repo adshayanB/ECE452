@@ -159,6 +159,8 @@ class SellProduceViewModel @Inject constructor(
 
             val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
 
+            marketRepository.updateSaleCount(marketId, getTotalEarnings())
+
             quotasRepository.getQuota(market.id, market.name).let { quota ->
                 quota.data?.let { quotaData ->
                     quotasRepository.updateSaleCounts(

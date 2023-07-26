@@ -1,6 +1,7 @@
 package com.example.farmeraid.data
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
@@ -33,6 +34,7 @@ class MarketRepository(
                     mapOf (
                         "name" to marketName,
                         "prices" to producePrices,
+                        "sale_count" to 0.0
                     )
                 ).await()
 
@@ -81,7 +83,8 @@ class MarketRepository(
             MarketModel.Market(
                 id = market.id,
                 name = market.get("name") as String,
-                prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
+                prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                saleCount = market.get("sale_count") as Double,
             )
                 .let { marketModelList.add(it) }
         }
@@ -110,13 +113,15 @@ class MarketRepository(
 
         for (market in marketModel) {
             quotasRepository.getQuota(market.id, market["name"] as String).let { quotaResponse ->
+                Log.d("market Count", "Count: ${market.get("sale_count")}")
                 quotaResponse.data?.let {
                     marketModelList.add(
                         MarketModel.MarketWithQuota(
                             id = market.id,
                             name = market.get("name") as String,
                             quota = it,
-                            prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
+                            prices = (market.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                            saleCount = market.get("sale_count") as Double,
                         )
                     )
                 } ?: run {
@@ -146,6 +151,26 @@ class MarketRepository(
         }
     }
 
+    suspend fun updateSaleCount(id : String, earningsAmount : Double) : ResponseModel.FAResponse {
+        val marketModel : DocumentSnapshot = try {
+            db.collection("market").document(id).get(networkMonitor.getSource()).await()
+        } catch (e : Exception) {
+            return ResponseModel.FAResponse.Error(e.message ?: "Unknown error while fetching market")
+        }
+
+        if (!marketModel.exists()) {
+            return ResponseModel.FAResponse.Error("Market does not exist")
+        }
+
+        Log.d("Sell Update", "${earningsAmount}")
+
+        db.collection("market").document(id).update(mapOf(
+            "sale_count" to  FieldValue.increment(earningsAmount)
+        ))
+
+        return ResponseModel.FAResponse.Success
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getMarketWithQuota(id : String) : ResponseModel.FAResponseWithData<MarketModel.MarketWithQuota> {
 
@@ -165,7 +190,8 @@ class MarketRepository(
                         id = marketModel.id,
                         name = marketModel.get("name") as String,
                         quota = it,
-                        prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER)
+                        prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                        saleCount = marketModel.get("sale_count") as Double,
                     )
                 } ?: run {
                     return ResponseModel.FAResponseWithData.Error(quotaResponse.error ?: "Unknown error while fetching market's quota")
@@ -192,6 +218,7 @@ class MarketRepository(
                 id = marketModel.id,
                 name = marketModel.get("name") as String,
                 prices = (marketModel.get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                saleCount = marketModel.get("sale_count") as Double,
             )
         }
 
@@ -214,6 +241,7 @@ class MarketRepository(
                 id = marketModel.documents[0].id,
                 name = marketModel.documents[0].get("name") as String,
                 prices = (marketModel.documents[0].get("prices") as MutableMap<String, Double>).toSortedMap(String.CASE_INSENSITIVE_ORDER),
+                saleCount = marketModel.documents[0].get("sale_count") as Double,
             )
         }
 
