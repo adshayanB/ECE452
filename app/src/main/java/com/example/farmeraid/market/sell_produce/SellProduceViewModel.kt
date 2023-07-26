@@ -6,12 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.TransactionRepository
+import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.market.sell_produce.model.SellProduceModel
 import com.example.farmeraid.navigation.AppNavigator
+import com.example.farmeraid.snackbar.SnackbarDelegate
 import com.example.farmeraid.uicomponents.models.UiComponentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +29,10 @@ class SellProduceViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository,
     private val marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
+    private val transactionRepository: TransactionRepository,
     savedStateHandle: SavedStateHandle,
     private val appNavigator: AppNavigator,
+    private val snackbarDelegate: SnackbarDelegate,
 ): ViewModel() {
 
     private val marketId : String? = savedStateHandle["marketId"]
@@ -152,19 +157,40 @@ class SellProduceViewModel @Inject constructor(
 
             val market: MarketModel.Market = marketRepository.getMarket(marketId!!).data!!
 
-            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId, market.name)
+            quotasRepository.getQuota(market.id, market.name).let { quota ->
+                quota.data?.let { quotaData ->
+                    quotasRepository.updateSaleCounts(
+                        market.id,
+                        produceSellMap.filter { sell -> sell.key in quotaData.produceQuotaList.map { prod -> prod.produceName } }
+                    ).let { res ->
+                        when (res) {
+                            is ResponseModel.FAResponse.Error -> snackbarDelegate.showSnackbar(res.error ?: "Unknown error")
+                            else -> {}
+                        }
+                    }
+                } ?: run {
+                    if (quota.error != "Quota does not exist") {
+                        snackbarDelegate.showSnackbar(quota.error ?: "Unknown error")
+                    }
+                }
+            }
 
-            val quota: QuotaModel.Quota? = if (quotaRes.error != null) quotaRes.data
-            else null
-
-            if (quota != null) {
-                quotasRepository.addOrUpdateQuota(market, quota.produceQuotaList.map {produceQuota ->
-                    QuotaModel.ProduceQuota(
-                        produceName = produceQuota.produceName,
-                        produceGoalAmount = produceQuota.produceGoalAmount,
-                        saleAmount = produceQuota.saleAmount + produceSellList.value.find{it.produceName == produceQuota.produceName}!!.produceCount,
-                    )
-                })
+            produceSellList.value.forEach { produceSell ->
+                if (produceSell.produceCount > 0) {
+                    when(val res = transactionRepository.addTransaction(
+                        TransactionModel.Transaction(
+                            transactionType = TransactionModel.TransactionType.SELL,
+                            produce = InventoryModel.Produce(produceSell.produceName, produceSell.produceCount),
+                            pricePerProduce = produceSell.producePrice,
+                            location = market.name,
+                        )
+                    )) {
+                        is ResponseModel.FAResponse.Error -> {
+                            snackbarDelegate.showSnackbar(res.error ?: "Unknown error")
+                        }
+                        else -> {}
+                    }
+                }
             }
 
             fetchData()

@@ -34,7 +34,7 @@ class TransactionRepository(
                 "farmID" to farmID,
             )
 
-            val createTransactionRef = db.collection("transaction").document()
+            val createTransactionRef = db.collection("transactions").document()
             try {
                 createTransactionRef.set(transactionMap)
                 ResponseModel.FAResponse.Success

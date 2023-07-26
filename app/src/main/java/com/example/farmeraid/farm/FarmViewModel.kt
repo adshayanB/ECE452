@@ -7,7 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cesarferreira.pluralize.pluralize
 import com.example.farmeraid.data.InventoryRepository
+import com.example.farmeraid.data.TransactionRepository
 import com.example.farmeraid.data.UserRepository
+import com.example.farmeraid.data.model.InventoryModel
+import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.farm.model.FarmModel
 import com.example.farmeraid.farm.model.FarmModel.FarmViewState
@@ -31,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FarmViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository,
+    private val transactionRepository: TransactionRepository,
     private val speechRecognizerUtility: SpeechRecognizerUtility,
     private val kontinuousSpeechRecognizer: KontinuousSpeechRecognizer,
     private val appNavigator: AppNavigator,
@@ -241,6 +245,23 @@ class FarmViewModel @Inject constructor(
                 }
 
                 inventoryRepository.harvest(harvestMap)
+                harvestMap.forEach { (produceName, produceAmount) ->
+                    if (produceAmount > 0) {
+                        when(val res = transactionRepository.addTransaction(
+                            TransactionModel.Transaction(
+                                transactionType = TransactionModel.TransactionType.HARVEST,
+                                produce = InventoryModel.Produce(produceName, produceAmount),
+                                pricePerProduce = 0.0,
+                                location = "",
+                            )
+                        )) {
+                            is ResponseModel.FAResponse.Error -> {
+                                snackbarDelegate.showSnackbar(res.error ?: "Unknown error")
+                            }
+                            else -> {}
+                        }
+                    }
+                }
 
                 harvestList.value = harvestList.value.map {(produceName, _) ->
                     FarmModel.ProduceHarvest(
