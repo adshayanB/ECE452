@@ -10,12 +10,14 @@ import androidx.compose.material.icons.filled.Agriculture
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.outlined.Agriculture
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Money
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.filled.VolunteerActivism
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material.icons.outlined.VolunteerActivism
 import androidx.compose.material3.Icon
@@ -65,10 +67,10 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
             navigateToRoute = NavRoute.Charity,
         ),
         UiComponentModel.BottomNavItem(
-            text = "Sign Out",
-            unselectedIcon = Icons.Outlined.Person,
-            selectedIcon = Icons.Filled.Person,
-            navigateToRoute = NavRoute.SignOut
+            text = "Settings",
+            unselectedIcon = Icons.Outlined.Settings,
+            selectedIcon = Icons.Filled.Settings,
+            navigateToRoute = NavRoute.SettingsScreen
         ),
     )
     val notShownScreens: List<String?> = listOf(
@@ -80,7 +82,7 @@ fun BottomNavigationBar(appNavigator: AppNavigator) {
         NavRoute.FarmCode.route,
         NavRoute.FarmSelection.route,
         NavRoute.LoadingScreen.route,
-        NavRoute.SignOutScreen.route
+        NavRoute.SignOutScreen.route,
     )
 
     AnimatedVisibility(

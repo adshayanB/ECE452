@@ -17,17 +17,7 @@ class AppNavigator(
     }
 
     fun navigateToMode(navRoute: NavRoute) {
-        if (navRoute.route == NavRoute.SignOut.route){
-            snackbarDelegate.showSnackbar(
-                message = "Are you sure?",
-                actionLabel = "Yes",
-                 onAction  = { _navController?.navigate(navRoute.route) }
-            )
-            //Show snackbar
-        }
-        else{
-            _navController?.navigate(navRoute.route)
-        }
+        _navController?.navigate(navRoute.route)
     }
 
     fun navigateBack() {
@@ -92,5 +82,8 @@ class AppNavigator(
 
     fun navigateToAddEditFridge(){
         _navController?.navigate(NavRoute.AddEditFridge.route)
+
+    fun navigateToSignOut() {
+        _navController?.navigate(NavRoute.SignOut.route)
     }
 }

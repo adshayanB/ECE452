@@ -39,15 +39,15 @@ class TransactionModel {
 fun TransactionModel.Transaction.toMessage() : String{
     return when (transactionType) {
         TransactionModel.TransactionType.HARVEST -> {
-            "Harvested ${this.produce.produceAmount} ${this.produce.produceName.pluralize(this.produce.produceAmount)}"
+            "Harvested ${this.produce.produceAmount} ${this.produce.produceName}"
         }
         TransactionModel.TransactionType.SELL -> {
-            "Sold ${this.produce.produceAmount} ${this.produce.produceName.pluralize(this.produce.produceAmount)}" +
+            "Sold ${this.produce.produceAmount} ${this.produce.produceName}" +
                     " for ${NumberFormat.getCurrencyInstance(Locale("en", "US")).format(this.pricePerProduce*this.produce.produceAmount)}" +
                     " to ${this.location}"
         }
         TransactionModel.TransactionType.DONATE -> {
-            "Donated ${this.produce.produceAmount} ${this.produce.produceName.pluralize(this.produce.produceAmount)}" +
+            "Donated ${this.produce.produceAmount} ${this.produce.produceName}" +
                     " to ${this.location}"
         }
         else -> {
