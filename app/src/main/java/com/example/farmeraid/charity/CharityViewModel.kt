@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.charity.model.CharityModel
 import com.example.farmeraid.data.CharityRepository
 import com.example.farmeraid.data.FarmRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.fridge.model.FridgeModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.location_provider.LocationProvider
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class CharityViewModel @Inject constructor(
     private val farmRepository: FarmRepository,
     private val charityRepository: CharityRepository,
+    private val userRepository: UserRepository,
     val locationProvider : LocationProvider,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate
@@ -132,6 +134,10 @@ class CharityViewModel @Inject constructor(
         locationProvider.stopLocationUpdate()
     }
 
+    fun userIsAdmin() : Boolean {
+        return userRepository.isAdmin()
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun getCoordinatesFromLocation(locationName : String) {
         val coordinates = locationProvider.getCoordinatesFromLocationName(locationName)
@@ -152,9 +158,7 @@ class CharityViewModel @Inject constructor(
     }
 
     fun navigateToFridgeDetails(fridge : CharityModel.FridgeDetails) {
-        snackbarDelegate.showSnackbar(
-            message = "Navigate to ${fridge.fridgeProperties.fridgeName}"
-        )
+        appNavigator.navigateToFridgeDetails(fridge.fridgeProperties.id)
     }
 
     fun navigateToTransactions() {

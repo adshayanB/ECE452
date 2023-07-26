@@ -11,6 +11,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.CharityRepository
 import com.example.farmeraid.data.InventoryRepository
+import com.example.farmeraid.data.TransactionRepository
+import com.example.farmeraid.data.UserRepository
+import com.example.farmeraid.data.model.InventoryModel
+import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.farm.model.FarmModel
 import com.example.farmeraid.fridge.model.FridgeModel
 import com.example.farmeraid.fridge_details.model.FridgeDetailsModel
@@ -39,6 +43,8 @@ class FridgeDetailsViewModel @Inject constructor (
     private val objectDetectionUtility: ObjectDetectionUtility,
     private val inventoryRepository: InventoryRepository,
     private val charityRepository: CharityRepository,
+    private val transactionRepository: TransactionRepository,
+    private val userRepository: UserRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
     @ApplicationContext private val  context: Context
@@ -166,6 +172,10 @@ class FridgeDetailsViewModel @Inject constructor (
         }
     }
 
+    fun userIsAdmin() : Boolean {
+        return userRepository.isAdmin()
+    }
+
     fun navigateToFridge() {
        snackbarDelegate.showSnackbar("Navigate To Edit Fridge Page")
     }
@@ -175,6 +185,23 @@ class FridgeDetailsViewModel @Inject constructor (
     }
 
     fun donateProduce(){
-        snackbarDelegate.showSnackbar("Navigate To Edit Fridge Page")
+        viewModelScope.launch {
+            inventoryRepository.sell(farmProduces.value.associate { it.produceName to (it.produceCount ?: 0) })
+            farmProduces.value.forEach { produce->
+                if ((produce.produceCount ?: 0) > 0) {
+                    transactionRepository.addTransaction(
+                        TransactionModel.Transaction(
+                            transactionType = TransactionModel.TransactionType.DONATE,
+                            produce = InventoryModel.Produce(
+                                produceName = produce.produceName,
+                                produceAmount = produce.produceCount ?: 0,
+                            ),
+                            pricePerProduce = 0.0,
+                            location = fridgeDetails.value!!.location,
+                        )
+                    )
+                }
+            }
+        }
     }
 }
