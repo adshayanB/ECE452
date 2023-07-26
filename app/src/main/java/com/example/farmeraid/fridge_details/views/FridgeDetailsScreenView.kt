@@ -83,12 +83,14 @@ fun FridgeDetailsView(){
                     }
                 },
                 actions = {
-                    IconButton(onClick = {viewModel.navigateToFridge()}) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = "Edit",
-                            tint = WhiteContentColour,
-                        )
+                    if (viewModel.userIsAdmin()) {
+                        IconButton(onClick = {viewModel.navigateToFridge()}) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Edit",
+                                tint = WhiteContentColour,
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(

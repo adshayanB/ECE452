@@ -120,18 +120,19 @@ fun CharityMapsScreenView() {
                        }
                    }
                }
-
-               ButtonView(
-                   buttonUiState = UiComponentModel.ButtonUiState(
-                       text = "Add"
-                   ),
-                   buttonUiEvent = UiComponentModel.ButtonUiEvent(
-                       onClick = { viewModel.navigateToAddFridge() }
-                   ),
-                   modifier = Modifier
-                       .height(50.dp)
-                       .width(120.dp)
-               )
+               if (viewModel.userIsAdmin()) {
+                   ButtonView(
+                       buttonUiState = UiComponentModel.ButtonUiState(
+                           text = "Add"
+                       ),
+                       buttonUiEvent = UiComponentModel.ButtonUiEvent(
+                           onClick = { viewModel.navigateToAddFridge() }
+                       ),
+                       modifier = Modifier
+                           .height(50.dp)
+                           .width(120.dp)
+                   )
+               }
                Spacer(modifier = Modifier.height(10.dp))
            }
        },
