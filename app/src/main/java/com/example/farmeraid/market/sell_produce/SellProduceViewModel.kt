@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.TransactionRepository
+import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
@@ -27,6 +29,7 @@ class SellProduceViewModel @Inject constructor(
     private val inventoryRepository: InventoryRepository,
     private val marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
+    private val transactionRepository: TransactionRepository,
     savedStateHandle: SavedStateHandle,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
@@ -171,19 +174,23 @@ class SellProduceViewModel @Inject constructor(
                     }
                 }
             }
-            val quotaRes: ResponseModel.FAResponseWithData<QuotaModel.Quota?> = quotasRepository.getQuota(marketId, market.name)
 
-            val quota: QuotaModel.Quota? = if (quotaRes.error != null) quotaRes.data
-            else null
-
-            if (quota != null) {
-                quotasRepository.addOrUpdateQuota(market, quota.produceQuotaList.map {produceQuota ->
-                    QuotaModel.ProduceQuota(
-                        produceName = produceQuota.produceName,
-                        produceGoalAmount = produceQuota.produceGoalAmount,
-                        saleAmount = produceQuota.saleAmount + produceSellList.value.find{it.produceName == produceQuota.produceName}!!.produceCount,
-                    )
-                })
+            produceSellList.value.forEach { produceSell ->
+                if (produceSell.produceCount > 0) {
+                    when(val res = transactionRepository.addTransaction(
+                        TransactionModel.Transaction(
+                            transactionType = TransactionModel.TransactionType.SELL,
+                            produce = InventoryModel.Produce(produceSell.produceName, produceSell.produceCount),
+                            pricePerProduce = produceSell.producePrice,
+                            location = market.name,
+                        )
+                    )) {
+                        is ResponseModel.FAResponse.Error -> {
+                            snackbarDelegate.showSnackbar(res.error ?: "Unknown error")
+                        }
+                        else -> {}
+                    }
+                }
             }
 
             fetchData()
