@@ -27,4 +27,5 @@ sealed class NavRoute(val route: String) {
 
     object AddEditMarket : NavRoute("add_edit_market_route")
     object SettingsScreen : NavRoute("settings_route")
+    object FridgeDetails : NavRoute("fridge_details")
 }

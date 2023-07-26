@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id "org.jetbrains.kotlinx.kotlin-deeplearning-gradle-plugin" version '0.5.2'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
@@ -13,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.farmeraid"
-        minSdk 26
+        minSdk 28
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -49,9 +50,16 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    aaptOptions{
+        noCompress "tflite"
+    }
+
 }
 
 dependencies {
+    implementation 'com.google.mlkit:object-detection-custom:17.0.0'
+    implementation 'androidx.camera:camera-core:1.0.2'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
     def nav_version = "2.6.0"
     implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
 
@@ -111,9 +119,20 @@ dependencies {
 
     implementation "androidx.compose.material:material-icons-extended-android:1.5.0-beta02"
 
+    // Speech Recognizer
     implementation "com.github.StephenVinouze:KontinuousSpeechRecognizer:1.1.0"
 
+    // String Pluarlizer
     implementation 'com.github.cesarferreira:kotlin-pluralizer:6a70bc0'
+
+    // ML Model Kit
+    implementation 'com.google.mlkit:object-detection:17.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlin-deeplearning-tensorflow:0.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlin-deeplearning-onnx:0.5.2'
+    implementation "org.jetbrains.kotlinx:kotlin-deeplearning-visualization:0.5.2"
+
+    //Coil
+    implementation "io.coil-kt:coil-compose:2.0.0-rc01"
 
     //Google Maps Services
     implementation 'com.google.maps.android:maps-compose:2.11.4'
@@ -125,4 +144,9 @@ dependencies {
 
 kapt {
     correctErrorTypes true
+}
+
+downloadKotlinDLModels {
+    models = ["SSDMobileNetV1", "EfficientNetLite0"]
+    overwrite = false
 }

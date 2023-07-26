@@ -30,6 +30,7 @@ import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.farm_selection.views.FarmSelectionScreenView
+import com.example.farmeraid.fridge_details.views.FridgeDetailsView
 import com.example.farmeraid.market.add_edit_market.views.AddEditMarketScreenView
 import com.example.farmeraid.settings.views.SettingsScreenView
 import com.example.farmeraid.sign_in.views.LoadingScreenView
@@ -120,6 +121,12 @@ fun RootNavigationHost(
                     arguments = listOf(navArgument("marketId") { type = NavType.StringType})
                 ) {
                     ViewQuotaScreenView()
+                }
+                composable(
+                    route = NavRoute.FridgeDetails.route + "/{fridgeId}",
+                    arguments = listOf(navArgument("fridgeId") { type = NavType.StringType})
+                ) {
+                    FridgeDetailsView()
                 }
                 composable(
                     route = NavRoute.AddEditProduce.route + "?produceName={produceName}&produceAmount={produceAmount}",

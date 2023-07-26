@@ -48,6 +48,10 @@ class AppNavigator(
         _navController?.navigate(NavRoute.AddEditProduce.route + "?produceName=${produceName}&produceAmount=${produceAmount}")
     }
 
+    fun navigateToFridgeDetails(fridgeId: String){
+        _navController?.navigate(NavRoute.FridgeDetails.route +"/${fridgeId}")
+    }
+
     fun navigateToJoinFarm() {
         _navController?.navigate(NavRoute.JoinFarm.route)
     }
