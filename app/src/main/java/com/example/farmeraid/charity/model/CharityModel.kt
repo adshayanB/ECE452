@@ -9,7 +9,11 @@ class CharityModel {
         val longitude: Double,
         val latitude: Double,
         val userLocation: LocationProvider.LatandLong,
-        val fridgeList: List<FridgeModel.Fridge> = emptyList(),
+        val fridgeList: List<FridgeDetails> = emptyList(),
         val readableLocation: String = "",
+    )
+    data class FridgeDetails(
+        val fridgeProperties: FridgeModel.Fridge,
+        val distanceFromUser: Float = 0f
     )
 }

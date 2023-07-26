@@ -1,6 +1,7 @@
 package com.example.farmeraid.charity
 
 import android.annotation.SuppressLint
+import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -9,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.charity.model.CharityModel
 import com.example.farmeraid.data.CharityRepository
 import com.example.farmeraid.data.FarmRepository
-import com.example.farmeraid.data.model.FridgeModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.navigation.AppNavigator
@@ -42,7 +42,7 @@ class CharityViewModel @Inject constructor(
     private val latitude : MutableStateFlow<Double> = MutableStateFlow(_state.value.latitude)
     private val readableLocation: MutableStateFlow<String> = MutableStateFlow("")
     private val userLocation : MutableStateFlow<LocationProvider.LatandLong> = MutableStateFlow(_state.value.userLocation)
-    private val fridgeList : MutableStateFlow<List<FridgeModel.Fridge>> = MutableStateFlow(_state.value.fridgeList)
+    private val fridgeList : MutableStateFlow<List<CharityModel.FridgeDetails>> = MutableStateFlow(_state.value.fridgeList)
 
     init {
         viewModelScope.launch {
@@ -50,7 +50,7 @@ class CharityViewModel @Inject constructor(
                     longitude: Double,
                     latitude: Double,
                     userLocation: LocationProvider.LatandLong,
-                    fridgeList : List<FridgeModel.Fridge>,
+                    fridgeList : List<CharityModel.FridgeDetails>,
                     readableLocation : String, ->
                 CharityModel.CharityViewState(
                     longitude = longitude,
@@ -70,7 +70,9 @@ class CharityViewModel @Inject constructor(
             fridgeList.value = farmRepository.getCharityIds().let { charities ->
                 charities.data?.mapNotNull { id ->
                     charityRepository.getCharity(id).data?.let{ fridge ->
-                        fridge
+                        CharityModel.FridgeDetails(
+                            fridgeProperties = fridge
+                        )
                     }
                 } ?: run {
                     snackbarDelegate.showSnackbar(charities.error ?: "Unknown error")
@@ -82,19 +84,51 @@ class CharityViewModel @Inject constructor(
 
     @SuppressLint("StateFlowValueCalledInComposition")
     @Composable
-    fun setUserLocation(location : LocationProvider.LatandLong) {
+    fun updateUserLocation(location : LocationProvider.LatandLong) {
         userLocation.value = location
+
+        //Recalculate the distances for each fridge when user location changes
+        getFridgeDistances()
+    }
+
+    fun getFridgeDistances() : List<CharityModel.FridgeDetails> {
+        //calculate the distances for each fridge
+        fridgeList.value = fridgeList.value.map{fridge ->
+            CharityModel.FridgeDetails(
+                fridge.fridgeProperties,
+                "%.3f".format(getDistanceFromUser(fridge.fridgeProperties.coordinates)).toFloat()
+            )
+        }
+
+        //sort the array based on the distance
+        //fridgeList.value.sortedBy { it.distanceFromUser }
+
+        fridgeList.value.sortedWith(Comparator { first: CharityModel.FridgeDetails, second: CharityModel.FridgeDetails ->
+            if (first.distanceFromUser != second.distanceFromUser) {
+                first.distanceFromUser.toInt() - second.distanceFromUser.toInt()
+            }
+            else {
+                first.distanceFromUser.compareTo(second.distanceFromUser)
+            }
+        })
+
+        return fridgeList.value
+    }
+
+    fun getDistanceFromUser(coordinates : LocationProvider.LatandLong) : Float {
+        val fridgeLat = coordinates.latitude
+        val fridgeLong = coordinates.longitude
+        val results = FloatArray(1)
+
+        // Start: User Location  ---> To ---> Dest: Fridge
+        Location.distanceBetween(userLocation.value.latitude, userLocation.value.longitude, fridgeLat, fridgeLong, results)
+
+        //convert to km
+        return (results[0] / 1000)
     }
 
     fun stopLocationUpdates() {
         locationProvider.stopLocationUpdate()
-    }
-
-    fun displayCoordinates(Lat: Double, Long: Double) {
-
-        snackbarDelegate.showSnackbar(
-            message = "Coordinates: ${Lat} ${Long}"
-        )
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -118,9 +152,9 @@ class CharityViewModel @Inject constructor(
         )
     }
 
-    fun showDistance(distanceA : Float, distanceB: Float) {
+    fun navigateToFridgeDetails(fridge : CharityModel.FridgeDetails) {
         snackbarDelegate.showSnackbar(
-            message = "Distance A : ${distanceA}, Distance B: ${distanceB}"
+            message = "Navigate to ${fridge.fridgeProperties.fridgeName}"
         )
     }
 
