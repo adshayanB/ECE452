@@ -90,7 +90,7 @@ class FarmRepository(
     //Get list of charities
     suspend fun getCharityIds (): ResponseModel.FAResponseWithData<MutableList<String>> {
         Log.d("getCharityIds", "called")
-        return (userRepository.getFarmId()?.let { id ->
+        return  (userRepository.getFarmId()?.let { id ->
             try {
                 db.collection("farm").document(id)
                     .get(networkMonitor.getSource())

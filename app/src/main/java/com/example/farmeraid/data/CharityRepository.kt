@@ -5,10 +5,12 @@ import com.example.farmeraid.data.model.CharityModel
 import com.example.farmeraid.data.model.FridgeModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
+import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.data.source.NetworkMonitor
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.tasks.await
 
 class CharityRepository (
@@ -18,7 +20,7 @@ class CharityRepository (
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    suspend fun createCharity(charityName: String, location:String, produce: List<QuotaModel.ProduceQuota>): ResponseModel.FAResponse{
+    suspend fun createCharity(charityName: String, location:String, coordinates: GeoPoint, produce: List<QuotaModel.ProduceQuota>): ResponseModel.FAResponse{
         return try {
 
             userRepository.getFarmId()?.let{
@@ -26,6 +28,7 @@ class CharityRepository (
                     mapOf (
                         "charityName" to charityName,
                         "location" to location,
+                        "coordinates" to coordinates,
                         "produce" to produce.associate {
                             it.produceName to it.produceGoalAmount
                         }
@@ -57,17 +60,19 @@ class CharityRepository (
         if (!docRead.exists()) {
             return ResponseModel.FAResponseWithData.Error("Charity does not exist")
         }
+        
+        val items = docRead.data?.get("produce") as MutableMap<String, Int>?
+        val name  = docRead.data?.get("charityName") as String?
+        val location = docRead.data?.get("location") as String?
+        val coordinates = docRead.data?.get("coordinates") as GeoPoint?
 
-        val items = docRead.data?.get("produce")
-        val name  = docRead.data?.get("charityName")
-        val location = docRead.data?.get("location")
-
-        return if (items != null && name !=null && location!=null) {
-            val itemsMap = items as MutableMap<String, Int>
-            val fridgeName = name as String
-            val charityLocation = location as String
+        return if (items != null && name !=null && location!=null && coordinates != null) {
+            val itemsMap = items
+            val fridgeName = name
+            val charityLocation = location
             ResponseModel.FAResponseWithData.Success(
                 FridgeModel.Fridge(
+                    id = id,
                     fridgeName = fridgeName,
                     location = charityLocation,
                     items = itemsMap.map { (produceName, goal) ->
@@ -76,7 +81,8 @@ class CharityRepository (
                             produceDonateAmount = goal,
 
                             )
-                    }
+                    },
+                    coordinates = LocationProvider.LatandLong(coordinates.latitude, coordinates.longitude),
                 )
             )
         }
