@@ -30,7 +30,7 @@ class TransactionRepository(
                 "pricePerProduce" to transaction.pricePerProduce, //To do: determine if u want to have a price for transactions, or not
                 "produce" to transaction.produce.produceName,
                 "timestamp" to FieldValue.serverTimestamp(),
-                "type" to transaction.transactionType,
+                "type" to transaction.transactionType.stringValue,
                 "farmID" to farmID,
             )
 
