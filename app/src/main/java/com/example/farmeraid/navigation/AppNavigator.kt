@@ -89,4 +89,8 @@ class AppNavigator(
     fun navigateToSignIn(){
         _navController?.navigate(NavRoute.SignIn.route)
     }
+
+    fun navigateToAddEditFridge(){
+        _navController?.navigate(NavRoute.AddEditFridge.route)
+    }
 }

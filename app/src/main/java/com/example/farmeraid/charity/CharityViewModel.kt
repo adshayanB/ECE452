@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.charity.model.CharityModel
 import com.example.farmeraid.data.CharityRepository
 import com.example.farmeraid.data.FarmRepository
+import com.example.farmeraid.fridge.model.FridgeModel
 import com.example.farmeraid.data.model.TransactionModel
 import com.example.farmeraid.location_provider.LocationProvider
 import com.example.farmeraid.navigation.AppNavigator
@@ -147,9 +148,7 @@ class CharityViewModel @Inject constructor(
     }
 
     fun navigateToAddFridge() {
-        snackbarDelegate.showSnackbar(
-            message = "Navigate to Add Fridge Page"
-        )
+        appNavigator.navigateToAddEditFridge()
     }
 
     fun navigateToFridgeDetails(fridge : CharityModel.FridgeDetails) {

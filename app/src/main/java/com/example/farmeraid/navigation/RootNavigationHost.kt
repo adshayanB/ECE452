@@ -9,6 +9,8 @@ import MarketScreenView
 import SellProduceView
 import TransactionsView
 import ViewQuotaScreenView
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -28,6 +30,7 @@ import com.example.farmeraid.create_farm.views.CreateFarmScreenView
 import com.example.farmeraid.create_farm.views.FarmCodeScreenView
 import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.farm_selection.views.FarmSelectionScreenView
+import com.example.farmeraid.fridge.views.AddEditFridgeScreenView
 import com.example.farmeraid.market.add_edit_market.views.AddEditMarketScreenView
 import com.example.farmeraid.sign_in.views.LoadingScreenView
 import com.example.farmeraid.sign_in.views.SignInScreenView
@@ -35,6 +38,7 @@ import com.example.farmeraid.sign_in.views.SignOutScreenView
 import com.example.farmeraid.sign_up.views.SignUpScreenView
 import com.example.farmeraid.ui.theme.PrimaryColour
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RootNavigationHost(
@@ -152,6 +156,9 @@ fun RootNavigationHost(
                 }
                 composable(NavRoute.Charity.route){
                     CharityMapsScreenView()
+                }
+                composable(NavRoute.AddEditFridge.route){
+                    AddEditFridgeScreenView()
                 }
             }
         }
