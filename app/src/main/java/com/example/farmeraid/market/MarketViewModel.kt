@@ -45,7 +45,7 @@ class MarketViewModel @Inject constructor(
         }
     }
 
-    init {
+    fun fetchData() {
         viewModelScope.launch {
             isLoading.value = true
 
@@ -53,12 +53,16 @@ class MarketViewModel @Inject constructor(
                 markets.data?.let {
                     marketList.value = it
                 } ?: run {
-                        snackbarDelegate.showSnackbar(markets.error ?: "Unknown error")
+                    snackbarDelegate.showSnackbar(markets.error ?: "Unknown error")
                 }
             }
 
             isLoading.value = false
         }
+    }
+
+    init {
+        fetchData()
     }
 
     fun userIsAdmin() : Boolean {
