@@ -1,7 +1,7 @@
 package com.example.farmeraid.data
 
 import android.util.Log
-import com.example.farmeraid.data.model.FridgeModel
+import com.example.farmeraid.fridge.model.FridgeModel
 import com.example.farmeraid.data.model.QuotaModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.location_provider.LocationProvider
@@ -19,7 +19,7 @@ class CharityRepository (
 ){
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    suspend fun createCharity(charityName: String, location:String, coordinates: GeoPoint, produce: List<QuotaModel.ProduceQuota>, imageUri: String, handle: String): ResponseModel.FAResponse{
+    suspend fun createCharity(charityName: String, location:String, coordinates: GeoPoint, imageUri: String, handle: String): ResponseModel.FAResponse{
         return try {
 
             userRepository.getFarmId()?.let{
@@ -84,6 +84,16 @@ class CharityRepository (
         else {
             ResponseModel.FAResponseWithData.Error("Charity object does not have produce or name or location information")
         }
+    }
+
+    suspend fun getFridgeImages(): List<String> {
+        val imageUris: List<String> = listOf(
+            "https://firebasestorage.googleapis.com/v0/b/farmer-aid-452.appspot.com/o/fridge1.jpg?alt=media&token=4ea33b47-26ae-4ad6-a8bd-c8102a9d7b13",
+            "https://firebasestorage.googleapis.com/v0/b/farmer-aid-452.appspot.com/o/fridge10.jpg?alt=media&token=25d27c98-f25f-49ae-b9cd-315935ab1295",
+            "https://firebasestorage.googleapis.com/v0/b/farmer-aid-452.appspot.com/o/fridge2.jpg?alt=media&token=376ac091-a9c7-479e-b23b-dc4112ecf661",
+            "https://firebasestorage.googleapis.com/v0/b/farmer-aid-452.appspot.com/o/fridge8.jpg?alt=media&token=629e364e-30e9-4f91-b8bd-ed2f5bb77eb0"
+        )
+        return (imageUris)
     }
 
 }

@@ -107,6 +107,7 @@ fun QuotaItemPreview() {
             id = "0",
             name = "Test",
             prices = hashMapOf("Apples" to 20.0, "Bananas" to 30.0),
+            saleCount = 100.0,
             quota = QuotaModel.Quota(
                 id = "0",
                 produceQuotaList = listOf(
