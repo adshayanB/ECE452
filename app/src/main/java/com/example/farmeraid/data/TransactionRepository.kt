@@ -74,7 +74,9 @@ class TransactionRepository(
                                     produceName = it["produce"] as String,
                                     produceAmount = (it["count"] as Long).toInt(),
                                 ),
-                                pricePerProduce = it["pricePerProduce"] as Double,
+                                pricePerProduce = if (it["pricePerProduce"] is Long) {
+                                    (it["pricePerProduce"] as Long).toDouble()
+                                } else { it["pricePerProduce"] as Double },
                                 location = it["destination"] as String,
                             )
                         }

@@ -88,16 +88,37 @@ class QuotasRepository(
 
         return try {
             if (doc.exists()) {
+                val endOfWeek = (doc.data?.get("endOfWeek") as Timestamp).toLocalDateTime()
+                val startOfWeek = endOfWeek.minusWeeks(1)
+                val saleMap : MutableMap<String, Int> = transactionRepository.getQuotaSaleAmounts(market.name, produce.map { it.produceName }, startOfWeek.toDate(), endOfWeek.toDate()).let {
+                    it.data ?: run {
+                        return ResponseModel.FAResponse.Error(it.error ?: "Unknown error while getting updated quota sale amounts")
+                    }
+                }
                 db.collection("quotas").document(market.id)
                     .update(
                         "produce", produce.associate{ it.produceName to it.produceGoalAmount },
-                        "sale", produce.associate{ it.produceName to it.saleAmount },
+                        "sale", saleMap,
                     )
             } else {
+                val endOfWeek = LocalDateTime.now().with(
+                    LocalTime.MIDNIGHT
+                )
+                    .with(
+                        TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)
+                    )
+                val startOfWeek = endOfWeek.minusWeeks(1)
+                val saleMap : MutableMap<String, Int> = transactionRepository.getQuotaSaleAmounts(market.name, produce.map { it.produceName }, startOfWeek.toDate(), endOfWeek.toDate()).let {
+                    it.data ?: run {
+                        return ResponseModel.FAResponse.Error(it.error ?: "Unknown error while getting updated quota sale amounts")
+                    }
+                }
+
                 db.collection("quotas").document(market.id).set(
                     mapOf(
+                        "endOfWeek" to endOfWeek.toDate(),
                         "produce" to produce.associate{it.produceName to it.produceGoalAmount },
-                        "sale" to produce.associate{ it.produceName to it.saleAmount },
+                        "sale" to saleMap,
                     )
                 )
             }
