@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -97,17 +98,24 @@ fun MarketScreenView() {
                         .size(25.0.dp),
                     strokeWidth = 3.0.dp,
                 )
-            }
-            else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(30.dp),
-                    contentPadding = PaddingValues(20.dp),
-                ) {
-                    items(state.marketList) { market ->
-                        MarketItem(
-                            market = market,
-                            onClick = { viewModel.navigateToSellProduce(market.id) }
-                        )
+            } else {
+                if (state.marketList.isEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(20.dp),
+                        color = Color.Black,
+                        text = "Looks like you have no markets!\nTap the \"+\" button to add a new market."
+                    )
+                } else {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(30.dp),
+                        contentPadding = PaddingValues(20.dp),
+                    ) {
+                        items(state.marketList) { market ->
+                            MarketItem(
+                                market = market,
+                                onClick = { viewModel.navigateToSellProduce(market.id) }
+                            )
+                        }
                     }
                 }
             }

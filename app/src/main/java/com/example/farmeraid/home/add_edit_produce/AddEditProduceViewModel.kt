@@ -110,6 +110,7 @@ class AddEditProduceViewModel @Inject constructor(
                 }
             }
             submitButtonUiState.value = submitButtonUiState.value.copy(isLoading = false)
+            navigateBack()
         }
     }
 
