@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.ResponseModel
 import com.example.farmeraid.home.model.HomeModel
@@ -27,6 +28,7 @@ class ViewQuotaViewModel @Inject constructor(
     marketRepository: MarketRepository,
     savedStateHandle: SavedStateHandle,
     private val quotasRepository: QuotasRepository,
+    private val userRepository: UserRepository,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
 ) : ViewModel() {
@@ -84,6 +86,10 @@ class ViewQuotaViewModel @Inject constructor(
                 snackbarDelegate.showSnackbar("No quota id provided")
             }
         }
+    }
+
+    fun userIsAdmin() : Boolean {
+        return userRepository.isAdmin()
     }
 
     fun navigateBack() {

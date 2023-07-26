@@ -68,19 +68,21 @@ fun ViewQuotaScreenView() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { viewModel.navigateToEditQuota() }) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = "Edit ${state.quota?.name ?: "Unknown"} Quota",
-                            tint = WhiteContentColour,
-                        )
-                    }
-                    IconButton(onClick = { viewModel.confirmDeleteQuota() }) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "Delete ${state.quota?.name ?: "Unknown"} Quota",
-                            tint = WhiteContentColour,
-                        )
+                    if (viewModel.userIsAdmin()) {
+                        IconButton(onClick = { viewModel.navigateToEditQuota() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Edit ${state.quota?.name ?: "Unknown"} Quota",
+                                tint = WhiteContentColour,
+                            )
+                        }
+                        IconButton(onClick = { viewModel.confirmDeleteQuota() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "Delete ${state.quota?.name ?: "Unknown"} Quota",
+                                tint = WhiteContentColour,
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(

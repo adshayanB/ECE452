@@ -98,18 +98,7 @@ fun TransactionsView() {
                 .padding(20.dp, 10.dp, 20.dp, 0.dp),
 
         ){
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = PrimaryColour,
-                        modifier = Modifier
-                            .size(48.0.dp)
-                    )
-                }
-            } else {
+            if (state.filterList.isNotEmpty()) {
                 LazyRow(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -135,6 +124,8 @@ fun TransactionsView() {
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Divider()
+            }
+            if (!state.isLoading) {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     contentPadding = PaddingValues(0.dp, 20.dp),
@@ -154,7 +145,7 @@ fun TransactionsView() {
                             ){
                                 Row(modifier = Modifier
                                     .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    horizontalArrangement = if (viewModel.userIsAdmin()) Arrangement.SpaceBetween else Arrangement.Start,
                                 ){
                                     Text(modifier = Modifier.offset(0.dp, (-5).dp),
                                         text = trans.transactionType.stringValue,
@@ -162,7 +153,9 @@ fun TransactionsView() {
                                         color = Color.Black,
                                         fontSize = 25.sp
                                     )
-                                    Icon(Icons.Outlined.Close, contentDescription = "Localized description", modifier = Modifier.clickable { viewModel.showDeleteConfirmation(trans) })
+                                    if (viewModel.userIsAdmin()) {
+                                        Icon(Icons.Outlined.Close, contentDescription = "Localized description", modifier = Modifier.clickable { viewModel.showDeleteConfirmation(trans) })
+                                    }
                                 }
 
                                 Spacer(modifier = Modifier.height(5.dp))
@@ -176,6 +169,17 @@ fun TransactionsView() {
                             }
                         }
                     }
+                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = PrimaryColour,
+                        modifier = Modifier
+                            .size(48.0.dp)
+                    )
                 }
             }
 

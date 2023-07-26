@@ -7,6 +7,7 @@ import com.example.farmeraid.data.InventoryRepository
 import com.example.farmeraid.data.MarketRepository
 import com.example.farmeraid.data.QuotasRepository
 import com.example.farmeraid.data.TransactionRepository
+import com.example.farmeraid.data.UserRepository
 import com.example.farmeraid.data.model.InventoryModel
 import com.example.farmeraid.data.model.MarketModel
 import com.example.farmeraid.data.model.QuotaModel
@@ -30,6 +31,7 @@ class SellProduceViewModel @Inject constructor(
     private val marketRepository: MarketRepository,
     private val quotasRepository: QuotasRepository,
     private val transactionRepository: TransactionRepository,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle,
     private val appNavigator: AppNavigator,
     private val snackbarDelegate: SnackbarDelegate,
@@ -201,6 +203,10 @@ class SellProduceViewModel @Inject constructor(
 
     fun getTotalEarnings(): Double {
         return produceSellList.value.sumOf { produceSell -> produceSell.produceTotalPrice }
+    }
+
+    fun userIsAdmin() : Boolean {
+        return userRepository.isAdmin()
     }
 
     fun navigateToTransactions() {

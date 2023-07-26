@@ -76,12 +76,14 @@ fun SellProduceView() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { viewModel.navigateToEditMarket(state.marketId) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = "Edit ${state.marketName ?: "Unknown"} Market",
-                            tint = WhiteContentColour,
-                        )
+                    if (viewModel.userIsAdmin()) {
+                        IconButton(onClick = { viewModel.navigateToEditMarket(state.marketId) }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Edit ${state.marketName ?: "Unknown"} Market",
+                                tint = WhiteContentColour,
+                            )
+                        }
                     }
                     IconButton(onClick = { viewModel.navigateToTransactions() }) {
                         Icon(
