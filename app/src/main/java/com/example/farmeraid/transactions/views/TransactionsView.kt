@@ -162,7 +162,7 @@ fun TransactionsView() {
                                         color = Color.Black,
                                         fontSize = 25.sp
                                     )
-                                    Icon(Icons.Outlined.Close, contentDescription = "Localized description", modifier = Modifier.clickable { viewModel.showDeleteConfirmation(trans.transactionId) })
+                                    Icon(Icons.Outlined.Close, contentDescription = "Localized description", modifier = Modifier.clickable { viewModel.showDeleteConfirmation(trans) })
                                 }
 
                                 Spacer(modifier = Modifier.height(5.dp))

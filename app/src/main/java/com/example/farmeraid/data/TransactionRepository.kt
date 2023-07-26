@@ -93,9 +93,9 @@ class TransactionRepository(
         }
 
         return userRepository.getFarmId()
-            ?.let {
+            ?.let { farmID ->
                 try {
-                    db.collection("farm").document(it).update("transactions", FieldValue.arrayRemove(transactionId))
+                    db.collection("farm").document(farmID).update("transactions", FieldValue.arrayRemove(transactionId))
                     ResponseModel.FAResponse.Success
                 } catch (e: Exception) {
                     ResponseModel.FAResponse.Error(e.message ?: "Unknown message while updating farm")
