@@ -69,7 +69,7 @@ class TransactionRepository(
                         transaction.data?.let {
                             TransactionModel.Transaction(
                                 transactionId = transaction.id,
-                                transactionType = it["type"] as String,
+                                transactionType = TransactionModel.TransactionType.from(it["type"] as String),
                                 produce = InventoryModel.Produce(
                                     produceName = it["produce"] as String,
                                     produceAmount = (it["count"] as Long).toInt(),

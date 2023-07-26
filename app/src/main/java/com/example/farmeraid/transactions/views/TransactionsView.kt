@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -106,7 +107,6 @@ fun TransactionsView() {
                     )
                 }
                 item {
-                    //Clear
                     TextButton(onClick = {viewModel.clearAllFilterSelections()}) {
                         Text(
                             text = "Clear",
@@ -128,37 +128,37 @@ fun TransactionsView() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { },
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 10.dp
+                        colors = CardDefaults.cardColors(
+                            containerColor = trans.transactionType.colour?:Color.White
                         )
                     ){
-                        Row(modifier = Modifier
-                            .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                        Column(
+                            modifier = Modifier
+                                .padding(20.dp)
                         ){
-                            Text(modifier = Modifier
-                                .padding(10.dp),
-                                text = trans.transactionType,
-                                color = Color.Black,
-                                fontSize = 25.sp
-                            )
-                            IconButton(
-                                modifier = Modifier,
-                                onClick = { viewModel.showDeleteConfirmation(trans.transactionId) })
-                            {
-                                Icon(Icons.Outlined.Close, contentDescription = "Localized description")
+                            Row(modifier = Modifier
+                                .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ){
+                                Text(modifier = Modifier.offset(0.dp, (-5).dp),
+                                    text = trans.transactionType.stringValue,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black,
+                                    fontSize = 25.sp
+                                )
+                                Icon(Icons.Outlined.Close, contentDescription = "Localized description", modifier = Modifier.clickable { viewModel.showDeleteConfirmation(trans.transactionId) })
+                            }
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                            Row(modifier = Modifier){
+                                Text(//modifier = Modifier
+                                    // .padding(20.dp, 0.dp, 20.dp, 20.dp),
+                                    text = trans.toMessage(), color = Color.Black,
+                                    fontSize = 18.sp
+                                )
                             }
                         }
-                        Row(
-
-                        ){
-                            Text(modifier = Modifier
-                                .padding(10.dp, 0.dp, 0.dp, 10.dp),
-                                text = trans.toMessage(), color = Color.Black,
-                                fontSize = 18.sp
-                            )
-                        }
-
                     }
                 }
             }
