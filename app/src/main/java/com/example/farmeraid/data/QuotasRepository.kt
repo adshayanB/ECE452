@@ -15,9 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 
-// TODO: currently, we have mock demo functionality but need to modify to use firestore db after demo
-// TODO: currently, we are lacking user permission checks for appropriate functions, need to add these
-
 class QuotasRepository(
     private val transactionRepository: TransactionRepository,
     private val networkMonitor: NetworkMonitor,

@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.flow.MutableStateFlow
 
+// Reference: https://developer.android.com/training/monitoring-device-state/connectivity-status-type
+
 class NetworkMonitor (
     context: Context
 ) {
