@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.farmeraid.data.CharityRepository
 import com.example.farmeraid.data.InventoryRepository
-import com.example.farmeraid.data.model.FridgeModel
 import com.example.farmeraid.farm.model.FarmModel
+import com.example.farmeraid.fridge.model.FridgeModel
 import com.example.farmeraid.fridge_details.model.FridgeDetailsModel
 import com.example.farmeraid.fridge_details.model.getDonateButton
 import com.example.farmeraid.navigation.AppNavigator
