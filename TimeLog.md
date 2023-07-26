@@ -117,3 +117,4 @@
 | 07/25/2023 | 1        | 0      | 0        | 4    | 0      | 0         | Added new states for loading indicators for transaction and farm page
 | 07/25/2023 | 0        | 0      | 0        | 0    | 4      | 0         | Added colour to each transaction item, bolded transaction type title and fixed transaction card spacing             
 | 07/25/2023 | 1        | 0      | 0        | 0    | 0      | 0         | Refactored fridge model to support new charity flow
+| 07/26/2023 | 0        | 0      | 3        | 0    | 0      | 0         | Created the Bottom Modal to display the fridges and calculated distance of each fridge from user location
