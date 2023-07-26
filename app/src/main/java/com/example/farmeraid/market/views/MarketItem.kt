@@ -43,6 +43,8 @@ fun MarketItem(
     ) {
         Text(text = market.name, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Medium))
         Spacer(modifier = Modifier.height(10.dp))
+        Text(text = "Total Sales: ${numberFormat.format(market.saleCount)}", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal))
+        Spacer(modifier = Modifier.height(10.dp))
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))

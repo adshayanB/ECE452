@@ -191,8 +191,4 @@ fun CharityMapsScreenView() {
             }
         }
     }
-
-//    }
-
-
 }
